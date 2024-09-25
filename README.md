@@ -1,4 +1,4 @@
-# DSinc_ModuleRegistry
+# ModuleRegistry
 
 **About DSinc**
 Dope Software Corportation (DSinc), aka
