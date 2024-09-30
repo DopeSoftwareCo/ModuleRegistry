@@ -12,11 +12,7 @@
     "prettier": "john-leidy-prettier-config",
     "scripts": {
         "build": "npx tsc",
-        "dev": "nodemon src/index.ts",
-        "test": "npm install && npm run build && npm run test:jest:mute",
-        "posttest": "node dist/TestUtils/posttest.js",
-        "test:jest:verbose": "jest --verbose --config jest.config.verbose.js",
-        "test:jest:mute": "jest --config jest.config.minimal.js >coverage/dump.txt"
+        "dev": "nodemon src/index.ts"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.25.4",
