@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module processes registry urls
+ * @author DSinc
+ */
 import { PackageURL } from '../Types/URLTypes';
 import { fetchPackageInfo } from '../Requests/Npm/registry';
 import { transformToNDJSONRow } from '../Transform/NDJSON';

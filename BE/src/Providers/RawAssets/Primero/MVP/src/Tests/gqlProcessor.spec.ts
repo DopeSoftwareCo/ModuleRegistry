@@ -1,3 +1,8 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests for the gql processor
+ * @author DSinc
+ */
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mockGQLResult, mockRepos, mockValidRepos } from '../TestUtils/constants';
 import { mapGQLResultToRepos } from '../Processors/gqlProcessor';

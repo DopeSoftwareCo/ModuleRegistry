@@ -1,3 +1,8 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests for Error wrapper
+ * @author DSinc
+ */
 import { ErrorWrapper, ErrorWrapperForReturns, ErrorWrapperForAsync } from '../Utils/errorHandling';
 import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 

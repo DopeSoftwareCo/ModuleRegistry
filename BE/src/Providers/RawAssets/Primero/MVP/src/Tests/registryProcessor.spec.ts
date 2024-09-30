@@ -1,3 +1,8 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests the registry processor
+ * @author DSinc
+ */
 import { describe, expect, it, jest } from '@jest/globals';
 import { processNpmUrl } from '../Processors/registryProcessor';
 import { getFetchSpy } from '../TestUtils/mocks';

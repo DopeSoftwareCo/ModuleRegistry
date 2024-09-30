@@ -12,13 +12,13 @@ import { Repository, NDJSONRow } from '../Types/DataTypes';
 import { LogDebug } from '../Utils/log';
 
 export function scoreRampupTime<T>(repo: Repository<T>): number {
-    const starsCount = repo.queryResult?.stargazerCount;
-    const benchmark = 50000;
-    if (starsCount == undefined) {
-        LogDebug('Stars count was undefined in score ramp up time.');
+    const readmeSize = repo.queryResult?.readmeFile?.text.length;
+    const benchmark = 10000;
+    if (readmeSize == undefined) {
+        LogDebug('Readme size was not defined for comparison');
         return 0;
     }
-    const finalScore = 1 - starsCount / benchmark;
+    const finalScore = Math.min(readmeSize / benchmark, 1);
 
     return finalScore;
 }

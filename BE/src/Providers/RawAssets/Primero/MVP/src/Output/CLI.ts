@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module handles CLI output.
+ * @author DSinc
+ */
 import * as fs from 'fs';
 import * as path from 'path';
 import { NDJSONRow, Repository } from '../Types/DataTypes';

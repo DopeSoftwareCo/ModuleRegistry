@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module handles computation of all scores
+ * @author DSinc
+ */
 import { NDJSONRow, Repository } from '../Types/DataTypes';
 import { licenseFunction } from './licenseFunction';
 import { responsiveFunction } from './responsiveFunction';
@@ -5,6 +10,8 @@ import { scoreRampupTime } from './scoreRampupTime';
 import { scoreBusFactor } from './scoreBusFactor';
 import { scoreCorrectness } from './scoreCorrectness';
 import { finalScore } from './finalScore';
+import { LogInfo } from '../Utils/log';
+import chalk from 'chalk';
 
 function getLatencyInMs(startTime: [number, number]): number {
     const diff = process.hrtime(startTime); // [seconds, nanoseconds]
@@ -43,8 +50,9 @@ export async function scoreRepository<T>(repo: Repository<T>): Promise<Repositor
     const license = licenseFunction(repo);
     const licenseLatency = getLatencyInMs(licenseStart);
 
-    const netScore = finalScore(repo, rampup, correctness, busFactor, responsive, license);
+    let netScore = finalScore(license, [rampup, correctness, busFactor, responsive], [0.25, 0.25, 0.4, 0.1]);
     const netScoreLatency = getLatencyInMs(netScoreStart);
+
     return {
         ...repo,
         NDJSONRow: {
@@ -79,7 +87,17 @@ export async function scoreRepository<T>(repo: Repository<T>): Promise<Repositor
 export async function scoreRepositoriesArray<Q>(repoArr: Repository<Q>[]): Promise<Repository<Q>[]> {
     let repoBuilder: Repository<Q>[] = [];
     for (const repo of repoArr) {
+        LogInfo(
+            `${chalk.yellow(`Starting scoring for: `)}${chalk.green(
+                repo.repoName
+            )}_______________________________`
+        );
         const scoredRepo = await scoreRepository(repo);
+        LogInfo(
+            `${chalk.blue(`Scoring complete for: `)}${chalk.green(
+                repo.repoName
+            )}_______________________________`
+        );
         repoBuilder.push(scoredRepo);
     }
     return repoBuilder;

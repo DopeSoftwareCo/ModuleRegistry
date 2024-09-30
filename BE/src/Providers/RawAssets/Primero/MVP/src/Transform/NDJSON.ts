@@ -1,3 +1,7 @@
+/**
+ * This module contains transformers for urls to rows
+ * @author DSinc
+ */
 import { NDJSONRow, NDJSONRows } from '../Types/DataTypes';
 
 /**

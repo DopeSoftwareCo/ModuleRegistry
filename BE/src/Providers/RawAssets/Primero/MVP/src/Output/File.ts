@@ -1,3 +1,9 @@
+/**
+ * Please see the individual function documentation for information.
+ * This writes results to files in various formats.
+ * @author DSinc
+ */
+
 import { writeFile } from 'fs/promises';
 import { NDJSONRow, Repository } from '../Types/DataTypes';
 import { convertNDJSONObjToStr } from './CLI';

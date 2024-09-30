@@ -72,7 +72,7 @@ const handleRepoClone = async <T>(repoDirectory: string, repo: Repository<T>) =>
             http,
             singleBranch: true,
             dir: repoDirectory,
-            url: repo.fileUrl,
+            url: repo.queryResult?.url,
         });
     } catch (err) {
         if (err instanceof Error) {
@@ -118,6 +118,7 @@ const ensureRepoDumpExists = () => {
 };
 
 export async function scoreBusFactor<T>(repo: Repository<T>): Promise<number> {
+    ensureRepoDumpExists();
     let score = 0;
     const repoDirectory = `${DUMP_DIRECTORY}/${repo.repoName}`;
     try {

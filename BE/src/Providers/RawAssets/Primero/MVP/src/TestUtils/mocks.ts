@@ -1,3 +1,7 @@
+/**
+ * This module only contains mocks for our tests.
+ * @author DSinc
+ */
 import { jest } from '@jest/globals';
 import { ProvideURLsForQuerying } from '../Input/Sanitize';
 import * as LICENSESCORING from '../Scoring/licenseFunction';

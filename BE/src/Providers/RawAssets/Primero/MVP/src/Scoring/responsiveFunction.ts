@@ -13,8 +13,9 @@ import { Repository } from '../Types/DataTypes';
 export function responsiveFunction<T>(repo: Repository<T>): number {
     const open = repo.queryResult?.openIssues?.totalCount!;
     const closed = repo.queryResult?.closedIssues?.totalCount!;
-
-    var score = 1 - open / closed;
+    const goodRatio = 2;
+    const ratio = open / closed;
+    var score = Math.min(ratio / goodRatio, 1);
 
     // If issues can't be found, score is NaN, must be set to 0
     if (Number.isNaN(score)) {

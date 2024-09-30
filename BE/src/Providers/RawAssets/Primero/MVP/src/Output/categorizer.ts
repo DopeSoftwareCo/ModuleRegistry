@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module categorizes modules
+ * @author DSinc
+ */
 import { Repository } from '../Types/DataTypes';
 
 /**

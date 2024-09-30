@@ -1,3 +1,8 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests for the url processor.
+ * @author DSinc
+ */
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { buildReposFromUrls } from '../Processors/urlProcessor';
 import { fetchPackageInfo } from '../Requests/Npm/registry';

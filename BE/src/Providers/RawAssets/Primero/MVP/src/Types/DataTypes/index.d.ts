@@ -1,3 +1,7 @@
+/**
+ * This module only contains types for various data objects in our project.
+ * @author DSinc
+ */
 export type NDJSONRow = Partial<{
     URL: string;
     NetScore: number;
@@ -22,6 +26,11 @@ export type ResultType<T> = {
     [key: `repo${number}`]: T;
 };
 
+export type TestsFilesFromQuery = {
+    name: string;
+    type: string;
+}[];
+
 export type Repository<T> = {
     owner: string;
     repoName: string;
@@ -43,8 +52,12 @@ export type Repository<T> = {
                   totalCount: number;
               };
               stargazerCount?: number;
+
               licenseInfo?: { name?: string };
-              ref?: {target?: {history: {edges?: [{node:{author:{name:string}}}]}}}
+              ref?: { target?: { history: { edges?: [{ node: { author: { name: string } } }] } } };
+              readmeFile?: { text: string };
+              testsCheckMain?: { entries: TestsFilesFromQuery };
+              testsCheckMaster?: { entries: TestsFilesFromQuery };
           } & T)
         | null;
     NDJSONRow: NDJSONRow;

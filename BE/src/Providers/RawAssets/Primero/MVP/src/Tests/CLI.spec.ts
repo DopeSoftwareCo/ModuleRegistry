@@ -1,3 +1,9 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests for CLI
+ * @author DSinc
+ */
+
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { NDJSONRow, Repository } from '../Types/DataTypes';
 import { printDependencyCount, processInputFile, writeNDJSONToCLI } from '../Output/CLI';

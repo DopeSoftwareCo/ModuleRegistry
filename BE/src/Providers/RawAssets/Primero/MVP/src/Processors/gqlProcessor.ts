@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module processes the GQL query result
+ * @author DSinc
+ */
 import chalk from 'chalk';
 import { Repository } from '../Types/DataTypes';
 import { GraphQLResponse, ReposFromQuery } from '../Types/ResponseTypes';

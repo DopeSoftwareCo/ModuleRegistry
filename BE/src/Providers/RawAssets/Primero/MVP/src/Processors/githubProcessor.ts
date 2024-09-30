@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module processes github urls.
+ * @author DSinc
+ */
 import chalk from 'chalk';
 import { transformToNDJSONRow } from '../Transform/NDJSON';
 import { QueryParams, Repository } from '../Types/DataTypes';

@@ -1,3 +1,7 @@
+/**
+ * This module only contains mocks for our tests.
+ * @author DSinc
+ */
 import path from 'path';
 import { Repository } from '../Types/DataTypes';
 import { BaseRepoQueryResponse, GraphQLResponse, NPMRegistryResponse } from '../Types/ResponseTypes';
@@ -499,5 +503,75 @@ export const licenseScoringMocks: {
             License: 0,
             License_Latency: 0,
         },
+    },
+};
+
+export const rampUpRepo = {
+    owner: 'dokku',
+    repoName: 'dokku',
+    fileUrl: 'https://github.com/dokku/dokku',
+    queryResult: {
+        description: 'A docker-powered PaaS that helps you build and manage the lifecycle of applications',
+        name: 'dokku',
+        url: 'https://github.com/dokku/dokku',
+        owner: {
+            login: 'dokku',
+        },
+        readmeFile: {
+            text: '                                                       ',
+        },
+    },
+    NDJSONRow: {
+        URL: 'https://github.com/dokku/dokku',
+        NetScore: 0,
+        NetScore_Latency: 0,
+        RampUp: 0,
+        RampUp_Latency: 0,
+        Correctness: 0,
+        Correctness_Latency: 0,
+        BusFactor: 0,
+        BusFactor_Latency: 0,
+        ResponsiveMaintainer: 0,
+        ResponsiveMaintainer_Latency: 0,
+        License: 0,
+        License_Latency: 0,
+    },
+};
+
+export const correctnessRepo = {
+    owner: 'dokku',
+    repoName: 'dokku',
+    fileUrl: 'https://github.com/dokku/dokku',
+    queryResult: {
+        description: 'A docker-powered PaaS that helps you build and manage the lifecycle of applications',
+        name: 'dokku',
+        url: 'https://github.com/dokku/dokku',
+        owner: {
+            login: 'dokku',
+        },
+        readmeFile: {
+            text: '                                                       ',
+        },
+        openIssues: {
+            totalCount: 10,
+        },
+        closedIssues: {
+            totalCount: 10,
+        },
+    },
+    NDJSONRow: {
+        URL: 'https://github.com/dokku/dokku',
+        NetScore: 0,
+        NetScore_Latency: 0,
+        RampUp: 0,
+        RampUp_Latency: 0,
+        Correctness: 0,
+        Correctness_Latency: 0,
+        BusFactor: 0,
+        BusFactor_Latency: 0,
+        ResponsiveMaintainer: 0,
+        ResponsiveMaintainer_Latency: 0,
+        License: 0,
+        License_Latency: 0,
     },
 };

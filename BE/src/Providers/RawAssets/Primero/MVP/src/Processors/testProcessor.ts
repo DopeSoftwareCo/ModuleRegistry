@@ -1,3 +1,9 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module prints coverage in the proper format.
+ * @author DSinc
+ */
+
 import fs from 'fs';
 
 type CoverageInfo = { total: number; covered: number; skipped: number; pct: number };

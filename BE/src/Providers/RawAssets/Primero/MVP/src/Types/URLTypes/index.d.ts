@@ -1,3 +1,7 @@
+/**
+ * This module only contains types for our urls used in sanitizer and input
+ * @author DSinc
+ */
 // ==================== Types Tightly Couples With CleanURLSet ====================
 export interface TokenizedURL {
     raw: string;

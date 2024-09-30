@@ -1,3 +1,8 @@
+/**
+ * Constants for fields to test the GQL query
+ * @author DSinc
+ */
+
 import {
     createLanguagesField,
     createReactionsField,

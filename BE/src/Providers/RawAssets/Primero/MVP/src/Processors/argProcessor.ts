@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This processes arguments.
+ * @author DSinc
+ */
 import { existsSync } from 'fs';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';

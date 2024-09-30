@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module sanitizes input
+ * @author DSinc
+ */
 import { Package_TokenizedURL, PackageURL, Repo_TokenizedURL, RepoURL } from '../Types/URLTypes';
 import { ReadURLFile } from './Input';
 

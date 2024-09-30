@@ -1,3 +1,9 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests for the categorizerr.
+ * @author DSinc
+ */
+
 import { CategorizeModules } from '../Output/categorizer';
 import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { Repository } from '../Types/DataTypes';

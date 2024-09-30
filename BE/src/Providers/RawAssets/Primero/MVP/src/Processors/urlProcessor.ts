@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module processes sanitized urls.
+ * @author DSinc
+ */
 import { CleanURLSet } from '../Input/Sanitize';
 import { Repository } from '../Types/DataTypes';
 import { processGitHubUrl } from './githubProcessor';

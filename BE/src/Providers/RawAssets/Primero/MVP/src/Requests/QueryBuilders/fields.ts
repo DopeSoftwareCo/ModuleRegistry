@@ -1,3 +1,7 @@
+/**
+ * This module creates various fields, some are used some are unused.
+ * @author DSinc
+ */
 export const createLanguagesField = (first: number) => `
     languages(first: ${first}) {
         nodes {
@@ -68,3 +72,33 @@ ref(qualifiedName: "main") {
         }
     }
 }`;
+
+export const createReadmeField = () => `
+readmeFile: object(expression: "HEAD:README.md") {
+            ... on Blob {
+                text
+            }
+        }
+`;
+
+export const createTestMainQuery = () => `
+  testsCheckMain: object(expression: "main:") {  
+      ... on Tree {
+        entries {
+          name
+          type
+        }
+      }
+    }
+`;
+
+export const createTestMasterQuery = () => `
+  testsCheckMaster: object(expression: "main:") {  
+      ... on Tree {
+        entries {
+          name
+          type
+        }
+      }
+    }
+`;

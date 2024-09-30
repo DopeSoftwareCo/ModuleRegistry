@@ -1,3 +1,8 @@
+/**
+ * Please see the individual function documentation for information.
+ * This module handles the request to the registry for npm
+ * @author DSinc
+ */
 import { NPMRegistryResponse } from '../../Types/ResponseTypes';
 import { LogDebug } from '../../Utils/log';
 

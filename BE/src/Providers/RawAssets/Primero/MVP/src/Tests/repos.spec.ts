@@ -1,3 +1,8 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests for the repo query builder
+ * @author DSinc
+ */
 import { describe, expect, it } from '@jest/globals';
 import { buildRepoSchemaQuery, repoQueryBuilder } from '../Requests/QueryBuilders/repos';
 import { mockRepos, repoSchemaQueryString } from '../TestUtils/constants';

@@ -7,6 +7,7 @@ import { testRouter } from "./Routes/testRoute";
 import listRoutes from "./Middleware/logging/showRoutes";
 import logRequest from "./Middleware/logging/requestLogger";
 import chalk from "chalk";
+import { ProvideURLsForQuerying } from "./Providers/RawAssets/Primero/MVP/src/Input/Sanitize";
 
 dotenv.config();
 
@@ -33,7 +34,6 @@ const port = process.env.PORT || 3000;
 addMiddleWare(app);
 addRoutes(app);
 listRoutes(app);
-
 app.listen(port, () => {
     console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
 });

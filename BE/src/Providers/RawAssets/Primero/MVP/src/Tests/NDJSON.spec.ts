@@ -1,3 +1,8 @@
+/**
+ * Please read the describe and it statements for information on what each suite, test does.
+ * This module has tests for transformation of NDJSONRows
+ * @author DSinc
+ */
 import { describe, expect, it } from '@jest/globals';
 import { mockUrls } from '../TestUtils/constants';
 import { transformToNDJSONRow, transformToNDJSONRows } from '../Transform/NDJSON';
