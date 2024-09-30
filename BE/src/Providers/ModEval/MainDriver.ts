@@ -1,6 +1,6 @@
 /* The topmost class in the design */
-import {Evaluator, repoXYZ} from './Evaluation/Evaluator'
-import { Weightspec } from './Evaluation/Weightspec'
+import {Evaluator, repoXYZ} from './ModEval/Wrapper/Evaluator'
+import { Weightspec } from './ModEval/Weightspec'
 
 
 

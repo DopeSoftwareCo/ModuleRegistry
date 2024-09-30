@@ -1,10 +1,28 @@
-import * as Scoring from './Weightspec.ts';
-import * as DSincMath from '../DSinc_Modules/DSinc_Math.ts'
+import * as Scoring from './src/Weightspec.js';
+import * as DSincMath from 'src/Providers/DSinc_Modules/DSinc_Math.ts'
+import {NDJSONRow, RepoQueryResponse} from 'src/Types/DataTypes/index.d.ts'
 const RAMPUP_WEIGHT_DEFAULT = 0.3;
 const CORRECTNESS_WEIGHT_DEFAULT = 0.3;
 const BUSFACTOR_WEIGHT_DEFAULT = 0.2;
 const RESPONSIVENESS_WEIGHT_DEFAULT = 2;
 
+type LatencyScoreSet =
+{
+    rampup_latency: number;
+    correctness_latency: number;
+    busfactor_latency: number;
+    response_latency: number;
+    license_latency: number;
+    combined_latency: number;
+}
+
+
+type NDJSON_RowInfo =
+{
+    scores: RepoScoreSet,
+    latencies: LatencyScoreSet,
+    url: string
+}
 
 type RepoScoreSet =
 {
@@ -16,14 +34,102 @@ type RepoScoreSet =
     netscore: number;
 }
 
-// The repo item given to the evaluators might be an object or maybe it'll be a class... idk
-// Will need to consult TM
-export type repoXYZ =
+
+type RepositoryIdentification =
 {
-    link: string;
-    scoreSet: RepoScoreSet;
+    owner: string;
+    repoName: string;
+    repoUrl?: string;
+    fileUrl: string;
+    description: string;
 }
 
+
+export type TargetRepository =
+{
+    identifiers: RepositoryIdentification;
+    queryResult: RepoQueryResponse;
+    scores: RepoScoreSet; // (A) swap out for NDJSONRow or (B) 
+    ndjson: NDJSON_RowInfo;
+}
+
+
+
+
+
+
+    
+export type Repository<T> = {
+    owner: string;
+    repoName: string;
+    description?: string;
+    repoUrl?: string;
+    fileUrl: string;
+    queryResult: {
+        name: string;
+        url: string;
+        description: string;
+        licenseInfo?: {
+            name: string;
+        };
+        openIssues?: {
+            totalCount: number;
+        };
+        closedIssues?: {
+            totalCount: number;
+        };
+        stargazerCount?: number;
+        ref?: {
+            target?: {
+                history: {
+                    edges?: [
+                        {
+                            node: {
+                                author: {
+                                    name: string;
+                                };
+                            };
+                        }
+                    ];
+                };
+            };
+        };
+        readmeFile?: {
+            text: string;
+        };
+        testsCheckMain?: {
+            entries: {
+                name: string;
+                type: string;
+            }[];
+        };
+        testsCheckMaster?: {
+            entries: {
+                name: string;
+                type: string;
+            }[];
+        };
+    } & T;
+    NDJSONRow: Partial<{
+        URL: string;
+        NetScore: number;
+        NetScore_Latency: number;
+        RampUp: number;
+        RampUp_Latency: number;
+        Correctness: number;
+        Correctness_Latency: number;
+        BusFactor: number;
+        BusFactor_Latency: number;
+        ResponsiveMaintainer: number;
+        ResponsiveMaintainer_Latency: number;
+        License: number;
+        License_Latency: number;
+    }>;
+};
+
+
+// The repo item given to the evaluators might be an object or maybe it'll be a class... idk
+// Will need to consult TM
 
 
 export class Evaluator
@@ -45,7 +151,7 @@ export class Evaluator
     }
 
 
-    Evaluate(repos: Array<repoXYZ>): void
+    Evaluate(repos: Array<TargetRepository>): void
     {
         repos.forEach(unscoredRepo => {
             this.DoSingleEvaluation(unscoredRepo);
@@ -53,7 +159,7 @@ export class Evaluator
     }
 
 
-    DoSingleEvaluation(repo: repoXYZ): number
+    DoSingleEvaluation(repo: TargetRepository): number
     {
         let netscore = 0;
         netscore += this.rampUp.CalculateSubscore(repo);
@@ -83,7 +189,7 @@ abstract class SubscoreCalculator
         this.weight = (w) ? w : this.default_weight;
     }
 
-    abstract CalculateSubscore(repo: repoXYZ): number;
+    abstract CalculateSubscore(repo: TargetRepository): number;
 }
 
 
@@ -95,7 +201,7 @@ class RampUp_SubscoreCalculator extends SubscoreCalculator
         super(weightReq, RAMPUP_WEIGHT_DEFAULT);
     }
 
-    CalculateSubscore(repo: repoXYZ): number
+    CalculateSubscore(repo: TargetRepository): number
     {
         // Replace =1 with result from calling inherited function or og
         let unweighted = 1;
@@ -104,7 +210,6 @@ class RampUp_SubscoreCalculator extends SubscoreCalculator
     }
 }
 
-
 class Correctness_SubscoreCalculator extends SubscoreCalculator
 {
     constructor (weightReq?: number)
@@ -112,7 +217,7 @@ class Correctness_SubscoreCalculator extends SubscoreCalculator
         super(weightReq, CORRECTNESS_WEIGHT_DEFAULT);
     }
 
-    CalculateSubscore(repo: repoXYZ): number
+    CalculateSubscore(repo: TargetRepository): number
     {
         // Replace =1 with result from calling inherited function or og
         let unweighted = 1;
@@ -120,7 +225,6 @@ class Correctness_SubscoreCalculator extends SubscoreCalculator
         return unweighted * this.weight;
     }
 }
-
 
 class BusFactor_SubscoreCalculator extends SubscoreCalculator
 {
@@ -131,7 +235,7 @@ class BusFactor_SubscoreCalculator extends SubscoreCalculator
         super(weightReq, BUSFACTOR_WEIGHT_DEFAULT);
     }
 
-    CalculateSubscore(repo: repoXYZ): number
+    CalculateSubscore(repo: TargetRepository): number
     {
         // Replace =1 with result from calling inherited function or og
         let unweighted = 1;
@@ -139,7 +243,6 @@ class BusFactor_SubscoreCalculator extends SubscoreCalculator
         return unweighted * this.weight;
     }
 }
-
 
 class Responsive_SubscoreCalculator extends SubscoreCalculator
 {
@@ -148,7 +251,7 @@ class Responsive_SubscoreCalculator extends SubscoreCalculator
        super(weightReq, RESPONSIVENESS_WEIGHT_DEFAULT);
     }
 
-    CalculateSubscore(repo: repoXYZ): number
+    CalculateSubscore(repo: TargetRepository): number
     {
         // Replace =1 with result from calling inherited function or og
         let unweighted = 1;
@@ -157,7 +260,6 @@ class Responsive_SubscoreCalculator extends SubscoreCalculator
     }
 }
 
-
 class License_SubscoreCalculator extends SubscoreCalculator
 {
     constructor(weightReq?: number)
@@ -165,7 +267,7 @@ class License_SubscoreCalculator extends SubscoreCalculator
         super(weightReq, 1);
     }
 
-    CalculateSubscore(repo: repoXYZ): number
+    CalculateSubscore(repo: TargetRepository): number
     {
         // Replace =1 with result from calling inherited function or og
         let unweighted = 1;
