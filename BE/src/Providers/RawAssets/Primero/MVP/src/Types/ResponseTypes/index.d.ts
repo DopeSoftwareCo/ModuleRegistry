@@ -50,9 +50,6 @@ export interface BaseRepoQueryResponse {
     name: string;
     description: string;
     url: string;
-    name: string;
-    url: string;
-    description: string;
     licenseInfo?: {
         name: string;
     };
