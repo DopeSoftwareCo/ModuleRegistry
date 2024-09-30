@@ -2,7 +2,7 @@ name: Auto Merge Dev to Deployment
 
 on:
     schedule:
-        - cron: "12 22 * * *" # Adjust cron to run at 10:12 PM UTC
+        - cron: "20 2 * * *" # Adjust cron to run at 10:12 PM UTC
     workflow_dispatch: # Allow manual triggering as well
 
 jobs:
