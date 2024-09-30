@@ -1,6 +1,6 @@
-import * as Scoring from './src/Weightspec.js';
-import * as DSincMath from 'src/Providers/DSinc_Modules/DSinc_Math.ts'
-import {NDJSONRow, RepoQueryResponse} from 'src/Types/DataTypes/index.d.ts'
+import * as Scoring from "../Wrapper/Weightspec"
+import * as DSincMath from "../../../DSinc_Modules/DSinc_Math"
+import { BaseRepoQueryResponse } from "../../RawAssets/Primero/MVP/src/Types/ResponseTypes";
 const RAMPUP_WEIGHT_DEFAULT = 0.3;
 const CORRECTNESS_WEIGHT_DEFAULT = 0.3;
 const BUSFACTOR_WEIGHT_DEFAULT = 0.2;
@@ -48,7 +48,7 @@ type RepositoryIdentification =
 export type TargetRepository =
 {
     identifiers: RepositoryIdentification;
-    queryResult: RepoQueryResponse;
+    queryResult: BaseRepoQueryResponse;
     scores: RepoScoreSet; // (A) swap out for NDJSONRow or (B) 
     ndjson: NDJSON_RowInfo;
 }
