@@ -1,10 +1,4 @@
-/**
- * Please see the individual function documentation for information.
- * This module processes input
- * @author DSinc
- */
-
-export const DEFAULT_URLFILEPATH = './src/Input/example.txt';
+export const DEFAULT_URLFILEPATH = './src/Providers/RawAssets/Primero/MVP/src/Input/example.txt';
 
 import { boolean } from 'yargs';
 import { readFileSync } from 'fs';
