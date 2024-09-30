@@ -7,6 +7,8 @@ on:
 
 jobs:
     merge:
+        permissions:
+            contents: write
         runs-on: ubuntu-latest
 
         steps:
@@ -18,8 +20,6 @@ jobs:
 
             # Merge dev branch into deployment
             - name: Merge dev into deployment
-              permissions:
-                  contents: write
               run: |
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
