@@ -23,7 +23,7 @@ if (!Util.Constants.GITHUB_TOKEN) {
  * @param url - GitHub repository URL.
  * @returns An object containing the owner and repository name, or null if the URL is invalid.
  */
-function parseGithubUrl(url: string): { owner: string, repo: string } | null {
+export function parseGithubUrl(url: string): { owner: string, repo: string } | null {
   const match = url.match(/https:\/\/github\.com\/([^/]+)\/([^/]+)/);
   if (match && match[1] && match[2]) {
     return { owner: match[1], repo: match[2] };
@@ -90,7 +90,7 @@ export async function calculateMetricsForRepo(url: string): Promise<string> {
  * @returns The license information as a string.
  * @throws Will throw an error if the license cannot be retrieved.
  */
-async function fetchRepoLicense(owner: string, repo: string) {
+export async function fetchRepoLicense(owner: string, repo: string) {
   try {
     const response = await fetch(`${Util.Constants.GITHUB_API_BASE_URL}/repos/${owner}/${repo}/license`, {
       headers: {
