@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+;
 
 /**
  * Checks whether the provided URL is a valid npm package link.

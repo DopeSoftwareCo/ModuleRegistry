@@ -9,7 +9,7 @@ import { getGithubLink } from './Util/npmUtil';
 import * as Util from './Util';
 import * as API from './api-calls/github-adapter';
 
-import fetch from 'node-fetch';
+//;
 
 import fs from 'fs';
 

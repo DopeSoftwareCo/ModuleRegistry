@@ -1,4 +1,4 @@
-import * as Reimagined from './PrimeroAdaptations';
+import { BaseRepoQueryResponse } from './PrimeroAdaptations';
 import * as API from '../../RawAssets/Octavo/src/api-calls/github-adapter';
 import { parseGithubUrl } from '../../RawAssets/Octavo/src/github-wrapper';
 import { getGithubLink } from '../../RawAssets/Octavo/src/Util/npmUtil';
@@ -30,7 +30,6 @@ export type LatencyScoreSet =
 export type NDJSON_RowInfo =
 {
     scores: RepoScoreSet,
-    latencies: LatencyScoreSet,
     url: string
 }
 
@@ -49,9 +48,9 @@ export type RepositoryIdentification =
 export class TargetRepository
 {
     identifiers: RepositoryIdentification;
-    queryResult: Reimagined.BaseRepoQueryResponse | undefined = undefined;
+    queryResult: BaseRepoQueryResponse | undefined = undefined;
     scores: RepoScoreSet; 
-    ndjson: NDJSON_RowInfo | undefined;
+    ndjson: NDJSON_RowInfo | undefined = undefined;
 
     constructor(url: string)
     {

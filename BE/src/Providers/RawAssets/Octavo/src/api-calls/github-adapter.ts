@@ -1,6 +1,6 @@
 import * as Util from '../Util';
 
-import fetch from 'node-fetch';
+;
 
 /**
  * Fetches a list of contributors for a GitHub repository.

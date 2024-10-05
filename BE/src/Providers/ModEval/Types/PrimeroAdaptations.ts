@@ -1,3 +1,26 @@
+export type ErrorLocation = {
+    line: number;
+    column: number;
+};
+
+
+export type ErrorLocations = ErrorLocation[];
+
+
+export type GraphQLError = {
+    type: string;
+    path: string[];
+    locations: ErrorLocations;
+    message: string;
+};
+
+
+export interface GraphQLResponse<T> {
+    data: T;
+    errors?: GraphQLError[];
+    message?: string;
+    status?: string;
+}
 
 
 export type TestsFilesFromQuery = {
@@ -5,11 +28,14 @@ export type TestsFilesFromQuery = {
     type: string;
 }[];
 
+
 export type BaseRepoQueryResponse = 
 {    
     name: string;
     url: string;
     description: string;
+    
+    
     licenseInfo?:
     { 
         name: string; 
@@ -28,56 +54,23 @@ export type BaseRepoQueryResponse =
 }
 
 export type Repository<T> = {
+    //identifiers: RepositoryIdentification,
+    
+    /*
+    This info is all bundled into RepositoryIdentification type
     owner: string;
     repoName: string;
     description?: string;
     repoUrl?: string;
     fileUrl: string;
-    queryResult: {
-        name: string;
-        url: string;
-        description: string;
-        licenseInfo?: {
-            name: string;
-        };
-        openIssues?: {
-            totalCount: number;
-        };
-        closedIssues?: {
-            totalCount: number;
-        };
-        stargazerCount?: number;
-        ref?: {
-            target?: {
-                history: {
-                    edges?: [
-                        {
-                            node: {
-                                author: {
-                                    name: string;
-                                };
-                            };
-                        }
-                    ];
-                };
-            };
-        };
-        readmeFile?: {
-            text: string;
-        };
-        testsCheckMain?: {
-            entries: {
-                name: string;
-                type: string;
-            }[];
-        };
-        testsCheckMaster?: {
-            entries: {
-                name: string;
-                type: string;
-            }[];
-        };
-    } & T;
+    + contributors as Array<String>
+    */
+
+
+
+    queryResult: BaseRepoQueryResponse
+    & T;
+    
     NDJSONRow: Partial<{
         URL: string;
         NetScore: number;
