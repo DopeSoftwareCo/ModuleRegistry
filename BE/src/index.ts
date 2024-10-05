@@ -8,11 +8,22 @@ import listRoutes from "./Middleware/logging/showRoutes";
 import logRequest from "./Middleware/logging/requestLogger";
 import chalk from "chalk";
 import { ProvideURLsForQuerying } from "./Providers/RawAssets/Primero/MVP/src/Input/Sanitize";
+import { TargetRepository } from "./Providers/ModEval/Types/RepoTypes";
+import { RepoQueryBuilderNew, RequestFromGQLNew } from "./Providers/ModEval/ResponseTypes";
+import {
+    createCommitsFieldNew,
+    createLicenseFieldNew,
+    createReadmeFieldNew,
+    createTestMainQueryNew,
+    createTestMasterQueryNew,
+} from "./Providers/ModEval/Requests/Builders";
+import { ModuleRouter } from "./Routes/ModulesRoute";
 
 dotenv.config();
 
 const addRoutes = (app: Express) => {
     app.use("/test", testRouter);
+    app.use("/modules", ModuleRouter);
 };
 
 const addMiddleWare = (app: Express) => {

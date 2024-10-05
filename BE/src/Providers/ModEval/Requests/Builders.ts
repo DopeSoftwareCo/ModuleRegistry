@@ -1,13 +1,4 @@
-const query = repoQueryBuilder(repos, [
-    createLicenseField(),
-    createReadmeField(),
-    createTestMainQuery(),
-    createTestMasterQuery(),
-    "stargazerCount",
-]); //add an array of fields here... see Request/QueryBuilders/fields.ts for examples
-const result = await requestFromGQL<ReposFromQuery<BaseRepoQueryResponse>>(query);
-
-export const createReadmeField = () => `
+export const createReadmeFieldNew = () => `
 readmeFile: object(expression: "HEAD:README.md") {
             ... on Blob {
                 text
@@ -15,7 +6,7 @@ readmeFile: object(expression: "HEAD:README.md") {
         }
 `;
 
-export const createTestMainQuery = () => `
+export const createTestMainQueryNew = () => `
   testsCheckMain: object(expression: "main:") {  
       ... on Tree {
         entries {
@@ -26,7 +17,7 @@ export const createTestMainQuery = () => `
     }
 `;
 
-export const createTestMasterQuery = () => `
+export const createTestMasterQueryNew = () => `
   testsCheckMaster: object(expression: "main:") {  
       ... on Tree {
         entries {
@@ -37,7 +28,7 @@ export const createTestMasterQuery = () => `
     }
 `;
 
-export const createLicenseField = () => `
+export const createLicenseFieldNew = () => `
     licenseInfo {
         name
         spdxId
@@ -45,7 +36,7 @@ export const createLicenseField = () => `
     }
 `;
 
-export const createCommitsField = (first: number) => `
+export const createCommitsFieldNew = (first: number) => `
 ref(qualifiedName: "main") {
     target {
         ... on Commit {

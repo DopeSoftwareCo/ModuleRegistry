@@ -1,12 +1,12 @@
-import { GraphQLResponse } from "../ModEval/Types/PrimeroAdaptations";
-import { RepositoryIdentification } from "../ModEval/Types/RepoTypes";
-import { WeightSpec } from "../ModEval/Types/WeightSpec";
+import { GraphQLResponse } from "./Types/PrimeroAdaptations";
+import { RepositoryIdentification } from "./Types/RepoTypes";
+import { WeightSpec } from "./Types/WeightSpec";
 
 import chalk from "chalk";
 
-const DEFAULT_FIELDS = [];
+const DEFAULT_FIELDS: string[] = [];
 
-export const RepoQueryBuilder = <T>(
+export const RepoQueryBuilderNew = <T>(
     repos: Array<RepositoryIdentification>,
     extraFields?: string[]
 ): string => {
@@ -26,7 +26,7 @@ export const RepoQueryBuilder = <T>(
     `;
 };
 
-export const RequestFromGQL = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
+export const RequestFromGQLNew = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
     if (!process.env.GITHUB_TOKEN) {
         throw new Error("TOKEN NOT SET");
     }
