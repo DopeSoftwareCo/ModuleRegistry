@@ -59,4 +59,6 @@ declare module "RequestTypes" {
     export interface GetPackagesViaRegexRequest extends Request {
         body: GetPackagesViaRegexRequestBody;
     }
+
+    export interface GetPackageByNameRequest extends Request {}
 }
