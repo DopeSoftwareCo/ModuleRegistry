@@ -6,11 +6,7 @@ declare module "ResponseTypes" {
         | "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formatted improperly, or the AuthenticationToken is invalid."
         | "Too many packages returned.";
 
-    export type GetPackagesResponseBody =
-        | {
-              packages: PackageMetaData[];
-          }
-        | GetPackagesInvalidResponseMessages;
+    export type GetPackagesResponseBody = PackageMetaData[];
 
     export interface GetPackagesResponse extends Response {
         body: GetPackagesResponseBody;
@@ -37,7 +33,7 @@ declare module "ResponseTypes" {
     };
 
     export interface GetPackageViaIDResponse extends Response {
-        body: GetPackageViaIDResponse;
+        body: GetPackageViaIDResponseBody;
     }
 
     export type UpdatePackageViaIDResponse =
@@ -45,10 +41,12 @@ declare module "ResponseTypes" {
         | "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
         | ("Package does not exist." & Response);
 
-    export type DeletePackageViaIDResponse =
+    export type DeletePackageViaIDResponseMessages =
         | "Package is deleted."
         | "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
-        | ("Package does not exist." & Response);
+        | "Package does not exist.";
+
+    export interface DeletePackageViaIDResponse extends Response {}
 
     export type UploadInjestResponseMessages =
         | "There is missing field(s) in the PackageData/AuthenticationToken or it is formed improperly (e.g. Content and URL are both set), or the AuthenticationToken is invalid."
@@ -93,10 +91,11 @@ declare module "ResponseTypes" {
         body: GetHistoryOfPackageResponseBody;
     }
 
-    export type DeletePackageByNameResponse =
+    export type DeletePackageByNameResponseMessages =
         | "Package is deleted."
         | "There is missing field(s) in the PackageName/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
         | "Package does not exist.";
+    export interface DeletePackageByNameResponse extends Response {}
 
     export type GetPackageViaRegexInvalidResponseMessages =
         | "There is missing field(S) in the PackageRegEx/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."

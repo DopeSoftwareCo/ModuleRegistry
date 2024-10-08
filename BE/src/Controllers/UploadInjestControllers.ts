@@ -6,9 +6,9 @@ import {
     UploadInjestResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-
+// /packages
 export const UploadInjestController = asyncHandler(
-    (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
+    async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         //hover for custom typed body
         const body = req.body;
         //use the body data for your code here

@@ -2,9 +2,9 @@ import { AuthenticationRequest } from "RequestTypes";
 import asyncHandler from "../Middleware/asyncHandler";
 import { AuthenticateInvalidResponses, AuthenticationResponse } from "ResponseTypes";
 import { NextFunction } from "express";
-
+// /authenticate
 export const Authcontroller = asyncHandler(
-    (req: AuthenticationRequest, res: AuthenticationResponse, next: NextFunction) => {
+    async (req: AuthenticationRequest, res: AuthenticationResponse, next: NextFunction) => {
         //hover for custom typed body
         const body = req.body;
         //use the body data for your code here
