@@ -97,7 +97,9 @@
     "skipLibCheck": true,
     "typeRoots": [
       "./src/Types/",
-      "./src/Types/Express/index.d.ts"
+      "./src/Types/Express/index.d.ts",
+      "./src/Types/ResponseTypes/index.d.ts",
+      "./src/Types/RequestTypes/index.d.ts"
     ]
   },
   "include": ["src/**/*.ts"],

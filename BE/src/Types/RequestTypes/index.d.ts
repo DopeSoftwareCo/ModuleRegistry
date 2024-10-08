@@ -11,4 +11,17 @@ declare module "requestTypes" {
     export interface TestRequest extends Request {
         body: TestRequestBody;
     }
+
+    export type GetPackageRequestBody = {
+        packages: {
+            Version: string;
+            Name: string;
+        }[];
+    };
+
+    export interface GetPackageRequest extends Request {
+        body: GetPackageRequestBody;
+    }
+
+    export interface ResetRegistryRequest extends Request {}
 }
