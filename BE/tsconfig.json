@@ -102,6 +102,6 @@
       "./src/Types/RequestTypes/index.d.ts"
     ]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude":["node_modules"]
 }
