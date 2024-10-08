@@ -30,6 +30,7 @@ export const UploadInjestController = asyncHandler(
             //all fields are optional in data
             data: {},
         };
+        //this type is a union of our return strings
         let responseMessage: UploadInjestResponseMessages;
         if (!existsAlready && !disqualified) {
             res.status(200).json(returnBody);

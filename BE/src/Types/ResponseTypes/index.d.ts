@@ -81,6 +81,8 @@ declare module "ResponseTypes" {
         | "The user or password is invalid."
         | "The system does not support authentication.";
 
+    export interface AuthenticationResponse extends Response {}
+
     export type GetHistoryOfPackageResponseBody = PackageHistoryEntry;
 
     export type GetHistoryOfPackageResponseMessages =
