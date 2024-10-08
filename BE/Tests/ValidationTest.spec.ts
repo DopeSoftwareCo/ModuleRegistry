@@ -1,13 +1,17 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { GetPackagesRules } from "../src/Validation/PackagesValidationRules/GetPackagesRules";
+import {
+    GetPackagesRules,
+    hasVersionObject,
+} from "../src/Validation/PackagesValidationRules/GetPackagesRules";
 import { AuthenticationRules } from "../src/Validation/AuthRules/AuthRules";
 import { ByRegexRules } from "../src/Validation/PackageValidationRules/ByRegexRules";
 import { GeneralViaIDRuleset } from "../src/Validation/PackageValidationRules/GeneralByIDRules";
 import { ResetRules } from "../src/Validation/PackageValidationRules/ResetRules";
 import { UploadPackageRules } from "../src/Validation/PackageValidationRules/UploadRules";
-import express, { Express, Request, Response } from "express";
+import express, { Express, request, Request, Response } from "express";
 import { validateRequest } from "../src/Validation/validator";
 import SuperTest from "supertest";
+import { CustomValidator, Meta } from "express-validator";
 const RuleSets = {
     Authentication: AuthenticationRules,
     GetPackages: GetPackagesRules,
@@ -19,11 +23,13 @@ const RuleSets = {
 
 describe("Validation", () => {
     let app: Express;
+    let validator: any;
 
     // Create a new Express application instance before each test
     beforeEach(() => {
         app = express();
         app.use(express.json());
+        validator = hasVersionObject();
     });
     Object.entries(RuleSets).forEach(([endpoint, ruleset]) => {
         it(`Should return 400 for endpoint ${endpoint} if the request is invalid.`, async () => {
@@ -35,5 +41,9 @@ describe("Validation", () => {
 
             expect(response.status).toBe(400);
         });
+    });
+    it("Should return true if validation passes for Getting package", () => {
+        const valid = [{ Version: "str", Name: "name" }];
+        expect(validator(valid)).toBe(true);
     });
 });

@@ -4,18 +4,13 @@ const InvalidGetPackagesMessage =
     "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
 
 export const hasVersionObject = (): CustomValidator => {
-    console.log("hello");
     return (value) => {
-        console.log("validating", value);
         if (!Array.isArray(value)) {
-            console.log("failing not array");
             throw new Error(InvalidGetPackagesMessage);
         }
         for (const item of value) {
-            console.log("item to validate in value", item);
             // Check if each item is an object
             if (typeof item !== "object" || item === null) {
-                console.log("failing due to item not being object");
                 throw new Error(InvalidGetPackagesMessage);
             }
 

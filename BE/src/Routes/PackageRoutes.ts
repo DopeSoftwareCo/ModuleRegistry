@@ -5,7 +5,7 @@ import {
     GetPackageViaIDController,
 } from "../Controllers/GetPackageControllers";
 import { UpdatePackageViaIDController } from "../Controllers/UpdatePackageControllers";
-import { DeletePackageByIDController, DeletePackageByNameController } from "../Controllers/DeleteControllers";
+import { DeletePackageByIDController } from "../Controllers/DeleteControllers";
 import { UploadInjestController } from "../Controllers/UploadInjestControllers";
 import { validateRequest } from "../Validation/validator";
 import { GeneralViaIDRuleset } from "../Validation/PackageValidationRules/GeneralByIDRules";
