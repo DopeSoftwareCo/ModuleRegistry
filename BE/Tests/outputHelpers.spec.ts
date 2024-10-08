@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import { getRemainingWidth } from "../Middleware/logging/outputHelpers";
+import { getRemainingWidth } from "../src/Middleware/logging/outputHelpers";
 
 describe("Output Helpers", () => {
     it("Should get proper remaining width", () => {
