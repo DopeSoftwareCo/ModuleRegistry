@@ -7,11 +7,19 @@ import { testRouter } from "./Routes/testRoute";
 import listRoutes from "./Middleware/logging/showRoutes";
 import logRequest from "./Middleware/logging/requestLogger";
 import chalk from "chalk";
+import { PackageRouter } from "./Routes/PackageRoutes";
+import { PackagesRouter } from "./Routes/PackagesRoutes";
+import { ResetRouter } from "./Routes/ResetRoutes";
+import { AuthRouter } from "./Routes/AuthRoutes";
 
 dotenv.config();
 
 const addRoutes = (app: Express) => {
     app.use("/test", testRouter);
+    app.use("/package", PackageRouter);
+    app.use("/packages", PackagesRouter);
+    app.use("/reset", ResetRouter);
+    app.use("/authenticate", AuthRouter);
 };
 
 const addMiddleWare = (app: Express) => {

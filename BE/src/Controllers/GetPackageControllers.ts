@@ -1,5 +1,4 @@
 import {
-    GetPackageByNameRequest,
     GetPackageRatingsRequest,
     GetPackagesRequest,
     GetPackagesViaRegexRequest,
