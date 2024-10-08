@@ -7,20 +7,22 @@ import {
 import { UpdatePackageViaIDController } from "../Controllers/UpdatePackageControllers";
 import { DeletePackageByIDController, DeletePackageByNameController } from "../Controllers/DeleteControllers";
 import { UploadInjestController } from "../Controllers/UploadInjestControllers";
+import { validateRequest } from "../Validation/validator";
+import { GeneralViaIDRuleset } from "../Validation/PackageValidationRules/GeneralByIDRules";
+import { ByRegexRules } from "../Validation/PackageValidationRules/ByRegexRules";
+import { UploadPackageRules } from "../Validation/PackageValidationRules/UploadRules";
 
 export const PackageRouter = Router();
 
 // /package
-PackageRouter.post("/", UploadInjestController);
+PackageRouter.post("/", UploadPackageRules, validateRequest, UploadInjestController);
 // /package/{id}
-PackageRouter.get("/:id", GetPackageViaIDController);
+PackageRouter.get("/:id", GeneralViaIDRuleset, validateRequest, GetPackageViaIDController);
 // /package/{id}
-PackageRouter.put("/:id", UpdatePackageViaIDController);
+PackageRouter.put("/:id", GeneralViaIDRuleset, validateRequest, UpdatePackageViaIDController);
 // /package/{id}
-PackageRouter.delete("/:id", DeletePackageByIDController);
+PackageRouter.delete("/:id", GeneralViaIDRuleset, validateRequest, DeletePackageByIDController);
 // /package/{id}/rate
-PackageRouter.get("/:id/rate", GetPackageRatingsViaIDController);
-//not baseline, deletes all versions of packages by name
-// /package/byName/{name}
-PackageRouter.delete("/byName/:name", DeletePackageByNameController);
-PackageRouter.post("/byRegex", GetPackagesViaRegexController);
+PackageRouter.get("/:id/rate", GeneralViaIDRuleset, validateRequest, GetPackageRatingsViaIDController);
+// /package/byRegex
+PackageRouter.post("/byRegex", ByRegexRules, validateRequest, GetPackagesViaRegexController);
