@@ -4,7 +4,7 @@ import { calculateBusFactor } from "../../RawAssets/Octavo/src/bus-factor";
 import { calculateResponsiveMaintener } from "../../RawAssets/Octavo/src/find-responsive-maintainer";
 import { calculateMetricsForRepo } from "../../RawAssets/Octavo/src/github-wrapper";
 import { fetchRepoLicense } from "../../RawAssets/Octavo/src/github-wrapper";
-import { TargetRepository } from "../Types/RepoTypes";
+import { TargetRepository } from "../Types/RepoComponents";
 
 
 const CONTRIBUTION_THRESHOLD = 50;

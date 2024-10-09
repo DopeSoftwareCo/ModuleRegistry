@@ -1,5 +1,6 @@
 import * as DSincMath from "../../../DSinc_Modules/DSinc_Math";
-import { SubscoreName } from "./ScoreTypes";
+import { SubscoreName } from "../Types/ScoreTypes";
+
 
 export function FindWeightSpecByReceiver(arr: Array<WeightSpec>, x: SubscoreName): number {
     const spec = arr.find(weightSpec => weightSpec.Receiver() === x);

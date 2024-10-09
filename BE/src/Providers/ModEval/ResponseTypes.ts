@@ -1,6 +1,5 @@
-import { GraphQLResponse } from "./Types/PrimeroAdaptations";
-import { RepositoryIdentification } from "./Types/RepoTypes";
-import { WeightSpec } from "./Types/WeightSpec";
+import { GraphQLResponse } from "./Types/QueryResponseTypes";
+import { RepositoryIdentification } from "./Types/RepoComponents";
 
 import chalk from "chalk";
 

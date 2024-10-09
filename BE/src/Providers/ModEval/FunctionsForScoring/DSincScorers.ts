@@ -1,8 +1,7 @@
-import { calculateResponsiveMaintener } from "../../RawAssets/Octavo/src/find-responsive-maintainer";
-import { TargetRepository } from "../Types/RepoTypes";
+import { TargetRepository } from "../SingleClasses/TargetRepository";
 
 // Recall the enum ...
-//VersionDependency = 5,
+//VersionDependence = 5,
 //PRMergeRestriction = 6,
 
 // How crucial are each of these factors on a 1-7 scale?

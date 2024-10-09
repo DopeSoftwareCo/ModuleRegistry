@@ -1,8 +1,8 @@
 /* The topmost class in the design */
 
 import { Evaluator } from "./SingleClasses/Evaluator";
-import { WeightSpec } from "./Types/WeightSpec";
-import { TargetRepository, BuildTargetRepoFromUrl } from "./Types/RepoTypes";
+import { WeightSpec } from "./SingleClasses/WeightSpec";
+import { TargetRepository, BuildTargetRepoFromUrl } from "./Types/RepoComponents";
 import { AsyncForEach, AsyncForEach_AndStore } from "../../DSinc_Modules/DSinc_LoopsMaps";
 import * as Dummy from "../ModEval/DevTools/DummyVals";
 import { NetValue } from "./Types/ScoreTypes";

@@ -1,6 +1,6 @@
 import { AddModuleRequest } from "RequestTypes";
 import { AddModuleResponseBody } from "ResponseTypes";
-import { TargetRepository } from "../../Providers/ModEval/Types/RepoTypes";
+import { TargetRepository } from "../../Providers/ModEval/Types/RepoComponents";
 import { RepoQueryBuilderNew, RequestFromGQLNew } from "../../Providers/ModEval/ResponseTypes";
 import {
     createCommitsFieldNew,

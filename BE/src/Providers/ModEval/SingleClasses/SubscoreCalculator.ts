@@ -1,6 +1,6 @@
 import * as DSincMath from '../../../DSinc_Modules/DSinc_Math';
-import { TargetRepository } from '../Types/RepoTypes';
-import { functionTimer } from '../../RawAssets/Octavo/src/function-timer';
+import { TargetRepository } from './TargetRepository';
+import { functionTimer } from '../Assets/Octavo/src/function-timer';
 import { ScoreInfo } from '../Types/ScoreTypes';
 
 
@@ -51,6 +51,6 @@ export class SubscoreCalculator
         return this.scoringFunction;
     }
 
-    public GetWeight(): number { return this.weight; }
+    public Weight(): number { return this.weight; }
     public DefaultWeight(): number { return this.default_weight; }
 }

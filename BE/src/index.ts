@@ -8,7 +8,7 @@ import listRoutes from "./Middleware/logging/showRoutes";
 import logRequest from "./Middleware/logging/requestLogger";
 import chalk from "chalk";
 import { ProvideURLsForQuerying } from "./Providers/RawAssets/Primero/MVP/src/Input/Sanitize";
-import { TargetRepository } from "./Providers/ModEval/Types/RepoTypes";
+import { TargetRepository } from "./Providers/ModEval/Types/RepoComponents";
 import { RepoQueryBuilderNew, RequestFromGQLNew } from "./Providers/ModEval/ResponseTypes";
 import {
     createCommitsFieldNew,

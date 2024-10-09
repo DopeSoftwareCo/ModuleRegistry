@@ -32,3 +32,4 @@ export const fetchPackageInfo = async (packageName: string): Promise<NPMRegistry
         return undefined;
     }
 };
+

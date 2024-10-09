@@ -53,24 +53,8 @@ export type BaseRepoQueryResponse =
     testsCheckMaster?: { entries: TestsFilesFromQuery };
 }
 
-export type Repository<T> = {
-    //identifiers: RepositoryIdentification,
-    
-    /*
-    This info is all bundled into RepositoryIdentification type
-    owner: string;
-    repoName: string;
-    description?: string;
-    repoUrl?: string;
-    fileUrl: string;
-    + contributors as Array<String>
-    */
 
-
-
-    queryResult: BaseRepoQueryResponse
-    & T;
-    
+/*
     NDJSONRow: Partial<{
         URL: string;
         NetScore: number;
@@ -85,5 +69,4 @@ export type Repository<T> = {
         ResponsiveMaintainer_Latency: number;
         License: number;
         License_Latency: number;
-    }>;
-};
+    }>;*/

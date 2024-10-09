@@ -1,4 +1,7 @@
 
+export const EMPTY_SCOREINFO = {scoreVal: -1, time: -1};
+
+
 export enum SubscoreName
 {
     RampUpTime = 0,
@@ -10,8 +13,6 @@ export enum SubscoreName
     PRMergeRestriction = 6,
     Unknown = 7
 } 
-
-export const EMPTY_SCOREINFO = {scoreVal: -1, time: -1};
 
 
 export type ScoreInfo =

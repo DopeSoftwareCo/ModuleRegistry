@@ -1,8 +1,8 @@
 import * as OctScore from '../FunctionsForScoring/OctavoScorers';
-import { TargetRepository } from "../Types/RepoTypes";
+import { TargetRepository } from "./TargetRepository";
 import { RepoScoreSet, NetValue, SubscoreName, EMPTY_SCOREINFO } from "../Types/ScoreTypes";
 import { SubscoreCalculator } from "./SubscoreCalculator";
-import { EMPTY_WEIGHTSPEC, WeightSpec, WeightSpecSet, FindWeightSpecByReceiver } from "../Types/WeightSpec";
+import { EMPTY_WEIGHTSPEC, WeightSpec, WeightSpecSet, FindWeightSpecByReceiver } from "./WeightSpec";
 import { AsyncForEach, TryIndexOrDefaultTo} from "../../../DSinc_Modules/DSinc_LoopsMaps";
 import * as DSincScore from '../FunctionsForScoring/DSincScorers';
 
@@ -60,8 +60,8 @@ export class Evaluator
         // The maximum score that a repo evaluated under these weights could produce
         this.maxPoints =
         (
-            this.rampUp.GetWeight() + this.correctness.GetWeight() + this.busFactor.GetWeight() + this.responsiveness.GetWeight()
-            + LICENSE_WEIGHT + this.versionDependence.GetWeight() + this.mergeRestriction.GetWeight()
+            this.rampUp.Weight() + this.correctness.Weight() + this.busFactor.Weight() + this.responsiveness.Weight()
+            + LICENSE_WEIGHT + this.versionDependence.Weight() + this.mergeRestriction.Weight()
         );
     }
 
@@ -131,25 +131,25 @@ export class Evaluator
         }
 
         scores.rampup_score = await this.rampUp.TimeAndScore(repo)
-        netval.Add(scores.rampup_score, this.rampUp.GetWeight());
+        netval.Add(scores.rampup_score, this.rampUp.Weight());
         
         scores.correctness_score = await this.correctness.TimeAndScore(repo)
-        netval.Add(scores.correctness_score, this.correctness.GetWeight());
+        netval.Add(scores.correctness_score, this.correctness.Weight());
 
         scores.busfactor_score= await this.busFactor.TimeAndScore(repo)
-        netval.Add(scores.busfactor_score, this.busFactor.GetWeight());
+        netval.Add(scores.busfactor_score, this.busFactor.Weight());
 
         scores.responsiveness_score= await this.responsiveness.TimeAndScore(repo)
-        netval.Add(scores.responsiveness_score, this.responsiveness.GetWeight());
+        netval.Add(scores.responsiveness_score, this.responsiveness.Weight());
 
         scores.license_score = await this.licensing.TimeAndScore(repo)
         netval.Add(scores.license_score, LICENSE_WEIGHT);
 
         scores.versionDependence_score = await this.responsiveness.TimeAndScore(repo)
-        netval.Add(scores.versionDependence_score, this.responsiveness.GetWeight());
+        netval.Add(scores.versionDependence_score, this.responsiveness.Weight());
 
         scores.mergeRestriction_score = await this.responsiveness.TimeAndScore(repo)
-        netval.Add(scores.mergeRestriction_score, this.responsiveness.GetWeight());
+        netval.Add(scores.mergeRestriction_score, this.responsiveness.Weight());
     
 
         scores.net.Copy(netval);

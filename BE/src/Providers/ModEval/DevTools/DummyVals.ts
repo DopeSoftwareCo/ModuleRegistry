@@ -1,4 +1,4 @@
-import { WeightSpec } from "../Types/WeightSpec";
+import { WeightSpec } from "../SingleClasses/WeightSpec";
 import { SubscoreName } from "../Types/ScoreTypes";
 
 export const wspec_A0 = new WeightSpec(SubscoreName.RampUpTime, 0.1);
