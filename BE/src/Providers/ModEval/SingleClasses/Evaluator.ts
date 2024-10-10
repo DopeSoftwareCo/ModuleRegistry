@@ -1,10 +1,10 @@
-import * as OctScore from '../FunctionsForScoring/OctavoScorers';
+import * as OctScore from '../Functions/OctavoScorers';
 import { TargetRepository } from "./TargetRepository";
 import { RepoScoreSet, NetValue, SubscoreName, EMPTY_SCOREINFO } from "../Types/ScoreTypes";
 import { SubscoreCalculator } from "./SubscoreCalculator";
 import { EMPTY_WEIGHTSPEC, WeightSpec, WeightSpecSet, FindWeightSpecByReceiver } from "./WeightSpec";
 import { AsyncForEach, TryIndexOrDefaultTo} from "../../../DSinc_Modules/DSinc_LoopsMaps";
-import * as DSincScore from '../FunctionsForScoring/DSincScorers';
+import * as DSincScore from '../Functions/DSincScorers';
 
 
 
@@ -153,6 +153,6 @@ export class Evaluator
     
 
         scores.net.Copy(netval);
-        repo.scores = scores;
+        repo.Scores = scores;
     }
 }

@@ -8,15 +8,15 @@ import listRoutes from "./Middleware/logging/showRoutes";
 import logRequest from "./Middleware/logging/requestLogger";
 import chalk from "chalk";
 import { ProvideURLsForQuerying } from "./Providers/RawAssets/Primero/MVP/src/Input/Sanitize";
-import { TargetRepository } from "./Providers/ModEval/Types/RepoComponents";
-import { RepoQueryBuilderNew, RequestFromGQLNew } from "./Providers/ModEval/ResponseTypes";
+import { TargetRepository } from "./Providers/ModEval/Types/RepoIDTypes";
+import { RepoQueryBuilderNew, RequestFromGQLNew } from "./Providers/ModEval/Querying/QueryBuilder";
 import {
     createCommitsFieldNew,
     createLicenseFieldNew,
     createReadmeFieldNew,
     createTestMainQueryNew,
     createTestMasterQueryNew,
-} from "./Providers/ModEval/Requests/Builders";
+} from "./Providers/ModEval/Querying/Builders/QueryFields";
 import { ModuleRouter } from "./Routes/ModulesRoute";
 
 dotenv.config();

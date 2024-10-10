@@ -2,7 +2,7 @@
 
 import { Evaluator } from "./SingleClasses/Evaluator";
 import { WeightSpec } from "./SingleClasses/WeightSpec";
-import { TargetRepository, BuildTargetRepoFromUrl } from "./Types/RepoComponents";
+import { TargetRepository, BuildTargetRepoFromUrl } from "./Types/RepoIDTypes";
 import { AsyncForEach, AsyncForEach_AndStore } from "../../DSinc_Modules/DSinc_LoopsMaps";
 import * as Dummy from "../ModEval/DevTools/DummyVals";
 import { NetValue } from "./Types/ScoreTypes";

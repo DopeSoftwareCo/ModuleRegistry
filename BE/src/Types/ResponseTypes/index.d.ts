@@ -1,10 +1,10 @@
 import { Response } from "express";
-import { BaseRepoQueryResponse, GraphQLResponse } from "../../Providers/ModEval/Types/QueryResponseTypes";
+import { BaseRepoQueryResponse, GraphQLResponse } from "../../Providers/ModEval/Querying/ResponseTypes/Query_ResponseTypes";
 import {
     NDJSON_RowInfo,
     RepositoryIdentification,
     TargetRepository,
-} from "../../Providers/ModEval/Types/RepoComponents";
+} from "../../Providers/ModEval/Types/RepoIDTypes";
 import { RepoScoreSet } from "../../Providers/ModEval/Types/ScoreTypes";
 
 declare module "ResponseTypes" {

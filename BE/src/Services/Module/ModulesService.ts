@@ -1,14 +1,14 @@
 import { AddModuleRequest } from "RequestTypes";
 import { AddModuleResponseBody } from "ResponseTypes";
-import { TargetRepository } from "../../Providers/ModEval/Types/RepoComponents";
-import { RepoQueryBuilderNew, RequestFromGQLNew } from "../../Providers/ModEval/ResponseTypes";
+import { TargetRepository } from "../../Providers/ModEval/Types/RepoIDTypes";
+import { RepoQueryBuilderNew, RequestFromGQLNew } from "../../Providers/ModEval/Querying/QueryBuilder";
 import {
     createCommitsFieldNew,
     createLicenseFieldNew,
     createReadmeFieldNew,
     createTestMainQueryNew,
     createTestMasterQueryNew,
-} from "../../Providers/ModEval/Requests/Builders";
+} from "../../Providers/ModEval/Querying/Builders/QueryFields";
 
 export const AddModule = async (req: AddModuleRequest): Promise<AddModuleResponseBody> => {
     try {

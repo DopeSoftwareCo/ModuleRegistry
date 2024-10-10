@@ -1,11 +1,11 @@
-import { GraphQLResponse } from "./Types/QueryResponseTypes";
-import { RepositoryIdentification } from "./Types/RepoComponents";
+import { GraphQLResponse } from "../ResponseTypes/Query_ResponseTypes";
+import { RepositoryIdentification } from "../../Types/RepoIDTypes";
 
 import chalk from "chalk";
 
 const DEFAULT_FIELDS: string[] = [];
 
-export const RepoQueryBuilderNew = <T>(
+export const RepoQueryBuilder = <T>(
     repos: Array<RepositoryIdentification>,
     extraFields?: string[]
 ): string => {
@@ -25,7 +25,7 @@ export const RepoQueryBuilderNew = <T>(
     `;
 };
 
-export const RequestFromGQLNew = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
+export const SendRequestToGQL = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
     if (!process.env.GITHUB_TOKEN) {
         throw new Error("TOKEN NOT SET");
     }

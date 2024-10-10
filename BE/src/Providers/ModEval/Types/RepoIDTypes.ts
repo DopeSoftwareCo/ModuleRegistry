@@ -1,16 +1,22 @@
-import { fetchContributors } from "../../Assets/Octavo/src/api-calls/github-adapter";
-import { RepoURL, URLProcessor } from "../../SingleClasses/URLProcessor";
+import { RepoScoreSet, NetValue, EMPTY_SCOREINFO, ScoreInfo } from "./ScoreTypes";
+import { RepoURL, URLProcessor } from "../SingleClasses/URLProcessor";
 
+
+// ========================= TargetRepo Member Typedefs =========================
+export type NDJSON_RowInfo = {
+    scores: RepoScoreSet;
+    url: string;
+};
 
 export type RepositoryIdentification = {
     owner: string;
     repoName: string;
     url_info: RepoURL;
-    contributors: Array<string>;
-    description: string;
 };
 
-export async function IdenfiyRepo(url: string) : Promise<RepositoryIdentification | undefined>
+
+// ========================= Repo ID =========================
+export async function Generate_RepositoryID(url: string) : Promise<RepositoryIdentification | undefined>
 {
     try
     {
@@ -26,16 +32,16 @@ export async function IdenfiyRepo(url: string) : Promise<RepositoryIdentificatio
             nameofRepo = repoURL.tokens[2];
         }
         
-        const contributorNames = await fetchContributors(nameofOwner, nameofRepo);
         const id: RepositoryIdentification =
         {
             owner: nameofOwner,
             repoName: nameofRepo,
             url_info: repoURL,
-            contributors: contributorNames,
-            description: ""
         }
         return id;
+    }
+    catch { return undefined; }
 }
-catch { return undefined;}
-}
+
+
+

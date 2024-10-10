@@ -1,4 +1,4 @@
-import { LogDebug, LogInfo } from './log';
+import { LogDebug, LogInfo } from '../Providers/Utils/Log';
 
 /**
  * @author Jorge Puga Hernandez

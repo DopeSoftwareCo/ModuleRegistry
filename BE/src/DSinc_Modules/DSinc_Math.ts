@@ -15,3 +15,6 @@ export function ToDecimalPoint(x: number, precision: number): number
 }
 
 
+export const equalFloat = (a: number, b: number, epsilon: number = 0.001): boolean => {
+    return Math.abs(a - b) < epsilon;
+};

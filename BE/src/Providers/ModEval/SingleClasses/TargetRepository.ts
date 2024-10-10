@@ -1,14 +1,16 @@
-import { RepositoryIdentification, NDJSON_RowInfo } from "../Types/RepoComponents";
-import { BaseRepoQueryResponse } from "../Types/QueryResponseTypes";
-import { RepoQueryResult } from "../Assets/Primero/MVP/src/Types/ResponseTypes";
+import { RepositoryIdentification, NDJSON_RowInfo } from "../Types/RepoIDTypes";
+import { RepoQueryResult, GraphQLResponse } from "../Querying/ResponseTypes/Query_ResponseTypes";
 import { RepoScoreSet, NetValue, EMPTY_SCOREINFO } from "../Types/ScoreTypes";
+import { RepoQueryBuilder, SendRequestToGQL } from "../Querying/Builders/QueryBuilder";
 
+
+const EXTRA_QUERY_FIELDS = ["contributors", "merges", "pullRequests", "dependencies"];
 
 export class TargetRepository {
-    identifiers: RepositoryIdentification;
-    scores: RepoScoreSet;
-    queryResult: BaseRepoQueryResponse | undefined = undefined;
-    ndjson: NDJSON_RowInfo | undefined = undefined;
+    private identifiers: RepositoryIdentification;
+    private scores: RepoScoreSet;
+    private queryResult: RepoQueryResult | undefined;
+    private queried: boolean = false;
 
     constructor(id: RepositoryIdentification, scoreset?: RepoScoreSet) {
         this.identifiers = id;
@@ -30,13 +32,21 @@ export class TargetRepository {
                 mergeRestriction_score: EMPTY_SCOREINFO,
                 net: new NetValue(),
             }
-        }
-
+        } 
         this.queryResult = undefined;
-        this.ndjson = undefined;
     }
 
+    public async SendQueryToGraphQL() : Promise<RepoQueryResult | undefined>
+    {
+        if(this.queried) { return this.queryResult;}
 
+        const queryString = RepoQueryBuilder<RepoQueryResult>([this.Identifiers],EXTRA_QUERY_FIELDS);
+        const response = await SendRequestToGQL<RepoQueryResult>(queryString);
+        
+        if(!response) {return this.queryResult;}
+        this.queryResult = Adapt_GQLResponse_To_RepoQueryResult(response);
+        this.queried = true;
+    }
  
     get Identifiers(): RepositoryIdentification {
         return this.identifiers;
@@ -50,8 +60,42 @@ export class TargetRepository {
         return this.scores;
     }
 
-    get NDJSONRow(): NDJSON_RowInfo | undefined {
-        return this.ndjson;
+    set Scores(scoreset: RepoScoreSet) {
+        this.scores = scoreset;
     }
 
+    public NDJSONRow(): NDJSON_RowInfo | undefined {
+        const row: NDJSON_RowInfo =
+        {
+            scores: this.scores,
+            url: this.identifiers.url_info.gitURL
+        }
+        return row;
+    }
+};
+
+
+export function Adapt_GQLResponse_To_RepoQueryResult(gql_response: GraphQLResponse<RepoQueryResult>)
+{
+    const data = gql_response.data;
+    
+    const repoQueryResult = new RepoQueryResult( 
+    {
+        name: data.RepoName,
+        repoURL: data.GitURL,
+        description: data.Description,
+        license: data.License,
+        openIssues: data.OpenIssueCount,
+        stargazerCount: data.StargazerCount,
+        contributors: data.Contributors,
+        mergeData: data.MergeData,
+        pullRequestData: data.PullRequestData,
+        dependencyData: data.DependencyData,
+
+        ref: data.Ref,
+        readmeFile: data.README,
+        testsCheckMain: data.TestsCheck_Main,
+        testsCheckMaster: data.TestsCheck_Master,
+    });
+    return repoQueryResult;
 }
