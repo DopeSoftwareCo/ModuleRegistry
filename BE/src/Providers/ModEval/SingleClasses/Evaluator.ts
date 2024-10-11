@@ -81,12 +81,12 @@ export class Evaluator
         let mergeRestrictionSpec = TryIndexOrDefaultTo<WeightSpec>(weightspecs, indices[6], EMPTY_WEIGHTSPEC);
 
         safe_WeightSpecs[0] = (rampupSpec == EMPTY_WEIGHTSPEC) ?  RAMPUP_WEIGHT_DEFAULT : rampupSpec.Weight();
-        safe_WeightSpecs[1] = (correctnessSpec == EMPTY_WEIGHTSPEC) ?  RAMPUP_WEIGHT_DEFAULT :  correctnessSpec.Weight();
-        safe_WeightSpecs[2] = ( busfactorSpec == EMPTY_WEIGHTSPEC) ?  RAMPUP_WEIGHT_DEFAULT :  busfactorSpec.Weight();
-        safe_WeightSpecs[3] = ( responsivenessSpec == EMPTY_WEIGHTSPEC) ?  RAMPUP_WEIGHT_DEFAULT :  responsivenessSpec.Weight();
-        safe_WeightSpecs[4] = ( licensingSpec == EMPTY_WEIGHTSPEC) ?  RAMPUP_WEIGHT_DEFAULT :  licensingSpec.Weight();
-        safe_WeightSpecs[5] = ( versionDependanceSpec == EMPTY_WEIGHTSPEC) ?  RAMPUP_WEIGHT_DEFAULT :  versionDependanceSpec.Weight();
-        safe_WeightSpecs[6] = ( mergeRestrictionSpec == EMPTY_WEIGHTSPEC) ?  RAMPUP_WEIGHT_DEFAULT :  mergeRestrictionSpec.Weight();
+        safe_WeightSpecs[1] = (correctnessSpec == EMPTY_WEIGHTSPEC) ?  CORRECTNESS_WEIGHT_DEFAULT :  correctnessSpec.Weight();
+        safe_WeightSpecs[2] = ( busfactorSpec == EMPTY_WEIGHTSPEC) ?  BUSFACTOR_WEIGHT_DEFAULT :  busfactorSpec.Weight();
+        safe_WeightSpecs[3] = ( responsivenessSpec == EMPTY_WEIGHTSPEC) ?  RESPONSIVENESS_WEIGHT_DEFAULT :  responsivenessSpec.Weight();
+        safe_WeightSpecs[4] = ( licensingSpec == EMPTY_WEIGHTSPEC) ?  LICENSE_WEIGHT :  licensingSpec.Weight();
+        safe_WeightSpecs[5] = ( versionDependanceSpec == EMPTY_WEIGHTSPEC) ?  VERSIONDEP_WEIGHT_DEFAULT :  versionDependanceSpec.Weight();
+        safe_WeightSpecs[6] = ( mergeRestrictionSpec == EMPTY_WEIGHTSPEC) ?  MERGERESTRICT_WEIGHT_DEFAULT :  mergeRestrictionSpec.Weight();
 
         return safe_WeightSpecs;
     }
