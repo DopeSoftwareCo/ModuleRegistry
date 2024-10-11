@@ -2,10 +2,11 @@
 
 import { Evaluator } from "./SingleClasses/Evaluator";
 import { WeightSpec } from "./SingleClasses/WeightSpec";
-import { TargetRepository, BuildTargetRepoFromUrl } from "./Types/RepoIDTypes";
 import { AsyncForEach, AsyncForEach_AndStore } from "../../DSinc_Modules/DSinc_LoopsMaps";
 import * as Dummy from "../ModEval/DevTools/DummyVals";
 import { NetValue } from "./Types/ScoreTypes";
+import { BuildTargetRepo, TryBuildTargetRepo } from "./Functions/RepoBuilder";
+import { TargetRepository } from "./SingleClasses/TargetRepository";
 
 export type Targets = Array<TargetRepository>;
 
@@ -59,9 +60,6 @@ export async function ModEval(code: number) {
 
 export async function BuildTargets(rawUrls: Array<string>): Promise<Targets> {
     let targets: Targets = new Array<TargetRepository>();
-    await AsyncForEach_AndStore<string, TargetRepository>(rawUrls, targets, BuildTargetRepoFromUrl, true);
-
+    await AsyncForEach_AndStore<string, TargetRepository>(rawUrls, targets, BuildTargetRepo, true);
     return targets;
 }
-
-//ModEval(1);

@@ -1,4 +1,4 @@
-;
+
 
 /**
  * Checks whether the provided URL is a valid npm package link.
@@ -19,7 +19,9 @@ function isNpmLink(url: string): boolean {
  * @param url - The npm or GitHub URL to process.
  * @returns The GitHub repository URL if found, or the original URL if it is not an npm link or no repository is found.
  */
-/*export async function getGithubLink(url: string): Promise<string>
+export async function getGithubLink(url: string): Promise<string>
+{ return ""; }
+/*
 {
     if (isNpmLink(url))
     {
