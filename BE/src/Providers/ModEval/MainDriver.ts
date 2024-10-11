@@ -7,6 +7,8 @@ import * as Dummy from "../ModEval/DevTools/DummyVals";
 import { NetValue } from "./Types/ScoreTypes";
 import { BuildTargetRepo, TryBuildTargetRepo } from "./Functions/RepoBuilder";
 import { TargetRepository } from "./SingleClasses/TargetRepository";
+import { URLProcessor } from "./SingleClasses/URLProcessor";
+import { Generate_RepositoryID } from "./Types/RepoIDTypes";
 
 export type Targets = Array<TargetRepository>;
 
@@ -51,11 +53,26 @@ export async function ModEval(code: number) {
     }
     // Dummy specsets
 
-    const targetset = await BuildTargets(urls);
     let evaluator = new Evaluator(spec);
 
-    evaluator.MultiEval(targetset);
-    console.log(targetset);
+    let repoID1 = await Generate_RepositoryID(urls[0]);
+    let repoID2 = await Generate_RepositoryID(urls[1]);
+
+    let repo1: (TargetRepository | undefined) = undefined;
+    let repo2: (TargetRepository | undefined) = undefined;
+    
+    if(repoID1)
+    {
+        let repo1 = new TargetRepository(repoID1);
+        await evaluator.Eval(repo1);
+    }
+    if(repoID2)
+    {
+        let repo2 = new TargetRepository(repoID2);
+        await evaluator.Eval(repo2);
+    }
+
+    console.log(repo1, repo2);
 }
 
 export async function BuildTargets(rawUrls: Array<string>): Promise<Targets> {
