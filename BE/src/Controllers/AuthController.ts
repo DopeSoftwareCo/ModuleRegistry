@@ -3,16 +3,19 @@ import asyncHandler from "../Middleware/asyncHandler";
 import { AuthenticateInvalidResponses, AuthenticationResponse } from "ResponseTypes";
 import { NextFunction } from "express";
 import { authenticateViaAuth0 } from "../Providers/Auth0/AuthenticateAuth0";
-// /authenticate
+
+/**
+ * @author John Leidy
+ * @description This controller is responsible for authenticating users via username and password and returning the token or invalid message to the user.
+ * @param req {@type AuthenticationRequest}
+ * @param res {@type AuthenticationResponse}
+ * @param next {@type NextFunction}
+ */
 export const Authcontroller = asyncHandler(
     async (req: AuthenticationRequest, res: AuthenticationResponse, next: NextFunction) => {
-        //hover for custom typed body
         const body = req.body;
-        //use the body data for your code here
         const { invalidUserPass, token } = await authenticateViaAuth0(body);
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         const unsupported = false;
-        //this type is a union of our return strings
         let responseMessage: AuthenticateInvalidResponses;
         if (!invalidUserPass && !unsupported) {
             res.status(200).send(token);

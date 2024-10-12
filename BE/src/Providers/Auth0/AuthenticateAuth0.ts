@@ -1,5 +1,11 @@
 import { AuthenticationRequestBody } from "RequestTypes";
 
+/**
+ * @author John Leidy
+ * @description Makes a request to auth0 to retrieve a token.
+ * @param body {@type AuthenticationRequestBody} the request body containing username, isAdmin, password
+ * @returns Auth information {@type {invalidUserPass: boolean, token: string|undefined}}
+ */
 export const authenticateViaAuth0 = async (
     body: AuthenticationRequestBody
 ): Promise<{ invalidUserPass: boolean; token: string | undefined }> => {
