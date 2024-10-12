@@ -58,7 +58,7 @@ const INVALID_MESSAGES: {
  * @param url the original url from the request {@type string}
  * @returns an invalid message to return to the user or null @{@type string | undefined}
  */
-const getInvalidMessage = (url: string) => {
+export const getInvalidMessage = (url: string) => {
     if (url === "/packages") {
         return INVALID_MESSAGES["/packages"];
     } else if (url === "/reset") {
@@ -79,7 +79,7 @@ const getInvalidMessage = (url: string) => {
  * @param res the response from express {@type Response
  * @returns  a response {@type Response<any, Record<string, any>> | undefined}
  */
-const returnProperInvalidResponse = (req: Request, res: Response) => {
+export const returnProperInvalidResponse = (req: Request, res: Response) => {
     const regex = /^\/packages$|^\/reset$|^\/package\/.*$|^\/package$/;
 
     if (regex.test(req.originalUrl)) {
@@ -121,14 +121,20 @@ const processToken = (req: Request, res: Response, next: NextFunction) => {
  * @param next the next function to call {@type NextFunction}
  */
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-    try {
-        checkJwt(req, res, (err) => {
-            if (err) {
-                returnProperInvalidResponse(req, res);
-            }
-            processToken(req, res, next);
-        });
-    } catch (err) {
-        returnProperInvalidResponse(req, res);
+    if (process.env.NODE_ENV !== "dev") {
+        try {
+            checkJwt(req, res, (err) => {
+                if (err) {
+                    // If there's an error with checkJwt, handle it here
+                    return returnProperInvalidResponse(req, res); // Return here to stop further execution
+                }
+                processToken(req, res, next);
+            });
+        } catch (err) {
+            // Handle any other errors that might occur
+            return returnProperInvalidResponse(req, res);
+        }
+    } else {
+        next();
     }
 };

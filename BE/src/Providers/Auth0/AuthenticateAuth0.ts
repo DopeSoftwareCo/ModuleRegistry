@@ -41,6 +41,7 @@ export const authenticateViaAuth0 = async (
             }),
         });
         const json = await response.json();
+        console.log(json);
         return { invalidUserPass: json.error || json.error_description, token: json.access_token };
     } catch (err) {
         if (err instanceof Error) {
