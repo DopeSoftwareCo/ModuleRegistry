@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { PackageData, PackageMetaData } from "../Models";
+import { AuthenticationRequestModel, PackageData, PackageMetaData } from "../Models";
 
 declare module "RequestTypes" {
     export type TestRequestBody = {
@@ -39,7 +39,7 @@ declare module "RequestTypes" {
 
     export interface GetPackageRatingsRequest extends Request {}
 
-    export type AuthenticationRequestBody = AuthenticationRequest;
+    export type AuthenticationRequestBody = AuthenticationRequestModel;
 
     export interface AuthenticationRequest extends Request {
         body: AuthenticationRequestBody;
