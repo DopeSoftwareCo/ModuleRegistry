@@ -13,6 +13,10 @@ import {
     UploadInjestResponseMessages,
 } from "ResponseTypes";
 
+/**
+ * @author John Leidy
+ * @description This function uses expressjwt to check the token
+ */
 export const checkJwt = jwt.expressjwt({
     audience: process.env.AUTH0_AUDIENCE,
     issuer: `https://${process.env.AUTH0_DOMAIN}/`,
@@ -48,6 +52,12 @@ const INVALID_MESSAGES: {
         "There is missing field(S) in the PackageRegEx/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.",
 };
 
+/**
+ * @author John Leidy
+ * @description This function is responsible for getting a message to return to the user if the token was invalid.
+ * @param url the original url from the request {@type string}
+ * @returns an invalid message to return to the user or null @{@type string | undefined}
+ */
 const getInvalidMessage = (url: string) => {
     if (url === "/packages") {
         return INVALID_MESSAGES["/packages"];
@@ -60,9 +70,15 @@ const getInvalidMessage = (url: string) => {
     } else if (/^\/package\/.*$/.test(url) && url.includes("byRegEx")) {
         return INVALID_MESSAGES.byregex;
     }
-    return null; // No match found
+    return undefined; // No match found
 };
 
+/**
+ * @author John Leidy
+ * @param req the request object from express {@type Request}
+ * @param res the response from express {@type Response
+ * @returns  a response {@type Response<any, Record<string, any>> | undefined}
+ */
 const returnProperInvalidResponse = (req: Request, res: Response) => {
     const regex = /^\/packages$|^\/reset$|^\/package\/.*$|^\/package$/;
 
@@ -78,9 +94,9 @@ const returnProperInvalidResponse = (req: Request, res: Response) => {
  * @author John Leidy
  * @description This function processes the token if it exists and continues down the middlware chain if its valid.
  * permissions and username are appended to the request object.
- * @param req {@type Request} the request object from express
- * @param res {@type Response} the response from express
- * @param next {@type NextFunction} the next function to call
+ * @param req the request object from express {@type Request}
+ * @param res the response from express {@type Response
+ * @param next the next function to call {@type NextFunction}
  */
 const processToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(" ")[1];
@@ -100,9 +116,9 @@ const processToken = (req: Request, res: Response, next: NextFunction) => {
 /**
  * @author John Leidy
  * @description This middleware is responsible for verifying a tokens validitiy.
- * @param req {@type Request} the request object from express
- * @param res {@type Response} the response from express
- * @param next {@type NextFunction} the next function to call
+ * @param req the request object from express {@type Request}
+ * @param res the response from express {@type Response
+ * @param next the next function to call {@type NextFunction}
  */
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     try {
