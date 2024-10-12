@@ -1,7 +1,4 @@
 import { Request } from "express";
-import { IUser } from "../../models/userModel";
-import { IComment } from "../../models/commentModel";
-import { IPost } from "../../models/postModel";
 import { PackageData, PackageMetaData } from "../Models";
 
 declare module "RequestTypes" {

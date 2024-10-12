@@ -46,7 +46,7 @@ export interface PackageHistoryEntry {
     Action: HistoryActions;
 }
 
-export interface AuthenticationRequest {
+export interface AuthenticationRequestModel {
     User: User;
     Secret: UserAuthenticationInfo;
 }
