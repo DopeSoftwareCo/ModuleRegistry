@@ -11,18 +11,25 @@ import { validateRequest } from "../Validation/validator";
 import { GeneralViaIDRuleset } from "../Validation/PackageValidationRules/GeneralByIDRules";
 import { ByRegexRules } from "../Validation/PackageValidationRules/ByRegexRules";
 import { UploadPackageRules } from "../Validation/PackageValidationRules/UploadRules";
+import { verifyToken } from "../Middleware/Auth";
 
 export const PackageRouter = Router();
 
 // /package
-PackageRouter.post("/", UploadPackageRules, validateRequest, UploadInjestController);
+PackageRouter.post("/", verifyToken, UploadPackageRules, validateRequest, UploadInjestController);
 // /package/{id}
-PackageRouter.get("/:id", GeneralViaIDRuleset, validateRequest, GetPackageViaIDController);
+PackageRouter.get("/:id", verifyToken, GeneralViaIDRuleset, validateRequest, GetPackageViaIDController);
 // /package/{id}
-PackageRouter.put("/:id", GeneralViaIDRuleset, validateRequest, UpdatePackageViaIDController);
+PackageRouter.put("/:id", verifyToken, GeneralViaIDRuleset, validateRequest, UpdatePackageViaIDController);
 // /package/{id}
-PackageRouter.delete("/:id", GeneralViaIDRuleset, validateRequest, DeletePackageByIDController);
+PackageRouter.delete("/:id", verifyToken, GeneralViaIDRuleset, validateRequest, DeletePackageByIDController);
 // /package/{id}/rate
-PackageRouter.get("/:id/rate", GeneralViaIDRuleset, validateRequest, GetPackageRatingsViaIDController);
+PackageRouter.get(
+    "/:id/rate",
+    verifyToken,
+    GeneralViaIDRuleset,
+    validateRequest,
+    GetPackageRatingsViaIDController
+);
 // /package/byRegex
-PackageRouter.post("/byRegex", ByRegexRules, validateRequest, GetPackagesViaRegexController);
+PackageRouter.post("/byRegex", verifyToken, ByRegexRules, validateRequest, GetPackagesViaRegexController);
