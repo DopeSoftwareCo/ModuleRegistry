@@ -38,7 +38,6 @@ function ModEval()
     };
 
     let testInput = [repoA, repoB];
-    evaluator.Evaluate(testInput);
 }
 
 
