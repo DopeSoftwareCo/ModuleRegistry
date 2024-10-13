@@ -1,12 +1,14 @@
 import { beforeEach, describe, expect, it } from "@jest/globals";
-import express, { Express } from "express";
+import express, { Express, NextFunction, Request, Response as ER } from "express";
 import SuperTest, { Response } from "supertest";
 import { PackagesRouter } from "../src/Routes/PackagesRoutes";
 import { ResetRouter } from "../src/Routes/ResetRoutes";
 import { PackageRouter } from "../src/Routes/PackageRoutes";
 import { AuthRouter } from "../src/Routes/AuthRoutes";
 import { testRouter } from "../src/Routes/testRoute";
-import listRoutes from "../src/Middleware/logging/showRoutes";
+
+const TEST_TOKEN = "TEST TOKEN";
+
 const AppRouters = {
     Packages: { router: PackagesRouter, path: "", type: "post" },
     Reset: { router: ResetRouter, path: "", type: "delete" },
@@ -27,6 +29,7 @@ describe("Request tests", () => {
     beforeEach(() => {
         app = express();
         app.use(express.json());
+        process.env.NODE_ENV = "dev";
     });
     Object.entries(AppRouters).forEach(([routeName, router]) => {
         it(`Should return a valid response, showing route is found and created for ${routeName}`, async () => {

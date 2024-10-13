@@ -19,7 +19,7 @@ const AppRoutes = {
     UpdatePackage: UpdatePackageViaIDController,
     UploadPackage: UploadInjestController,
     GetPackageRating: GetPackageRatingsViaIDController,
-    Authenitcation: Authcontroller,
+    Authentication: Authcontroller,
     GetByRegex: GetPackagesViaRegexController,
     TestController: TestController,
 };
@@ -35,9 +35,15 @@ describe("Request tests", () => {
     });
     Object.entries(AppRoutes).forEach(([routeName, controller]) => {
         it(`Should return a valid response for ${routeName}`, async () => {
-            app.get("/", controller);
-            const response = await SuperTest(app).get("/");
-            expect(response.status).toBe(200);
+            if (routeName !== "Authentication") {
+                app.get("/", controller);
+                const response = await SuperTest(app).get("/");
+                expect(response.status).toBe(200);
+            } else {
+                app.get("/", controller);
+                const response = await SuperTest(app).get("/");
+                expect(response.status).toBe(401);
+            }
         });
     });
 });

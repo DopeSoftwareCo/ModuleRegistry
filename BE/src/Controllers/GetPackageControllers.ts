@@ -49,7 +49,7 @@ export const GetPackagesFromRegistryController = asyncHandler(
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         const requestedPackageID = req.params.id;
-
+        console.log("original", req.originalUrl);
         //your code here using the id
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -99,7 +99,8 @@
       "./src/Types/",
       "./src/Types/Express/index.d.ts",
       "./src/Types/ResponseTypes/index.d.ts",
-      "./src/Types/RequestTypes/index.d.ts"
+      "./src/Types/RequestTypes/index.d.ts",
+      "./src/Types/Jwt/index.d.ts"
     ]
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],
