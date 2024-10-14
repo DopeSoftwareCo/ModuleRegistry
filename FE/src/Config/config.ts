@@ -1,3 +1,4 @@
 export const GeneralConfig = {
-    HOME_URL: "/",
+    HOME_URL: '/home',
+    AUTH_URL: '/auth',
 };

@@ -9,7 +9,7 @@ const Home = () => {
             <>home</>
             <HomeButton onClick={toggleVisibility}>Click me</HomeButton>
             {isVisible && <Example>hi</Example>}
-            <StyledBaseTextInput />
+            <StyledBaseTextInput aria-label="username" />
         </>
     );
 };

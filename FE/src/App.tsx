@@ -1,10 +1,10 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Layout } from "./Components/Layout/Layout";
-import routes from "./Routing/routes";
-import { ThemeProvider } from "styled-components";
-import { lightTheme } from "./Theme/Theme";
-import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary";
-import { FourOHFour } from "./Components/ErrorBoundary/404";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Layout } from './Components/Layout/Layout';
+import routes from './Routing/routes';
+import { ThemeProvider } from 'styled-components';
+import { darkTheme } from './Theme/Theme';
+import ErrorBoundary from './Components/ErrorBoundary/ErrorBoundary';
+import { FourOHFour } from './Components/ErrorBoundary/404';
 
 function App() {
     const router = createBrowserRouter([
@@ -15,7 +15,7 @@ function App() {
         },
     ]);
     return (
-        <ThemeProvider theme={lightTheme}>
+        <ThemeProvider theme={darkTheme}>
             <ErrorBoundary>
                 <RouterProvider router={router} />
             </ErrorBoundary>
