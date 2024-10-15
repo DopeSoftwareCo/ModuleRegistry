@@ -6,3 +6,4 @@ export const brightOrange = '#ff9900';
 export const brightCyan = '#00ccff';
 export const brightOrangeTwo = '#ff6600';
 export const skyBlue = '#00BFFF';
+export const errorRed = '#DC143C';
