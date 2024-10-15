@@ -48,7 +48,7 @@ export const GetPackagesFromRegistryController = asyncHandler(
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
-        const requestedPackageID = req.params.id;
+        const requestedPackageID = req.requestedId;
         console.log("original", req.originalUrl);
         //your code here using the id
 
@@ -77,7 +77,7 @@ export const GetPackageViaIDController = asyncHandler(
 // /package/{id}/rate
 export const GetPackageRatingsViaIDController = asyncHandler(
     async (req: GetPackageRatingsRequest, res: GetRatingsForPackageResponse, next: NextFunction) => {
-        const requestedPackageID = req.params.id;
+        const requestedPackageID = req.requestedId;
         //your code here
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
