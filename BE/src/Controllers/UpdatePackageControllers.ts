@@ -6,7 +6,7 @@ import { NextFunction } from "express";
 export const UpdatePackageViaIDController = asyncHandler(
     async (req: UpdatePackageContentRequest, res: UpdatePackageViaIDResponse, next: NextFunction) => {
         //the id requested
-        const packageIDToUpdate = req.params.id;
+        const packageIDToUpdate = req.requestedId;
         //the body with the data to use for update, find the type associated to see what fields the user can give us for updating
         const newData = req.body;
         //your code here

@@ -11,8 +11,39 @@ import { PackageRouter } from "./Routes/PackageRoutes";
 import { PackagesRouter } from "./Routes/PackagesRoutes";
 import { ResetRouter } from "./Routes/ResetRoutes";
 import { AuthRouter } from "./Routes/AuthRoutes";
+import mongoose from "mongoose";
 
 dotenv.config();
+
+const envVarNames = [
+    "GITHUB_TOKEN",
+    "AUTH0_CLIENT_ID",
+    "AUTH0_CLIENT_SECRET",
+    "AUTH0_AUDIENCE",
+    "AUTH0_DOMAIN",
+    "NODE_ENV",
+    "MONGODB_URL",
+];
+
+const checkEnvs = () => {
+    const missingEnvs = envVarNames.filter((name) => !process.env[name]);
+    if (missingEnvs.length > 0) {
+        console.log(`You are missing the following env${missingEnvs.length > 1 ? "s" : ""}:`);
+        missingEnvs.forEach((name) => console.log(name));
+        process.exit(1);
+    }
+};
+
+const showCollectionNames = (
+    collections:
+        | (mongoose.mongo.CollectionInfo | Pick<mongoose.mongo.CollectionInfo, "name" | "type">)[]
+        | undefined,
+    db: mongoose.mongo.Db | undefined
+) => {
+    const collectionNames = collections?.map((collection) => collection.name);
+    console.log(`\n✅ ${chalk.greenBright("Mongo DB")} connected successfully, DB -> ${db?.databaseName}`);
+    console.log(`✅ ${chalk.greenBright("Collections")} -> ${collectionNames?.join(", ")}`);
+};
 
 const addRoutes = (app: Express) => {
     app.use("/test", testRouter);
@@ -32,16 +63,29 @@ const addMiddleWare = (app: Express) => {
     );
     app.use(express.json());
     app.use(logRequest);
-    app.use(errorHandler);
     app.use(responseLogger);
 };
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
-addMiddleWare(app);
-addRoutes(app);
-listRoutes(app);
+const runServer = async () => {
+    checkEnvs();
+    if (!process.env.MONGODB_URL) {
+        process.exit(1);
+    }
+    const mongooseInstance = await mongoose.connect(process.env.MONGODB_URL);
+    const db = mongooseInstance.connection.db;
+    const collections = await db?.listCollections().toArray();
+    showCollectionNames(collections, db);
+    const app: Express = express();
+    const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
-    console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
-});
+    addMiddleWare(app);
+    addRoutes(app);
+    listRoutes(app);
+    app.use(errorHandler);
+
+    app.listen(port, () => {
+        console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
+    });
+};
+
+runServer();
