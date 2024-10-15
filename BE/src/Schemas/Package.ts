@@ -17,7 +17,6 @@ export interface Package extends Base {
     isExternal: boolean;
     safety: "unsafe" | "unkown" | "vetted";
     secrecyEnabled: boolean;
-    version: string;
     license: string;
     rampup_score: number;
     score_correctness: number;
@@ -95,10 +94,6 @@ export const packageSchema: Schema<Package> = new Schema({
         type: Boolean,
         required: true,
     },
-    version: {
-        type: String,
-        required: true,
-    },
     license: {
         type: String,
         required: true,
@@ -139,6 +134,10 @@ packageSchema.pre("save", function (next) {
     next();
 });
 
-const PackageModel = mongoose.model<Package>("Package", packageSchema, "Packages");
+const PackageModel = mongoose.model<Package>(
+    "Package",
+    packageSchema,
+    `Packages${process.env.NODE_ENV === "dev" ? "Dev" : ""}`
+);
 
 export default PackageModel;

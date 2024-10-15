@@ -63,7 +63,6 @@ const addMiddleWare = (app: Express) => {
     );
     app.use(express.json());
     app.use(logRequest);
-    app.use(errorHandler);
     app.use(responseLogger);
 };
 
@@ -78,9 +77,11 @@ const runServer = async () => {
     showCollectionNames(collections, db);
     const app: Express = express();
     const port = process.env.PORT || 3000;
+
     addMiddleWare(app);
     addRoutes(app);
     listRoutes(app);
+    app.use(errorHandler);
 
     app.listen(port, () => {
         console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
