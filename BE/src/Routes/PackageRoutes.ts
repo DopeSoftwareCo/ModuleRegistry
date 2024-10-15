@@ -12,23 +12,46 @@ import { GeneralViaIDRuleset } from "../Validation/PackageValidationRules/Genera
 import { ByRegexRules } from "../Validation/PackageValidationRules/ByRegexRules";
 import { UploadPackageRules } from "../Validation/PackageValidationRules/UploadRules";
 import { verifyToken } from "../Middleware/Auth";
+import { appendMongoDBid } from "../Middleware/MongoDB";
 
 export const PackageRouter = Router();
 
 // /package
 PackageRouter.post("/", verifyToken, UploadPackageRules, validateRequest, UploadInjestController);
 // /package/{id}
-PackageRouter.get("/:id", verifyToken, GeneralViaIDRuleset, validateRequest, GetPackageViaIDController);
+PackageRouter.get(
+    "/:id",
+    verifyToken,
+    GeneralViaIDRuleset,
+    validateRequest,
+    appendMongoDBid,
+    GetPackageViaIDController
+);
 // /package/{id}
-PackageRouter.put("/:id", verifyToken, GeneralViaIDRuleset, validateRequest, UpdatePackageViaIDController);
+PackageRouter.put(
+    "/:id",
+    verifyToken,
+    GeneralViaIDRuleset,
+    validateRequest,
+    appendMongoDBid,
+    UpdatePackageViaIDController
+);
 // /package/{id}
-PackageRouter.delete("/:id", verifyToken, GeneralViaIDRuleset, validateRequest, DeletePackageByIDController);
+PackageRouter.delete(
+    "/:id",
+    verifyToken,
+    GeneralViaIDRuleset,
+    validateRequest,
+    appendMongoDBid,
+    DeletePackageByIDController
+);
 // /package/{id}/rate
 PackageRouter.get(
     "/:id/rate",
     verifyToken,
     GeneralViaIDRuleset,
     validateRequest,
+    appendMongoDBid,
     GetPackageRatingsViaIDController
 );
 // /package/byRegex
