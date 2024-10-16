@@ -22,7 +22,8 @@ export async function Generate_RepositoryID(url: string) : Promise<RepositoryIde
     {
         const processor = new URLProcessor(false);
         const repoURL = await processor.Process(url);
-        if(!repoURL) {return undefined;}
+        
+        if(!repoURL) { return undefined;}
         
         let nameofOwner = "";
         let nameofRepo = "";

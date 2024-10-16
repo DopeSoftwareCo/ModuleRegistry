@@ -29,6 +29,7 @@ export function ValidateRepoURL(url: string): RepoURL_Details | undefined
             repoURL: url,
             tokens: match
         }
+        return details;
     }
     return undefined;
 }
@@ -38,9 +39,11 @@ export async function RetrieveGitHubURL(url: string): Promise<RepoURL_Details | 
 {
     if (IsNpmLink(url))
     {
-        const packageName = url.split('/').pop(); // Extract package name from the URL
+        const packageName = ObtainPackageName(url); // Extract package name from the URL
+        
+        console.log(packageName);
 
-        try
+        try   
         {
             // Fetch the package details from the npm registry
             const response = await fetch(`https://registry.npmjs.org/${packageName}`);
@@ -54,13 +57,23 @@ export async function RetrieveGitHubURL(url: string): Promise<RepoURL_Details | 
 
             // Extract the GitHub repository URL if it exists
             let repositoryUrl = packageData.repository?.url;
+
+    
             return ValidateRepoURL(repositoryUrl);
         }
         catch { return undefined;}
     }
-
+    
+    console.log("investigate the validatrepo function...");
     // Ok ... url isn't an npm url, so either it's a github url or it's invalid
     return ValidateRepoURL(url);
+}
+
+export function ObtainPackageName(npmURL: string): string
+{
+    const packageInfo = npmURL.match(/\/package\/(.+)/);
+    const title = packageInfo ? packageInfo[1] : ' ';
+    return title;
 }
 
 

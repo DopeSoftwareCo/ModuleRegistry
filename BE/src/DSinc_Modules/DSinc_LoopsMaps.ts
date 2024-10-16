@@ -16,6 +16,28 @@ export async function AsyncForEach_AndStore<MethodParam, TypeToStore>(
     }
 }
 
+export async function AsyncForEach_StoreDefined<MethodParam, TypeToStore>(
+    items: MethodParam[],
+    storage: Array<TypeToStore>,
+    method: (item: MethodParam) => Promise<TypeToStore | undefined>,
+    sequential: boolean = false
+): Promise<void> {
+    if (sequential) {
+        for (let item of items) {
+            // 'let' allows modification of 'item'
+            let result = await method(item); // Wait for each promise to resolve before continuing
+            if(result) { storage.push(result); }
+        }
+    } else {
+        const promises = items.map(method);
+        const results = await Promise.all(promises);
+        
+        results.forEach(element => {
+            if(element) { storage.push(element); }
+        });
+    }
+}
+
 // The idea to address foreach not supporting async in this way came from Google Gemini
 export async function AsyncForEach<MethodParam, MethodReturn>(
     items: MethodParam[],

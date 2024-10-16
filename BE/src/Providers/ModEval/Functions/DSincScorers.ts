@@ -18,17 +18,13 @@ import { TargetRepository } from "../SingleClasses/TargetRepository";
 
 */
 
-
-export async function VersionDependence_Scorer(repo: TargetRepository) : Promise<number>
-{
+export async function VersionDependence_Scorer(repo: TargetRepository): Promise<number> {
     // Placeholder for actual functionality
     let result = -1;
     return result;
 }
 
-
-export async function MergeRestriction_Scorer(repo: TargetRepository) : Promise<number>
-{
+export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<number> {
     // Placeholder for actual functionality
     let result = -1;
     return result;
