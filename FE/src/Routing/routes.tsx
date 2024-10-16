@@ -13,7 +13,7 @@ const routes = [
         path: '/',
         element: (
             <ProtectedRoute>
-                <Navigate to="/auth" replace />{' '}
+                <Navigate to="/home" replace />{' '}
             </ProtectedRoute>
         ),
     },

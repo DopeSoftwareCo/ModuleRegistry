@@ -10,17 +10,20 @@ import {
 } from './LoginStyle';
 import { authenticateUserRequest } from './LoginRequest';
 import { decodeAndSetToken } from './Token';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [err, setErr] = useState<string | undefined>(undefined);
+    const navigate = useNavigate();
 
     const requestToken = async (username: string, password: string) => {
         const responseText = await authenticateUserRequest(username, password);
         if (responseText) {
             if (responseText.includes('Bearer')) {
                 decodeAndSetToken(responseText);
+                navigate('/home');
             } else {
                 setErr(responseText.length < 200 ? responseText : 'An unknown error occured!');
             }
