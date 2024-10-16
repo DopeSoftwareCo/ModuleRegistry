@@ -7,13 +7,13 @@ import { testRouter } from "./Routes/testRoute";
 import listRoutes from "./Middleware/logging/showRoutes";
 import logRequest from "./Middleware/logging/requestLogger";
 import chalk from "chalk";
-import { ModEval } from "./Providers/ModEval/MainDriver";
-import "./envConfig";
+import { PackageRouter } from "./Routes/PackageRoutes";
+import { PackagesRouter } from "./Routes/PackagesRoutes";
+import { ResetRouter } from "./Routes/ResetRoutes";
+import { AuthRouter } from "./Routes/AuthRoutes";
+import mongoose from "mongoose";
 
 dotenv.config();
-if (!process.env.GITHUB_TOKEN) {
-    process.exit(1);
-}
 
 const envVarNames = [
     "GITHUB_TOKEN",
@@ -66,13 +66,26 @@ const addMiddleWare = (app: Express) => {
     app.use(responseLogger);
 };
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
-addMiddleWare(app);
-addRoutes(app);
-listRoutes(app);
-app.listen(port, () => {
-    console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
-});
+const runServer = async () => {
+    checkEnvs();
+    if (!process.env.MONGODB_URL) {
+        process.exit(1);
+    }
+    const mongooseInstance = await mongoose.connect(process.env.MONGODB_URL);
+    const db = mongooseInstance.connection.db;
+    const collections = await db?.listCollections().toArray();
+    showCollectionNames(collections, db);
+    const app: Express = express();
+    const port = process.env.PORT || 3000;
 
-ModEval(3);
+    addMiddleWare(app);
+    addRoutes(app);
+    listRoutes(app);
+    app.use(errorHandler);
+
+    app.listen(port, () => {
+        console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
+    });
+};
+
+runServer();
