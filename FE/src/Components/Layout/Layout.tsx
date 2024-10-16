@@ -1,14 +1,9 @@
-import { Suspense, useEffect } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Suspense } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { FooterSection, HeaderSection, MainSection, PageContainer } from './Layout.Style';
-import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '../../Redux/UserSlice';
 
 export const Layout = () => {
     const loc = useLocation();
-    const navigate = useNavigate();
-
-    const isAuthenticated = useSelector(selectIsAuthenticated);
 
     return (
         <PageContainer>

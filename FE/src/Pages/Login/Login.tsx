@@ -8,7 +8,8 @@ import {
     SubmitButton,
     LoginCard,
 } from './LoginStyle';
-import { GeneralConfig } from '../../Config/config';
+import { authenticateUserRequest } from './LoginRequest';
+import { decodeAndSetToken } from './Token';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -16,26 +17,10 @@ const Login = () => {
     const [err, setErr] = useState<string | undefined>(undefined);
 
     const requestToken = async (username: string, password: string) => {
-        const response = await fetch(`${GeneralConfig.BACKEND_URL}authenticate`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                User: {
-                    name: username,
-                    isAdmin: true,
-                },
-                Secret: {
-                    password: password,
-                },
-            }),
-        });
-        const responseText = await response.text();
+        const responseText = await authenticateUserRequest(username, password);
         if (responseText) {
-            if (responseText.includes('bearer')) {
-                //set the token
-                sessionStorage.setItem('token', responseText);
+            if (responseText.includes('Bearer')) {
+                decodeAndSetToken(responseText);
             } else {
                 setErr(responseText.length < 200 ? responseText : 'An unknown error occured!');
             }
@@ -56,14 +41,14 @@ const Login = () => {
         };
     }, [err]);
 
-    const authenticateUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    const processFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         await requestToken(username, password);
     };
 
     return (
         <LoginCard aria-label="login-card">
-            <Form aria-label="login-card-container" onSubmit={(e) => authenticateUser(e)}>
+            <Form aria-label="login-card-container" onSubmit={(e) => processFormSubmit(e)}>
                 <LoginLabel aria-label="login-card-label">Module Registry</LoginLabel>
                 <LoginField
                     placeholder="username"
