@@ -1,6 +1,8 @@
 import { NDJSONRow } from "../Providers/ModEval/Assets/Primero/MVP/src/Types/DataTypes";
 import { RepoScoreSet, RepositoryScoreSet, ScoreInfo } from "../Providers/ModEval/Types/ScoreTypes";
 import { TargetRepository } from "../Providers/ModEval/SingleClasses/TargetRepository";
+import { MakePositiveInteger } from "../DSinc_Modules/DSinc_Math";
+import { User } from "./User";
 
 export enum PackageVisibility {
     SecretScope = 0,
@@ -8,13 +10,11 @@ export enum PackageVisibility {
     PublicScope = 2,
 }
 
-export function MakePositiveInteger(n: number): number {
-    // Force positive
-    let posInt = n > 0 ? n : n * -1;
-
-    // Force integer
-    return Math.floor(posInt);
-}
+type VersionNumbers = {
+    major: number;
+    minor: number;
+    patch: number;
+};
 
 export class PackageVersion {
     private versionString: string = "";
@@ -76,52 +76,12 @@ export class PackageVersion {
     }
 }
 
-export class User {
-    UID: string;
-    username: string;
-    permission: USD_Permission;
-
-    constructor(username: string, permissions: USD_Permission) {
-        this.UID = "xxxx-xx"; // Will be generated
-        this.username = username;
-        this.permission = permissions;
-    }
-}
-
-class USD_Permission {
-    uploadPermission: number;
-    searchPermission: number;
-    deletePermission: number;
-
-    constructor(u: number, s: number, d: number) {
-        this.uploadPermission = MakePositiveInteger(u);
-        this.searchPermission = MakePositiveInteger(s);
-        this.deletePermission = MakePositiveInteger(d);
-    }
-
-    get U(): number {
-        return this.uploadPermission;
-    }
-    get S(): number {
-        return this.searchPermission;
-    }
-    get D(): number {
-        return this.deletePermission;
-    }
-}
-
 export type UploadMetadata = {
     uploader: User;
     dateOfUpload: Date;
     visibility: PackageVisibility;
     secrecyEnabled: boolean;
     packageID: string;
-};
-
-type VersionNumbers = {
-    major: number;
-    minor: number;
-    patch: number;
 };
 
 export class RegistryPackage {
