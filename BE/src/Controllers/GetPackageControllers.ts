@@ -87,10 +87,10 @@ export const GetPackageRatingsViaIDController = asyncHandler(
             BusFactor: pack!.score_busFactor,
             Correctness: pack!.score_correctness,
             RampUp: pack!.rampup_score,
-            ResponsiveMaintainer: 0,
+            ResponsiveMaintainer: pack!.score_responsiveMaintainer,
             LicenseScore: pack!.score_license,
-            GoodPinningPractice: 0,
-            PullRequest: 0,
+            GoodPinningPractice: pack!.score_goodPinningPractice,
+            PullRequest: pack!.score_pullrequest,
             NetScore: pack!.netscore,
         };
 
