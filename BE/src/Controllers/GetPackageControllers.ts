@@ -20,6 +20,7 @@ import {
     GetRatingsForPackageResponseBody,
 } from "ResponseTypes";
 import { NextFunction } from "express";
+import PackageModel from "../Schemas/Package";
 
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
@@ -78,19 +79,19 @@ export const GetPackageViaIDController = asyncHandler(
 export const GetPackageRatingsViaIDController = asyncHandler(
     async (req: GetPackageRatingsRequest, res: GetRatingsForPackageResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
-        //your code here
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //should return back to here with some type that fits the schema as follows...
+        const pack = await PackageModel.findById(requestedPackageID);
+        console.log(pack);
+
         const responseBody: GetRatingsForPackageResponseBody = {
-            BusFactor: 0,
-            Correctness: 0,
-            RampUp: 0,
+            BusFactor: pack!.score_busFactor,
+            Correctness: pack!.score_correctness,
+            RampUp: pack!.rampup_score,
             ResponsiveMaintainer: 0,
-            LicenseScore: 0,
+            LicenseScore: pack!.score_license,
             GoodPinningPractice: 0,
             PullRequest: 0,
-            NetScore: 0,
+            NetScore: pack!.netscore,
         };
 
         //some return that states the package didnt exist
