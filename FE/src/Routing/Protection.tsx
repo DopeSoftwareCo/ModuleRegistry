@@ -18,7 +18,6 @@ interface ProtectedRouteProps {
 // ProtectedRoute component
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const tokenValid = isTokenValid();
-    console.log(tokenValid);
     if (!tokenValid) {
         return <Navigate to="/auth" replace />;
     }

@@ -16,3 +16,8 @@ export const isTokenExpired = () => {
     const currentTime = new Date().getTime();
     return parseInt(expiration) > currentTime;
 };
+
+export const handleTokenExpiration = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpirationDate');
+};
