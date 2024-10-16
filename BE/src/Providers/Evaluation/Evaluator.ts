@@ -1,5 +1,5 @@
-import * as Scoring from './Weightspec.ts';
-import * as DSincMath from '../DSinc_Modules/DSinc_Math.ts'
+import * as Scoring from './Weightspec';
+import * as DSincMath from '../DSinc_Modules/DSinc_Math'
 const RAMPUP_WEIGHT_DEFAULT = 0.3;
 const CORRECTNESS_WEIGHT_DEFAULT = 0.3;
 const BUSFACTOR_WEIGHT_DEFAULT = 0.2;
@@ -24,7 +24,12 @@ export type repoXYZ =
     scoreSet: RepoScoreSet;
 }
 
-
+/**
+ * This class is primarially a wrapper around the inherited code. 
+ * Runs the calculation for all scores of every repo in the list of dependencies
+ * 
+ * Also calculates the version dependence
+ */
 
 export class Evaluator
 {
@@ -34,6 +39,8 @@ export class Evaluator
     responsiveness: Responsive_SubscoreCalculator;
     licensing: License_SubscoreCalculator;
 
+    version_dependence: number;
+
     
     constructor(weightSpec: Scoring.Weightspec)
     {
@@ -42,6 +49,7 @@ export class Evaluator
         this.busFactor = new BusFactor_SubscoreCalculator(weightSpec.busfactor_weight);
         this.responsiveness = new Responsive_SubscoreCalculator(weightSpec.response_weight);
         this.licensing = new License_SubscoreCalculator();
+        this.version_dependence = 0;
     }
 
 
@@ -50,6 +58,7 @@ export class Evaluator
         repos.forEach(unscoredRepo => {
             this.DoSingleEvaluation(unscoredRepo);
         });
+        this.version_dependence = this.EvaluateVersionDependence(repos.length);
     }
 
 
@@ -63,7 +72,22 @@ export class Evaluator
 
         return netscore;
     }
-
+    /**
+     * Scores the version dependence between 1 to 0, 1 being the highest, and 0 being the lowest. 
+     * Should never be 0
+     * 
+     * @param number_of_dependencies 
+     * @returns Score based on the function 1 / (1 + (number_of_dependencies/2))
+     */
+    EvaluateVersionDependence(number_of_dependencies: number) : number
+    {
+        if (number_of_dependencies < 0) 
+        {
+            throw new Error("Number of dependencies cannot be negative."); // Can be changed to return 0; 
+        }
+        
+        return 1 / (1 + (number_of_dependencies/2));
+    }
 }
 
 
