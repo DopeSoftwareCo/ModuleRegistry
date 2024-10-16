@@ -10,52 +10,13 @@ declare module "RequestTypes" {
         body: TestRequestBody;
     }
 
-    export type GetPackagesData = Omit<PackageMetaData, "ID">;
-
-    export interface GetPackagesRequest extends Request {
-        body: GetPackagesData[];
-    }
-
-    export interface ResetRegistryRequest extends Request {}
-
-    export interface GetPackageViaIdRequest extends Request {}
-
-    export type UpdatePackageContentRequestBody = {
-        metadata: PackageMetaData;
-        data: PackageData;
+    export type AddModuleRequestBody = {
+        url: string;
+        repoName?: string;
+        repoOwner?: string;
     };
 
-    export interface UpdatePackageContentRequest extends Request {
-        body: UpdatePackageContentRequestBody;
+    export interface AddModuleRequest extends Request {
+        body: AddModuleRequestBody;
     }
-
-    export interface DeletePackageByIDRequest extends Request {}
-
-    export type UploadInjestPackageRequestBody = PackageData;
-
-    export interface UploadInjestPackageRequest extends Request {
-        body: UploadInjestPackageRequestBody;
-    }
-
-    export interface GetPackageRatingsRequest extends Request {}
-
-    export type AuthenticationRequestBody = AuthenticationRequestModel;
-
-    export interface AuthenticationRequest extends Request {
-        body: AuthenticationRequestBody;
-    }
-
-    export interface GetHistoryOfPackageByNameRequest extends Request {}
-
-    export interface DeleteAllVersionsByNameRequest extends Request {}
-
-    export type GetPackagesViaRegexRequestBody = {
-        RegEx: string;
-    };
-
-    export interface GetPackagesViaRegexRequest extends Request {
-        body: GetPackagesViaRegexRequestBody;
-    }
-
-    export interface GetPackageByNameRequest extends Request {}
 }
