@@ -24,6 +24,8 @@ export const createRandomPackage = async () => {
         score_license: Math.random(),
         score_versionDependence: Math.random(),
         score_mergeRestriction: Math.random(),
+        score_pullrequest: Math.random(),
+        score_responsiveMaintainer: Math.random(),
         netscore: Math.random(),
     });
     await newPackage.save();
