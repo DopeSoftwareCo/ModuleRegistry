@@ -1,4 +1,5 @@
 import { Request } from "express";
+import mongoose from "mongoose";
 
 declare global {
     namespace Express {
@@ -6,6 +7,7 @@ declare global {
             startTime?: Date;
             username?: string;
             permissions?: string[];
+            requestedId?: string;
         }
     }
 }
