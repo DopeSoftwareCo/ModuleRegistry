@@ -24,6 +24,9 @@ export interface Package extends Base {
     score_license: number;
     score_versionDependence: number;
     score_mergeRestriction: number;
+    score_pullrequest: number;
+    score_responsiveMaintainer: number;
+    score_goodPinningPractice: number;
     netscore: number;
 }
 
@@ -119,6 +122,18 @@ export const packageSchema: Schema<Package> = new Schema({
         required: true,
     },
     score_mergeRestriction: {
+        type: Number,
+        required: true,
+    },
+    score_pullrequest: {
+        type: Number,
+        required: true,
+    },
+    score_responsiveMaintainer: {
+        type: Number,
+        required: true,
+    },
+    score_goodPinningPractice: {
         type: Number,
         required: true,
     },
