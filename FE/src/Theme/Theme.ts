@@ -6,6 +6,7 @@ import {
     brightGreen,
     brightOrange,
     brightOrangeTwo,
+    errorRed,
     offWhite,
     skyBlue,
 } from './ColorPalette';
@@ -22,6 +23,7 @@ const lightTheme: DefaultTheme = {
         white: offWhite,
         black: blackAccent,
         skyBlue: skyBlue,
+        errorRed: errorRed,
     },
     fontSizes: {
         small: '0.875rem',
@@ -59,6 +61,7 @@ const darkTheme: DefaultTheme = {
         white: offWhite,
         black: blackAccent,
         skyBlue: skyBlue,
+        errorRed: errorRed,
     },
     fontSizes: {
         small: '0.875rem',
