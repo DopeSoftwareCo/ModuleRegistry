@@ -1,22 +1,19 @@
-import { Suspense } from "react";
-import { Outlet } from "react-router-dom";
-import {
-    FooterSection,
-    HeaderSection,
-    MainSection,
-    PageContainer,
-} from "./Layout.Style";
+import { Suspense } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import { FooterSection, HeaderSection, MainSection, PageContainer } from './Layout.Style';
 
 export const Layout = () => {
+    const loc = useLocation();
+
     return (
         <PageContainer>
-            <HeaderSection>Create some nav bar</HeaderSection>
+            <HeaderSection>{loc.pathname !== '/auth' && <>Header component here</>}</HeaderSection>
             <MainSection>
                 <Suspense fallback={<>loading...</>}>
                     <Outlet />
                 </Suspense>
             </MainSection>
-            <FooterSection>Footer</FooterSection>
+            <FooterSection>{loc.pathname !== '/auth' && <>Footer component here</>}</FooterSection>
         </PageContainer>
     );
 };
