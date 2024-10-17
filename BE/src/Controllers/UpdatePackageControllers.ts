@@ -13,7 +13,6 @@ export const UpdatePackageViaIDController = asyncHandler(
         const newData = req.body;
 
         const pack = await PackageModel.findById(packageIDToUpdate);
-        console.log(pack);
 
         let DNE;
 
