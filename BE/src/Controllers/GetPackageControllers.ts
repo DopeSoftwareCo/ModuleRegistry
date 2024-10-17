@@ -87,7 +87,7 @@ export const GetPackageRatingsViaIDController = asyncHandler(
 
         if (!pack) {
             DNE = true;
-            let responseMessage = "Package does not exist.";
+            const responseMessage: GetRatingsForPackageInvalidResponses = "Package does not exist.";
             res.status(404).send(responseMessage);
             return;
         }
@@ -103,18 +103,14 @@ export const GetPackageRatingsViaIDController = asyncHandler(
             NetScore: pack!.netscore,
         };
 
-        //some return that states the package didnt exist
         //some return that states the system choked on at least one of the metrics
         const Choked = false;
 
-        if (!DNE && !Choked) {
-            let responseMessage: GetRatingsForPackageInvalidResponses;
+        if (!Choked) {
             res.status(200).json(responseBody);
-        } else if (DNE) {
-            let responseMessage = "Package does not exist.";
-            res.status(404).send(responseMessage);
         } else if (Choked) {
-            let responseMessage = "The package rating system choked on at least one of the metrics.";
+            const responseMessage: GetRatingsForPackageInvalidResponses =
+                "The package rating system choked on at least one of the metrics.";
             res.status(500).send(responseMessage);
         }
     }
