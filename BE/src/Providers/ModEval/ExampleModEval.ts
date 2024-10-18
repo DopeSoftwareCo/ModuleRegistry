@@ -31,25 +31,18 @@ export async function Demo(code: number) {
     const id_builder = new RepoID_Builder();
     const processor = new URLProcessor();
     const repo_builder = new Repo_Builder();
-
     const repoURLs = await processor.MultiProcess(urls);
     const repoIDs = await id_builder.MultiBuild(repoURLs);
-
     if (!repoIDs) {
-        console.log("Failed to produce any RepoIDs!");
         return;
     }
-
     let repos = await repo_builder.MultiBuild_ByID(repoIDs);
     if (!repos) {
-        console.log("Failed to build any Repositories!");
         return;
     }
-
     x.MultiEval(repos);
-
     console.log("========================= RESULT OF EVALUATION =========================");
 
     repos.forEach((repo) => console.log(repo.Scores));
-    //console.log(repoIDs)
+    console.log(repoIDs);
 }

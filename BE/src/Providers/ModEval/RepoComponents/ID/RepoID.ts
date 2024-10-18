@@ -12,7 +12,7 @@ export class RepoID {
     }
 
     get Owner(): string {
-        return this.Owner;
+        return this.owner;
     }
     get Name(): string {
         return this.repoName;

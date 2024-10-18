@@ -16,10 +16,10 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
     async MultiBuild(repoURLs: Array<RepoURL>): Promise<Array<RepoID> | undefined> {
         let creations = new Array<RepoID>();
 
-        this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
+        await this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
             repoURLs,
             creations,
-            this.Build,
+            this.Build.bind(this),
             true
         );
         return creations;

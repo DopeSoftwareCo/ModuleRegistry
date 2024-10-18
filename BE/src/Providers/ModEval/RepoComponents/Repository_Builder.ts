@@ -25,7 +25,7 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, Repository>(
             repoURLs,
             creations,
-            this.Build,
+            this.Build.bind(this),
             true
         );
         return creations;
@@ -36,7 +36,7 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         this.asyncLooper.DiscardUndefined_StoreForEach<RepoID, Repository>(
             repoIDs,
             creations,
-            this.Build,
+            this.Build.bind(this),
             true
         );
         return creations;
@@ -51,7 +51,6 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         if (!source) {
             return undefined;
         }
-
         if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_URL(source, weightspecs);
         } else if (IsType_RepoID(source)) {
