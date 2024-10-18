@@ -142,7 +142,7 @@ export class ModuleEvaluator {
     }
 
     public async MultiEval(repos: Array<Repository>): Promise<void> {
-        await this.asyncLooper.ForEach<Repository, number>(repos, this.Eval);
+        await this.asyncLooper.ForEach<Repository, number>(repos, this.Eval.bind(this));
     }
 
     public async Eval(repo: Repository): Promise<number> {

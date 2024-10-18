@@ -22,7 +22,7 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
 
     async MultiBuild_ByURL(repoURLs: Array<RepoURL>): Promise<Array<Repository> | undefined> {
         let creations = new Array<Repository>();
-        this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, Repository>(
+        await this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, Repository>(
             repoURLs,
             creations,
             this.Build.bind(this),
@@ -33,7 +33,7 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
 
     async MultiBuild_ByID(repoIDs: Array<RepoID>): Promise<Array<Repository> | undefined> {
         let creations = new Array<Repository>();
-        this.asyncLooper.DiscardUndefined_StoreForEach<RepoID, Repository>(
+        await this.asyncLooper.DiscardUndefined_StoreForEach<RepoID, Repository>(
             repoIDs,
             creations,
             this.Build.bind(this),

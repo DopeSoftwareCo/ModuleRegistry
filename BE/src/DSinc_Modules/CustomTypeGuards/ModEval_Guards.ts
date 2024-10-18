@@ -41,7 +41,7 @@ export function IsType_RepoID(value: any): value is RepoID {
     }
 }
 
-export function IsType_TargetRepository(value: any): value is Repository {
+export function IsType_Repository(value: any): value is Repository {
     let typeMatch = false;
 
     try {
