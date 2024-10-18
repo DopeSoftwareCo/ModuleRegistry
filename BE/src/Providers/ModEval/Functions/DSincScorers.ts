@@ -1,4 +1,4 @@
-import { TargetRepository } from "../SingleClasses/TargetRepository";
+import { Repository } from "../RepoComponents/Repository";
 
 // Recall the enum ...
 //VersionDependence = 5,
@@ -18,14 +18,14 @@ import { TargetRepository } from "../SingleClasses/TargetRepository";
 
 */
 
-export async function VersionDependence_Scorer(repo: TargetRepository): Promise<number> {
+export async function VersionDependence_Scorer(repo: Repository): Promise<number> {
     // Placeholder for actual functionality
-    let result = -1;
+    let result = 0;
     return result;
 }
 
-export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<number> {
+export async function MergeRestriction_Scorer(repo: Repository): Promise<number> {
     // Placeholder for actual functionality
-    let result = -1;
+    let result = 0;
     return result;
 }
