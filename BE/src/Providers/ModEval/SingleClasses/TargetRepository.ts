@@ -3,7 +3,13 @@ import { RepoQueryResult, GraphQLResponse } from "../Querying/ResponseTypes/Quer
 import { RepoScoreSet, NetValue, EMPTY_SCOREINFO } from "../Types/ScoreTypes";
 import { RepoQueryBuilder, SendRequestToGQL } from "../Querying/Builders/QueryBuilder";
 
-const EXTRA_QUERY_FIELDS = ["contributors", "merges", "pullRequests", "dependencies"];
+const EXTRA_QUERY_FIELDS = [
+    "contributors",
+    "merges",
+    "dependencies",
+    "totalCommits",
+    "totalPullRequestsWithReview",
+];
 
 export class TargetRepository {
     private identifiers: RepositoryIdentification;
@@ -11,6 +17,8 @@ export class TargetRepository {
     private queryResult: RepoQueryResult | undefined;
     private queried: boolean = false;
     private license: string = "unknown";
+    private totalCommits: number = 0;
+    private totalPullRequestsWithReview: number = 0;
 
     constructor(id: RepositoryIdentification, scoreset?: RepoScoreSet) {
         this.identifiers = id;
@@ -44,6 +52,8 @@ export class TargetRepository {
             return this.queryResult;
         }
         this.queryResult = Adapt_GQLResponse_To_RepoQueryResult(response);
+        this.totalCommits = response.data.totalCommits;
+        this.totalPullRequestsWithReview = response.data.totalPullRequestsWithReview;
         this.queried = true;
     }
 
@@ -65,6 +75,14 @@ export class TargetRepository {
 
     set Scores(scoreset: RepoScoreSet) {
         this.scores = scoreset;
+    }
+
+    get TotalCommits(): number {
+        return this.totalCommits;
+    }
+
+    get TotalPullRequestsWithReview(): number {
+        return this.totalPullRequestsWithReview;
     }
 
     public NDJSONRow(): NDJSON_RowInfo | undefined {
