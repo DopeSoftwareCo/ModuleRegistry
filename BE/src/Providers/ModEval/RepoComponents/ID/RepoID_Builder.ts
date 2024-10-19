@@ -14,7 +14,7 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
     }
 
     async MultiBuild(repoURLs: Array<RepoURL>): Promise<Array<RepoID> | undefined> {
-        let creations = new Array<RepoID>();
+        let creations = Array<RepoID>();
 
         await this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
             repoURLs,
@@ -22,6 +22,7 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
             this.Build.bind(this),
             true
         );
+
         return creations;
     }
 
@@ -40,9 +41,9 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
         } else if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_RepoURL(source);
         } else {
+            console.log("What the fuck did you give me??");
             creation = undefined;
         }
-
         return creation;
     }
 
@@ -58,21 +59,17 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
     }
 
     private async StartFrom_RepoURL(repoURL: RepoURL): Promise<RepoID | undefined> {
-        if (!repoURL) {
-            return undefined;
-        }
-
         try {
             if (!repoURL) {
                 return undefined;
             }
-
             let nameofOwner = "";
             let nameofRepo = "";
 
-            if (repoURL.tokens) {
-                nameofOwner = repoURL.tokens[1];
-                nameofRepo = repoURL.tokens[2];
+            if (repoURL.tokens.IsDefined) {
+                const content = repoURL.tokens.Content;
+                nameofOwner = content[1];
+                nameofRepo = content[2];
             }
 
             const creation = new RepoID(nameofOwner, nameofRepo, repoURL);

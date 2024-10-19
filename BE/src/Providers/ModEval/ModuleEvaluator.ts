@@ -1,4 +1,4 @@
-import * as OctScore from "./Functions/OctavoScorers";
+import * as OctScore from "./ScoringFunctions/OctavoScorers";
 import { Repository } from "./RepoComponents/Repository";
 import { Metric } from "./Scores/Metric";
 import { MetricName } from "./Scores/Metric.const";
@@ -6,7 +6,7 @@ import { SubscoreCalculator } from "./Scores/ScoreCalculator";
 import { WeightSpec, FindWeightSpecByReceiver } from "./Scores/WeightSpec";
 import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./Scores/Weightspec.const";
 import { AsyncLooper, TryIndexOrDefaultTo } from "../../DSinc_Modules/DSinc_LoopsMaps";
-import * as DSincScore from "./Functions/DSincScorers";
+import * as DSincScore from "./ScoringFunctions/DSincScorers";
 import {
     RAMPUP_WEIGHT_DEFAULT,
     CORRECTNESS_WEIGHT_DEFAULT,

@@ -7,8 +7,8 @@ export class RepoID {
 
     constructor(owner: string, repoName: string, repoURL: RepoURL) {
         this.owner = owner;
-        this.repoURL = repoURL;
         this.repoName = repoName;
+        this.repoURL = repoURL;
     }
 
     get Owner(): string {

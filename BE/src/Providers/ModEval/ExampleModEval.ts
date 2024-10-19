@@ -13,6 +13,7 @@ import {
 import { RepoID_Builder } from "./RepoComponents/ID/RepoID_Builder";
 import { URLProcessor } from "./RepoComponents/URL/URLProcessor";
 import { Repo_Builder } from "./RepoComponents/Repository_Builder";
+import { arrayBuffer } from "stream/consumers";
 
 export async function Demo(code: number) {
     let spec: Array<WeightSpec>;
@@ -31,21 +32,32 @@ export async function Demo(code: number) {
     const processor = new URLProcessor();
     const repo_builder = new Repo_Builder();
 
+    console.log("--- #1: Building URLs ---");
     const repoURLs = await processor.MultiProcess(urls);
 
+    //console.log(repoURLs);
+
+    console.log("--- #2 Making IDs---");
     const repoIDs = await id_builder.MultiBuild(repoURLs);
     if (!repoIDs) {
+        console.log("FAILURE TO BUILD IDs");
         return;
     }
 
+    //repoIDs.forEach((repo) => console.log(repo));
+
+    console.log("--- #3 Assembling Repos ---");
     let repos = await repo_builder.MultiBuild_ByID(repoIDs);
+
+    //console.log(repos);
     if (!repos) {
         console.log("Failed ");
-
         return;
     }
-    x.MultiEval(repos);
+    //repos.forEach((repo) => console.log(repo.ID));
+    //x.MultiEval(repos);*/
+
     console.log("========================= RESULT OF EVALUATION =========================");
-    repos.forEach((repo) => console.log(repo.Scores));
-    //console.log(repoIDs);
+
+    console.log(repoIDs);
 }

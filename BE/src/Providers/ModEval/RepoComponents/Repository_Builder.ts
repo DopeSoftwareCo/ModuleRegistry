@@ -32,13 +32,14 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
     }
 
     async MultiBuild_ByID(repoIDs: Array<RepoID>): Promise<Array<Repository> | undefined> {
-        let creations = new Array<Repository>();
+        let creations = Array<Repository>();
         await this.asyncLooper.DiscardUndefined_StoreForEach<RepoID, Repository>(
             repoIDs,
             creations,
             this.Build.bind(this),
-            true
+            false
         );
+
         return creations;
     }
 
@@ -46,29 +47,39 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
     async Build(id: RepoID, weights?: WeightSpecSet): Promise<Repository | undefined>;
 
     async Build(source: any, weights?: WeightSpecSet): Promise<Repository | undefined> {
-        let creation: Repository | undefined;
-        const weightspecs = weights ? weights : this.default_weights;
         if (!source) {
             return undefined;
         }
-        if (IsType_RepoURL(source)) {
+        let creation: Repository | undefined;
+        //const weightspecs = weights ? weights : this.default_weights;
+        const weightspecs = this.default_weights;
+
+        if (IsType_RepoID(source)) {
+            creation = this.StartFrom_ID(source, weightspecs);
+        } else if (IsType_RepoURL(source)) {
+            console.log("===Building Repo from URL===");
             creation = await this.StartFrom_URL(source, weightspecs);
-        } else if (IsType_RepoID(source)) {
-            creation = await this.StartFrom_ID(source, weightspecs);
         } else {
-            creation = undefined;
+            console.log("What the fuck did you give me??");
+            undefined;
         }
 
         return creation;
     }
 
-    private async StartFrom_URL(url: RepoURL, weights: WeightSpecSet): Promise<Repository | undefined> {
+    private async StartFrom_URL(url: RepoURL, weights?: WeightSpecSet): Promise<Repository | undefined> {
+        console.log("NOOO IM BUILDING REPO FROM URL");
+        const weightsToUse = weights ? weights : this.default_weights;
+
         const id = await this.idBuilder.Build(url);
-        return id ? await this.StartFrom_ID(id) : undefined;
+        return id ? this.StartFrom_ID(id, weightsToUse) : undefined;
     }
 
-    private async StartFrom_ID(id: RepoID, weights?: WeightSpecSet): Promise<Repository | undefined> {
-        const scores = new RepoScoreset(weights);
+    private StartFrom_ID(id: RepoID, weights?: WeightSpecSet): Repository | undefined {
+        console.log("Building a repository from an ID!!!");
+
+        const weightsToUse = weights ? weights : this.default_weights;
+        const scores = new RepoScoreset(weightsToUse);
         return new Repository(id, scores);
     }
 }

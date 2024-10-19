@@ -107,7 +107,8 @@
         "src/**/*.ts",
         "tests/**/*.ts",
         "src/Providers/ModEval/GQL_Queries/QueryResponses",
-        "src/Providers/ModEval/GQL_Queries/CombinedResult"
+        "src/Providers/ModEval/GQL_Queries/CombinedResult",
+        "src/classes/Essential_Interfaces"
     ],
     "exclude": ["node_modules"]
 }

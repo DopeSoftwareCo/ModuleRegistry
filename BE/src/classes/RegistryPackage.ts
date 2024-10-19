@@ -106,7 +106,7 @@ export class RegistryPackage {
         this.packageID = metadata.packageID;
         this.title = packageName;
         this.repo = repository;
-        this.repoURL = repository.Identifiers.GitHubAddress;
+        this.repoURL = repository.ID.GitHubAddress;
         this.version = new PackageVersion(version.major, version.minor, version.patch);
         this.licenseName = repository.License;
         this.scores = repository.Scores;

@@ -1,15 +1,19 @@
+import { AsyncLooper } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
 import { RepoURL, RepoURLs } from "./URLProcessor.interface";
+import { NullableArray } from "../../../../classes/Essential_Interfaces/NullableArray";
 
 export class URLProcessor {
     private created?: Array<RepoURL>;
     private trackingHistory: boolean;
+    private looper: AsyncLooper;
 
     constructor(trackHistory: boolean = false) {
         if (trackHistory) {
             this.created = new Array<RepoURL>(10);
         }
         this.trackingHistory = trackHistory;
+        this.looper = new AsyncLooper();
     }
 
     public async Process(raw: string): Promise<RepoURL | undefined> {
@@ -25,14 +29,15 @@ export class URLProcessor {
         urls: Array<string>,
         removingPadding: boolean = false
     ): Promise<Array<RepoURL>> {
-        let repoURLs: RepoURL[] = [];
+        let repoURLs: Array<RepoURL> = [];
 
-        for (let i = 0; i < urls.length; i++) {
-            const result = await this.Process(urls[i]);
-            if (result) {
-                repoURLs.push(result);
-            }
-        }
+        await this.looper.DiscardUndefined_StoreForEach<string, RepoURL>(
+            urls,
+            repoURLs,
+            this.Process.bind(this),
+            true
+        );
+
         return repoURLs;
     }
 
@@ -49,7 +54,7 @@ export class URLProcessor {
                 const repo: RepoURL = {
                     providedURL: raw,
                     domain: "github.com",
-                    tokens: repoDetails.tokens,
+                    tokens: new NullableArray<string>(repoDetails.tokens),
                     gitURL: repoDetails.repoURL,
                 };
                 return repo;

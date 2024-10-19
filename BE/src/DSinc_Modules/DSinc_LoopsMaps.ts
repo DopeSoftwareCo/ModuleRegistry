@@ -60,12 +60,10 @@ export async function AsyncForEach<MethodParam, MethodReturn>(
 }
 
 export function TryIndexOrDefaultTo<T>(arr: Array<T>, index: number, defaultTo: T): T {
-    try {
-        let result = arr[index];
-        return result;
-    } catch {
-        return defaultTo;
+    if (index >= 0 && index < arr.length) {
+        return arr[index] !== undefined ? arr[index] : defaultTo;
     }
+    return defaultTo;
 }
 
 export class AsyncLooper {

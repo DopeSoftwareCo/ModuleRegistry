@@ -10,11 +10,11 @@ export class WeightSpec {
         this.weightValue = DSincMath.ToPositive(weight);
     }
 
-    public Receiver() {
+    public Receiver(): MetricName {
         return this.receiver;
     }
 
-    public Weight() {
+    public Weight(): number {
         return this.weightValue;
     }
 }

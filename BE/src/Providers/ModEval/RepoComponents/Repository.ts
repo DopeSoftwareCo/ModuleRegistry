@@ -41,7 +41,7 @@ export class Repository {
         return this.license;
     }
 
-    get Identifiers(): RepoID {
+    get ID(): RepoID {
         return this.id;
     }
 
