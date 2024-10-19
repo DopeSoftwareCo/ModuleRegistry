@@ -14,6 +14,29 @@ const getRawDBPackagesRequest = async (): Promise<DBPackagesFromAPI> => {
     return packages;
 };
 
+const getTimeAgoString = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    const intervals = {
+        year: 365 * 24 * 60 * 60,
+        month: 30 * 24 * 60 * 60,
+        day: 24 * 60 * 60,
+        hour: 60 * 60,
+        minute: 60,
+        second: 1,
+    };
+
+    for (const [key, value] of Object.entries(intervals)) {
+        const interval = Math.floor(seconds / value);
+        if (interval >= 1) {
+            return `${interval} ${key}${interval > 1 ? 's' : ''} ago`;
+        }
+    }
+    return 'just now';
+};
+
 const mapRawDBPackagesResponse = (rawPackages: DBPackagesFromAPI): Packages =>
     rawPackages.packages.map((dbPackage) => ({
         _id: dbPackage._id,
@@ -36,6 +59,7 @@ const mapRawDBPackagesResponse = (rawPackages: DBPackagesFromAPI): Packages =>
         safety: dbPackage.safety,
         secrecyEnabled: dbPackage.secrecyEnabled,
         license: dbPackage.license,
+        updatedAt: getTimeAgoString(dbPackage.updatedAt),
     }));
 
 export const getRawDBPackages = async (): Promise<Packages> => {

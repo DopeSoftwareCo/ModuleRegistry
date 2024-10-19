@@ -1,6 +1,20 @@
 import { darken, lighten } from 'polished';
 import styled, { css } from 'styled-components';
 
+export const StyledHiddenButton = styled.button`
+    border: none;
+    font-family: inherit;
+    background: inherit;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ${({ theme }) => css`
+        color: ${theme.colors.text};
+    `}
+`;
+
 export const StyledBaseButton = styled.button`
     border: none;
     font-family: inherit;
@@ -64,4 +78,10 @@ export const StyledBaseCard = styled(StyledBaseDiv)`
         @media screen and (max-width: ${theme.breakpoint}) {
         }
     `}
+`;
+
+export const StyledBasePageContiner = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;

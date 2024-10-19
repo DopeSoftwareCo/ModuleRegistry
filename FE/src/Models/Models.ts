@@ -73,7 +73,7 @@ export interface DBPackageFromAPI {
     uploader: string;
     visibility: 'secret' | 'internal' | 'public';
     isExternal: boolean;
-    safety: 'unsafe' | 'unkown' | 'vetted';
+    safety: 'unsafe' | 'unknown' | 'vetted';
     secrecyEnabled: boolean;
     license: string;
     rampup_score: number;
@@ -86,6 +86,7 @@ export interface DBPackageFromAPI {
     score_responsiveMaintainer: number;
     score_goodPinningPractice: number;
     netscore: number;
+    updatedAt: string;
 }
 
 export interface DBPackagesFromAPI {
@@ -101,9 +102,10 @@ export interface Package {
     uploader: string;
     visibility: 'secret' | 'internal' | 'public';
     isExternal: boolean;
-    safety: 'unsafe' | 'unkown' | 'vetted';
+    safety: 'unsafe' | 'unknown' | 'vetted';
     secrecyEnabled: boolean;
     license: string;
+    updatedAt: string;
 }
 
 export type Packages = Package[];

@@ -1,17 +1,18 @@
 import { Package } from '../../Models/Models';
 import {
-    PackageBody,
+    HeaderFooter,
     PackageContainer,
-    PackageFieldKey,
-    PackageFieldRow,
-    PackageFieldValue,
     PackageHeader,
-    PackageID,
     PackageName,
-    PackageRatingsContainer,
+    PackageUpdatedAt,
     PackageUploader,
     PackageVersion,
+    PackageVersionInfo,
 } from './PackageStyle';
+import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
+import { useState } from 'react';
+import { PackageDetailsComponent } from '../PackageDetails/PackageDetails';
+import { StyledHiddenButton } from '../../BaseStyledComponents/BaseStyled';
 
 const DefaultPackageProps: { packageProp: Package } = {
     packageProp: {
@@ -35,6 +36,7 @@ const DefaultPackageProps: { packageProp: Package } = {
         safety: 'vetted',
         secrecyEnabled: false,
         license: 'MIT',
+        updatedAt: '33 minutes ago.',
     },
 };
 
@@ -44,24 +46,23 @@ interface PackageComponentProps {
 export const PackageComponent = ({
     packageProp = DefaultPackageProps.packageProp,
 }: PackageComponentProps) => {
+    const [showDetails, setShowDetails] = useState(false);
     return (
         <PackageContainer>
-            <PackageID>{packageProp._id}</PackageID>
             <PackageHeader>
                 <PackageName>{packageProp.name}</PackageName>
-                <PackageVersion>{packageProp.version}</PackageVersion>
-                <PackageUploader>{packageProp.uploader}</PackageUploader>
+                <HeaderFooter>
+                    <PackageVersionInfo>
+                        <PackageUploader>{packageProp.uploader}</PackageUploader>
+                        <PackageVersion>published {packageProp.version}</PackageVersion>
+                        <PackageUpdatedAt>{packageProp.updatedAt}</PackageUpdatedAt>
+                    </PackageVersionInfo>
+                    <StyledHiddenButton onClick={() => setShowDetails((state) => !state)}>
+                        {showDetails ? <BiChevronUp /> : <BiChevronDown />}
+                    </StyledHiddenButton>
+                </HeaderFooter>
             </PackageHeader>
-            <PackageBody>
-                <PackageRatingsContainer>
-                    {Object.entries(packageProp.ratings).map(([ratingName, ratingValue]) => (
-                        <PackageFieldRow>
-                            <PackageFieldKey>{ratingName}</PackageFieldKey>
-                            <PackageFieldValue>{ratingValue}</PackageFieldValue>
-                        </PackageFieldRow>
-                    ))}
-                </PackageRatingsContainer>
-            </PackageBody>
+            {showDetails && <PackageDetailsComponent packageProp={packageProp} />}
         </PackageContainer>
     );
 };

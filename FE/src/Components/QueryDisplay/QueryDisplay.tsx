@@ -8,6 +8,7 @@ export const QueryDisplay = () => {
 
     const popualtePackages = async (): Promise<void> => {
         const packagesFromRequest = await getRawDBPackages();
+        console.log(packagesFromRequest);
         setPackages(packagesFromRequest);
     };
 
