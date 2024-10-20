@@ -4,6 +4,8 @@ import { Generate_RepositoryID } from "../Types/RepoIDTypes";
 import { SendRequestToGQL } from "../Querying/Builders/QueryBuilder";
 import { CreateReviewedPRField } from "../Querying/Builders/QueryFields";
 import { CreateTotalCommitsField } from "../Querying/Builders/QueryFields";
+import { TotalCommitsResponse, PullRequestsResponse } from "../Querying/ResponseTypes/PR_ResponseTypes";
+
 // Recall the enum ...
 //VersionDependence = 5,
 //PRMergeRestriction = 6,
@@ -47,7 +49,7 @@ export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<n
     let queryString = CreateTotalCommitsField(owner, repoName);
     let totalCommits = 0;
     try {
-        const result = await SendRequestToGQL(queryString);
+        const result = await SendRequestToGQL<TotalCommitsResponse>(queryString);
         if (result && result.data) {
             totalCommits = result.data.repository.object.history.totalCount;
         } else {
@@ -59,8 +61,8 @@ export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<n
         return 0;
     }
 
-    console.log("Total Commits:", totalCommits);
-    console.log("Number of approved PRs:", prWithMultipleParents);
+    // console.log("Total Commits:", totalCommits);
+    // console.log("Number of approved PRs:", prWithMultipleParents);
     const Score = (prWithMultipleParents / totalCommits) * 100;
     const roundedScore = parseFloat(Score.toFixed(2));
     console.log("Score:", roundedScore + "%");
@@ -75,7 +77,7 @@ async function fetchAllPullRequests(owner: string, repoName: string): Promise<an
     while (hasNextPage) {
         const queryString = CreateReviewedPRField(owner, repoName, after);
         try {
-            const result = await SendRequestToGQL(queryString);
+            const result = await SendRequestToGQL<PullRequestsResponse>(queryString);
             if (result && result.data) {
                 const pullRequests = result.data.repository.pullRequests.nodes;
                 allPullRequests = allPullRequests.concat(pullRequests);
@@ -94,6 +96,7 @@ async function fetchAllPullRequests(owner: string, repoName: string): Promise<an
     return allPullRequests;
 }
 
+//-------------------------------------------------------------------------// Delete after testing
 dotenv.config();
 const envVarNames = ["GITHUB_TOKEN"];
 

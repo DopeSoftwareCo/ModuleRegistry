@@ -1,3 +1,4 @@
 .vscode/settings.json
 _Devtools/Bell/cs450.code-workspace
 .env
+BE/src/Providers/ModEval/Functions/DSincScorers.js

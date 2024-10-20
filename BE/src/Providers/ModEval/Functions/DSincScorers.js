@@ -112,8 +112,6 @@ function MergeRestriction_Scorer(repo) {
                     console.error("Error fetching data from GraphQL:", error_2);
                     return [2 /*return*/, 0];
                 case 8:
-                    console.log("Total Commits:", totalCommits);
-                    console.log("Number of approved PRs:", prWithMultipleParents);
                     Score = (prWithMultipleParents / totalCommits) * 100;
                     roundedScore = parseFloat(Score.toFixed(2));
                     console.log("Score:", roundedScore + "%");
@@ -162,6 +160,7 @@ function fetchAllPullRequests(owner, repoName) {
         });
     });
 }
+//-------------------------------------------------------------------------// Delete after testing
 dotenv.config();
 var envVarNames = ["GITHUB_TOKEN"];
 var url = "https://github.com";

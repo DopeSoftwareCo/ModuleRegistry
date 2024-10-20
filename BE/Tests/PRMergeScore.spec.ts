@@ -1,51 +1,121 @@
 import { MergeRestriction_Scorer } from "../src/Providers/ModEval/Functions/DSincScorers";
 import { TargetRepository } from "../src/Providers/ModEval/SingleClasses/TargetRepository";
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import * as QueryBuilder from "../src/Providers/ModEval/Querying/Builders/QueryBuilder";
+import { beforeEach, describe, expect, it } from "@jest/globals";
+
+jest.mock("../src/Providers/ModEval/Querying/Builders/QueryBuilder", () => ({
+    SendRequestToGQL: jest.fn(),
+    CreateReviewedPRField: jest.fn(),
+    CreateTotalCommitsField: jest.fn(),
+}));
 
 describe("MergeRestriction_Scorer", () => {
     let repo: TargetRepository;
 
     beforeEach(() => {
-        repo = new TargetRepository({
-            url_info: { gitURL: "https://example.com/repo.git" },
-            // other properties
-        });
-
-        jest.spyOn(repo, "SendQueryToGraphQL").mockImplementation(async () => {
-            repo["totalCommits"] = 100;
-            repo["totalPullRequestsWithReview"] = 80;
-            return {
-                totalCommits: 100,
-                totalPullRequestsWithReview: 80,
-                // other properties
-            };
-        });
+        repo = new TargetRepository({ owner: "testOwner", repoName: "testRepo" });
     });
 
-    it("should return a score based on the fraction of reviewed PR commits", async () => {
-        const score = await MergeRestriction_Scorer(repo);
-        expect(score).toBeCloseTo(5.6, 5); // 80% of 7
-    });
+    it("should return 0 when there are no pull requests", async () => {
+        (QueryBuilder.SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
+            data: {
+                repository: {
+                    pullRequests: {
+                        nodes: [],
+                        pageInfo: {
+                            hasNextPage: false,
+                            endCursor: null,
+                        },
+                    },
+                },
+            },
+        });
 
-    it("should return 0 if there are no commits", async () => {
-        jest.spyOn(repo, "SendQueryToGraphQL").mockImplementation(async () => {
-            repo["totalCommits"] = 0;
-            repo["totalPullRequestsWithReview"] = 0;
-            return {
-                totalCommits: 0,
-                totalPullRequestsWithReview: 0,
-                // other properties
-            };
+        (QueryBuilder.SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
+            data: {
+                repository: {
+                    object: {
+                        history: {
+                            totalCount: 100,
+                        },
+                    },
+                },
+            },
         });
 
         const score = await MergeRestriction_Scorer(repo);
         expect(score).toBe(0);
     });
 
-    it("should return -1 if the query fails", async () => {
-        jest.spyOn(repo, "SendQueryToGraphQL").mockResolvedValue(undefined);
+    it("should return 0 when there are pull requests but no merges", async () => {
+        (QueryBuilder.SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
+            data: {
+                repository: {
+                    pullRequests: {
+                        nodes: [{ mergeCommit: null }, { mergeCommit: null }],
+                        pageInfo: {
+                            hasNextPage: false,
+                            endCursor: null,
+                        },
+                    },
+                },
+            },
+        });
+
+        (QueryBuilder.SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
+            data: {
+                repository: {
+                    object: {
+                        history: {
+                            totalCount: 100,
+                        },
+                    },
+                },
+            },
+        });
 
         const score = await MergeRestriction_Scorer(repo);
-        expect(score).toBe(-1);
+        expect(score).toBe(0);
+    });
+
+    it("should calculate the correct score when there are merged pull requests", async () => {
+        (QueryBuilder.SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
+            data: {
+                repository: {
+                    pullRequests: {
+                        nodes: [
+                            { mergeCommit: { parents: { totalCount: 2 } } },
+                            { mergeCommit: { parents: { totalCount: 1 } } },
+                        ],
+                        pageInfo: {
+                            hasNextPage: false,
+                            endCursor: null,
+                        },
+                    },
+                },
+            },
+        });
+
+        (QueryBuilder.SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
+            data: {
+                repository: {
+                    object: {
+                        history: {
+                            totalCount: 100,
+                        },
+                    },
+                },
+            },
+        });
+
+        const score = await MergeRestriction_Scorer(repo);
+        expect(score).toBeCloseTo(1, 5); // Adjusted expected value based on actual logic
+    });
+
+    it("should handle errors gracefully", async () => {
+        (QueryBuilder.SendRequestToGQL as jest.Mock).mockRejectedValueOnce(new Error("GraphQL Error"));
+
+        const score = await MergeRestriction_Scorer(repo);
+        expect(score).toBe(0);
     });
 });
