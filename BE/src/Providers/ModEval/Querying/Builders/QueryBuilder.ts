@@ -1,7 +1,7 @@
 import { GraphQLResponse } from "../ResponseTypes/Query_ResponseTypes";
 import { RepositoryIdentification } from "../../Types/RepoIDTypes";
-
-import chalk from "chalk";
+import * as chalk from "chalk"; // Remove after testing
+// import chalk from "chalk";
 
 const DEFAULT_FIELDS: string[] = [];
 
