@@ -34,8 +34,12 @@ export async function Responsiveness_WrappedScorer(repo: Repository): Promise<nu
 }
 
 export async function LicenseCompatibility_WrapperScorer(repo: Repository): Promise<number> {
-    let info = repo.ID;
-    return await fetchRepoLicense(info.Owner, info.Name);
+    try {
+        let info = repo.ID;
+        return await fetchRepoLicense(info.Owner, info.Name);
+    } catch {
+        return 0;
+    }
 }
 
 export async function CalculateMetrics_(repo: Repository): Promise<string> {

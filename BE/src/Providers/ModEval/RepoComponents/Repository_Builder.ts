@@ -51,10 +51,10 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
             return undefined;
         }
         let creation: Repository | undefined;
-        //const weightspecs = weights ? weights : this.default_weights;
-        const weightspecs = this.default_weights;
+        const weightspecs = weights ? weights : this.default_weights;
 
         if (IsType_RepoID(source)) {
+            // I shouldn't need to await here, because nothing async happens in StartFrom_ID
             creation = this.StartFrom_ID(source, weightspecs);
         } else if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_URL(source, weightspecs);

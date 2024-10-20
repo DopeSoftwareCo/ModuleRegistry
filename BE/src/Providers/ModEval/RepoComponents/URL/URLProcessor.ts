@@ -26,10 +26,7 @@ export class URLProcessor extends I_URLProcessor {
         return repo;
     }
 
-    public async MultiProcess(
-        urls: Array<string>,
-        removingPadding: boolean = false
-    ): Promise<Array<RepoURL>> {
+    public async MultiProcess(urls: Array<string>): Promise<Array<RepoURL>> {
         let repoURLs: Array<RepoURL> = [];
 
         await this.looper.DiscardUndefined_StoreForEach<string, RepoURL>(

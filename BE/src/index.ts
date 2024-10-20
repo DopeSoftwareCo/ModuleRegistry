@@ -12,10 +12,10 @@ import { PackagesRouter } from "./Routes/PackagesRoutes";
 import { ResetRouter } from "./Routes/ResetRoutes";
 import { AuthRouter } from "./Routes/AuthRoutes";
 import mongoose from "mongoose";
-import { Demo } from "./Providers/ModEval/ExampleModEval";
+import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 dotenv.config();
 
-/*const envVarNames = [
+const envVarNames = [
     "GITHUB_TOKEN",
     "AUTH0_CLIENT_ID",
     "AUTH0_CLIENT_SECRET",
@@ -86,7 +86,12 @@ const runServer = async () => {
     app.listen(port, () => {
         console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
     });
-};*/
+};
 
-//runServer();
-Demo(3);
+async function Execute() {
+    await runServer();
+    console.log("=== Here's an evaluation demo! ===");
+    await RunEvalSubsystemDemo(1);
+}
+
+Execute();

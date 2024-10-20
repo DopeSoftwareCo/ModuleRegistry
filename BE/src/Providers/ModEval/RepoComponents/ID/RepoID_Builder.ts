@@ -14,15 +14,17 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
     }
 
     async MultiBuild(repoURLs: Array<RepoURL>): Promise<Array<RepoID> | undefined> {
-        let creations = Array<RepoID>();
+        if (repoURLs.length < 1) {
+            return undefined;
+        }
 
+        let creations = Array<RepoID>();
         await this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
             repoURLs,
             creations,
             this.Build.bind(this),
             true
         );
-
         return creations;
     }
 
@@ -41,7 +43,6 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
         } else if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_RepoURL(source);
         } else {
-            console.log("What the fuck did you give me??");
             creation = undefined;
         }
         return creation;

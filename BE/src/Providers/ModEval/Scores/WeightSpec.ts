@@ -19,8 +19,13 @@ export class WeightSpec {
     }
 }
 
-export function FindWeightSpecByReceiver(arr: Array<WeightSpec>, x: MetricName): number {
-    const spec = arr.find((weightSpec) => weightSpec.Receiver() === x);
+export function FindWeightSpecByReceiver(arr: Array<WeightSpec>, name: MetricName): number {
+    let size = arr.length;
 
-    return spec ? arr.indexOf(spec, 0) : -1;
+    for (let i = 0; i < size; i++) {
+        if (arr[i].Receiver() === name) {
+            return i;
+        }
+    }
+    return -1;
 }
