@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const PageContainer = styled.div`
     display: flex;
@@ -22,6 +22,7 @@ export const MainSection = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     padding-top: 120px;
 `;
 export const FooterSection = styled.div``;
