@@ -54,10 +54,10 @@ export async function Demo(code: number) {
         console.log("Failed ");
         return;
     }
-    //repos.forEach((repo) => console.log(repo.ID));
-    //x.MultiEval(repos);*/
+
+    await x.MultiEval(repos);
 
     console.log("========================= RESULT OF EVALUATION =========================");
 
-    console.log(repoIDs);
+    repos.forEach((repo) => console.log(repo.Scores));
 }

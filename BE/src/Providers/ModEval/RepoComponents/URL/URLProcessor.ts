@@ -1,14 +1,15 @@
 import { AsyncLooper } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
-import { RepoURL, RepoURLs } from "./URLProcessor.interface";
+import { RepoURL, I_URLProcessor } from "./URLProcessor.interface";
 import { NullableArray } from "../../../../classes/Essential_Interfaces/NullableArray";
 
-export class URLProcessor {
+export class URLProcessor extends I_URLProcessor {
     private created?: Array<RepoURL>;
     private trackingHistory: boolean;
     private looper: AsyncLooper;
 
     constructor(trackHistory: boolean = false) {
+        super();
         if (trackHistory) {
             this.created = new Array<RepoURL>(10);
         }
@@ -41,7 +42,7 @@ export class URLProcessor {
         return repoURLs;
     }
 
-    private async TryBuildValidRepoURL(raw: string): Promise<RepoURL | undefined> {
+    protected async TryBuildValidRepoURL(raw: string): Promise<RepoURL | undefined> {
         // github.com/x/x is 14 characters long, so there's no way in hell a smaller url is valid
         if (raw.length < 14) {
             return undefined;

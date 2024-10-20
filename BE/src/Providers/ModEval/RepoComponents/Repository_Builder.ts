@@ -57,10 +57,8 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         if (IsType_RepoID(source)) {
             creation = this.StartFrom_ID(source, weightspecs);
         } else if (IsType_RepoURL(source)) {
-            console.log("===Building Repo from URL===");
             creation = await this.StartFrom_URL(source, weightspecs);
         } else {
-            console.log("What the fuck did you give me??");
             undefined;
         }
 
@@ -68,7 +66,6 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
     }
 
     private async StartFrom_URL(url: RepoURL, weights?: WeightSpecSet): Promise<Repository | undefined> {
-        console.log("NOOO IM BUILDING REPO FROM URL");
         const weightsToUse = weights ? weights : this.default_weights;
 
         const id = await this.idBuilder.Build(url);
@@ -76,8 +73,6 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
     }
 
     private StartFrom_ID(id: RepoID, weights?: WeightSpecSet): Repository | undefined {
-        console.log("Building a repository from an ID!!!");
-
         const weightsToUse = weights ? weights : this.default_weights;
         const scores = new RepoScoreset(weightsToUse);
         return new Repository(id, scores);

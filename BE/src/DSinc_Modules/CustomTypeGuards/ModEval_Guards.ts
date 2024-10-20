@@ -1,15 +1,12 @@
 import { RepoURL } from "../../Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
 import { Repository } from "../../Providers/ModEval/RepoComponents/Repository";
 import { RepoID } from "../../Providers/ModEval/RepoComponents/ID/RepoID";
+import { I_RepoScoreset, RepoScoreset } from "../../Providers/ModEval/Scores/RepoScoreset";
+
+export type GuardLogic = (value: any) => number;
 
 export function IsType_RepoURL(value: any): value is RepoURL {
-    console.log(" ===== TypeGuard URL ======");
-    try {
-        if (!value) {
-            return false;
-        }
-
-        let typeMatch = false;
+    const runChecks = (value: any) => {
         let failures = 0;
 
         failures += typeof value.providedURL === "string" ? 0 : 1;
@@ -21,57 +18,51 @@ export function IsType_RepoURL(value: any): value is RepoURL {
         }
 
         failures += typeof value.gitURL === "string" ? 0 : 1;
+        return failures;
+    };
 
-        typeMatch = failures == 0;
-        return typeMatch;
-    } catch {
-        console.log("EEE");
-        return false;
-    }
+    return SkeletonIsType<RepoID>(value, runChecks);
 }
 
 export function IsType_RepoID(value: any): value is RepoID {
-    console.log(" ===== TypeGuard ID ======");
+    const runChecks = (value: any) => {
+        let failures = 0;
+
+        failures += typeof value.Owner === "string" ? 0 : 1;
+        failures += typeof value.Name === "string" ? 0 : 1;
+        failures += typeof value.GitHubAddress === "string" ? 0 : 1;
+        failures += IsType_RepoURL(value.URL) ? 0 : 1;
+        return failures;
+    };
+
+    return SkeletonIsType<RepoID>(value, runChecks);
+}
+
+export function IsType_Repository(value: any): value is Repository {
+    const runChecks = (value: any) => {
+        let failures = 0;
+
+        failures += typeof value.License() === "string" ? 0 : 1;
+        failures += IsType_RepoID(value.ID()) ? 0 : 1;
+        failures += IsType_ScoresetFromRepo(value.Scores()) ? 0 : 1;
+        //failures += IsType_NDJSONRow(value.NDJSONRow()) ? 0 : 1;
+        return failures;
+    };
+
+    return SkeletonIsType<Repository>(value, runChecks);
+}
+
+export function IsType_ScoresetFromRepo(value: any): value is RepoScoreset {
+    return value.extends(I_RepoScoreset);
+}
+
+export function SkeletonIsType<T>(value: any, ApplyGuardingLogic: GuardLogic): value is T {
     try {
         if (!value) {
             return false;
         }
 
-        let typeMatch = false;
-        let failures = 0;
-
-        failures += typeof value.Owner === "string" ? 0 : 1;
-        if (failures > 0) console.log("Failed #1");
-        failures += typeof value.Name === "string" ? 0 : 1;
-        if (failures > 0) console.log("Failed #2");
-        failures += typeof value.GitHubAddress === "string" ? 0 : 1;
-        if (failures > 0) console.log("Failed #3");
-        failures += IsType_RepoURL(value.URL) ? 0 : 1;
-        if (failures > 0) console.log("Failed #4");
-
-        typeMatch = failures == 0;
-        return typeMatch;
-    } catch {
-        console.log("Typecheck error!!");
-        return false;
-    }
-}
-
-export function IsType_Repository(value: any): value is Repository {
-    let typeMatch = false;
-
-    try {
-        if (value) {
-            let failures = 0;
-
-            failures += typeof value.providedURL === "string" ? 0 : 1;
-            failures += typeof value.domain === "string" ? 0 : 1;
-            failures += typeof value.tokens === "undefined" || typeof value[0] === "string" ? 0 : 1;
-            failures += typeof value.gitURL === "string" ? 0 : 1;
-
-            typeMatch = failures == 0;
-        }
-        return typeMatch;
+        return ApplyGuardingLogic(value) == 0;
     } catch {
         return false;
     }

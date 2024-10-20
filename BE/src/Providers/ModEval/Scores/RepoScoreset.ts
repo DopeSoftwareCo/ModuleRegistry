@@ -4,11 +4,24 @@ import { TryIndexOrDefaultTo } from "../../../DSinc_Modules/DSinc_LoopsMaps";
 import { MetricName } from "./Metric.const";
 import { Metric } from "./Metric";
 
-export class RepoScoreset {
-    private weightSum: number;
-    private scoreSum: number;
-    private timeSum: number;
-    private latestNet: number;
+const ROUNDVALS = true;
+const PRECISIONDEFAULT_NET = 2;
+
+export abstract class I_RepoScoreset {
+    protected abstract CommonAddMethod(data: Metric): Metric | undefined;
+    abstract AddScore_Unweighted(data: Metric): void;
+    abstract AddScore(data: Metric): void;
+    abstract RecalculateNet(): number;
+    abstract TimeSum(): number;
+    abstract ScoreSum(): number;
+    abstract CurrentScore(): number;
+}
+
+export class RepoScoreset extends I_RepoScoreset {
+    private net: number = 0;
+    private scoreSum: number = 0;
+    private weightSum: number = 0;
+    private timeSum: number = 0;
     private rampup_score: Metric;
     private correctness_score: Metric;
     private busfactor_score: Metric;
@@ -20,10 +33,7 @@ export class RepoScoreset {
     private metrics: Metric[];
 
     constructor(weightspec?: WeightSpecSet) {
-        this.weightSum = 0;
-        this.scoreSum = 0;
-        this.timeSum = 0;
-        this.latestNet = -1;
+        super();
 
         const weights = weightspec ? this.ProcessWeightSpecSet(weightspec) : DEFAULT_WEIGHTS;
 
@@ -67,6 +77,14 @@ export class RepoScoreset {
         safeSpec[5] = versionSpec == EMPTY_WEIGHTSPEC ? DEFAULT_WEIGHTS[5] : versionSpec;
         safeSpec[6] = mergeSpec == EMPTY_WEIGHTSPEC ? DEFAULT_WEIGHTS[6] : mergeSpec;
 
+        this.weightSum =
+            rampupSpec.Weight() +
+            correctnessSpec.Weight() +
+            busfactorSpec.Weight() +
+            responseSpec.Weight() +
+            licensingSpec.Weight() +
+            versionSpec.Weight() +
+            mergeSpec.Weight();
         return safeSpec;
     }
 
@@ -86,7 +104,7 @@ export class RepoScoreset {
         return indices;
     }
 
-    private CommonAddMethod(data: Metric): Metric | undefined {
+    protected CommonAddMethod(data: Metric): Metric | undefined {
         const autoFailer = this.isCompatible ? 1 : 0;
         if (data.Name == MetricName.Unknown) {
             return undefined;
@@ -99,7 +117,7 @@ export class RepoScoreset {
         let ref = this.metrics[data.Name];
         this.scoreSum = this.scoreSum - ref.AdjustedScore + data.AdjustedScore;
         this.timeSum = this.timeSum - ref.Time + data.Time;
-        this.latestNet = this.weightSum > 0 ? this.scoreSum / this.weightSum : -1;
+        this.UpdateNet();
 
         return ref;
     }
@@ -118,7 +136,21 @@ export class RepoScoreset {
         }
     }
 
-    public CalculateNet(): number {
+    private UpdateNet(round: boolean = ROUNDVALS): void {
+        if (!this.isCompatible) {
+            this.net = 0;
+            return;
+        }
+
+        let newNet = this.weightSum > 0 ? this.scoreSum / this.weightSum : -1;
+
+        if (round) {
+            newNet = parseFloat(newNet.toPrecision(PRECISIONDEFAULT_NET));
+        }
+        this.net = newNet;
+    }
+
+    public RecalculateNet(): number {
         const autoFailer = this.isCompatible ? 1 : 0;
         let scores = 0;
         let times = 0;
@@ -132,8 +164,8 @@ export class RepoScoreset {
         this.scoreSum = scores;
 
         let adjusted_sum = this.scoreSum * autoFailer;
-        this.latestNet = this.weightSum > 0 ? adjusted_sum / this.weightSum : -1;
-        return this.latestNet;
+        this.UpdateNet();
+        return this.net;
     }
 
     public TimeSum(): number {
@@ -145,6 +177,6 @@ export class RepoScoreset {
     }
 
     public CurrentScore(): number {
-        return this.latestNet;
+        return this.net;
     }
 }
