@@ -19,9 +19,13 @@ import { Repository } from "../RepoComponents/Repository";
 */
 
 export async function VersionDependence_Scorer(repo: Repository): Promise<number> {
-    // Placeholder for actual functionality
-    let result = 0;
-    return result;
+    let number_of_dependencies = 0; // Placeholder for value. 
+    if (number_of_dependencies < 0) 
+        {
+            throw new Error("Number of dependencies cannot be negative."); // Can be changed to return 0; 
+        }
+
+        return 1 / (1 + (number_of_dependencies/2));
 }
 
 export async function MergeRestriction_Scorer(repo: Repository): Promise<number> {
