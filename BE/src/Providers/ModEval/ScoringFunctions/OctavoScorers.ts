@@ -9,17 +9,17 @@ import { Repository } from "../RepoComponents/Repository";
 const CONTRIBUTION_THRESHOLD = 50;
 
 export async function RampUp_WrappedScorer(repo: Repository): Promise<number> {
-    let info = repo.Identifiers;
+    let info = repo.ID;
     return await calculateRampUp(info.Owner, info.Name);
 }
 
 export async function Correctness_WrappedScorer(repo: Repository): Promise<number> {
-    let info = repo.Identifiers;
+    let info = repo.ID;
     return await calculateCorrectness(info.Owner, info.Name);
 }
 
 export async function BusFactor_WrappedScorer(repo: Repository): Promise<number> {
-    let info = repo.Identifiers;
+    let info = repo.ID;
     let contributors = repo.QueryResult?.Contributors;
 
     if (!contributors) {
@@ -29,16 +29,20 @@ export async function BusFactor_WrappedScorer(repo: Repository): Promise<number>
 }
 
 export async function Responsiveness_WrappedScorer(repo: Repository): Promise<number> {
-    let info = repo.Identifiers;
+    let info = repo.ID;
     return await calculateResponsiveMaintener(info.Owner, info.Name);
 }
 
 export async function LicenseCompatibility_WrapperScorer(repo: Repository): Promise<number> {
-    let info = repo.Identifiers;
-    return await fetchRepoLicense(info.Owner, info.Name);
+    try {
+        let info = repo.ID;
+        return await fetchRepoLicense(info.Owner, info.Name);
+    } catch {
+        return 0;
+    }
 }
 
 export async function CalculateMetrics_(repo: Repository): Promise<string> {
-    let info = repo.Identifiers;
+    let info = repo.ID;
     return await calculateMetricsForRepo(info.GitHubAddress);
 }
