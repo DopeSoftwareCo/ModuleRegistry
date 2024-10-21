@@ -1,20 +1,16 @@
-import { GraphQLResponse } from "../ResponseTypes/Query_ResponseTypes";
-import { RepositoryIdentification } from "../../Types/RepoIDTypes";
-
+import { GraphQLResponse } from "../CombinedResult/QueryResult.types";
+import { RepoID } from "../../RepoComponents/ID/RepoID";
 import chalk from "chalk";
 
 const DEFAULT_FIELDS: string[] = [];
 
-export const RepoQueryBuilder = <T>(
-    repos: Array<RepositoryIdentification>,
-    extraFields?: string[]
-): string => {
+export const RepoQueryBuilder = <T>(repos: Array<RepoID>, extraFields?: string[]): string => {
     return `
         query {
             ${repos
                 .map((repo, idx) => {
                     return `    
-                repo${idx}: repository(owner: "${repo.owner}", name: "${repo.repoName}") {
+                repo${idx}: repository(owner: "${repo.Owner}", name: "${repo.Name}") {
                                 ${[...DEFAULT_FIELDS, ...(extraFields ?? [])].join("\n")}
                                   
                             }

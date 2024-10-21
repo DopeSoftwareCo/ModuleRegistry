@@ -20,6 +20,7 @@ import {
     GetRatingsForPackageResponseBody,
 } from "ResponseTypes";
 import { NextFunction } from "express";
+import PackageModel from "../Schemas/Package";
 
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
@@ -78,34 +79,38 @@ export const GetPackageViaIDController = asyncHandler(
 export const GetPackageRatingsViaIDController = asyncHandler(
     async (req: GetPackageRatingsRequest, res: GetRatingsForPackageResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
-        //your code here
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //should return back to here with some type that fits the schema as follows...
+        const pack = await PackageModel.findById(requestedPackageID);
+        console.log(pack);
+
+        let DNE = false;
+
+        if (!pack) {
+            DNE = true;
+            const responseMessage: GetRatingsForPackageInvalidResponses = "Package does not exist.";
+            res.status(404).send(responseMessage);
+            return;
+        }
+
         const responseBody: GetRatingsForPackageResponseBody = {
-            BusFactor: 0,
-            Correctness: 0,
-            RampUp: 0,
-            ResponsiveMaintainer: 0,
-            LicenseScore: 0,
-            GoodPinningPractice: 0,
-            PullRequest: 0,
-            NetScore: 0,
+            BusFactor: pack!.score_busFactor,
+            Correctness: pack!.score_correctness,
+            RampUp: pack!.rampup_score,
+            ResponsiveMaintainer: pack!.score_responsiveMaintainer,
+            LicenseScore: pack!.score_license,
+            GoodPinningPractice: pack!.score_goodPinningPractice,
+            PullRequest: pack!.score_pullrequest,
+            NetScore: pack!.netscore,
         };
 
-        //some return that states the package didnt exist
-        const DNE = false;
         //some return that states the system choked on at least one of the metrics
         const Choked = false;
 
-        let responseMessage: GetRatingsForPackageInvalidResponses;
-        if (!DNE && !Choked) {
+        if (!Choked) {
             res.status(200).json(responseBody);
-        } else if (DNE) {
-            responseMessage = "Package does not exist.";
-            res.status(404).send(responseMessage);
         } else if (Choked) {
-            responseMessage = "The package rating system choked on at least one of the metrics.";
+            const responseMessage: GetRatingsForPackageInvalidResponses =
+                "The package rating system choked on at least one of the metrics.";
             res.status(500).send(responseMessage);
         }
     }

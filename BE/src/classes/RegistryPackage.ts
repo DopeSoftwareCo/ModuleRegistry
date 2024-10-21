@@ -1,6 +1,6 @@
 import { NDJSONRow } from "../Providers/ModEval/Assets/Primero/MVP/src/Types/DataTypes";
-import { RepoScoreSet, RepositoryScoreSet, ScoreInfo } from "../Providers/ModEval/Types/ScoreTypes";
-import { TargetRepository } from "../Providers/ModEval/SingleClasses/TargetRepository";
+import { RepoScoreset } from "../Providers/ModEval/Scores/RepoScoreset";
+import { Repository } from "../Providers/ModEval/RepoComponents/Repository";
 import { MakePositiveInteger } from "../DSinc_Modules/DSinc_Math";
 import { User } from "./User";
 
@@ -87,18 +87,18 @@ export type UploadMetadata = {
 export class RegistryPackage {
     packageID: string;
     title: string;
-    repo: TargetRepository;
+    repo: Repository;
     repoURL: string;
     version: PackageVersion;
     licenseName: string;
-    scores: RepoScoreSet; // This is under refactor ... will be replaced by RepositoryScoreset
+    scores: RepoScoreset; // This is under refactor ... will be replaced by RepositoryScoreset
     uploadMetadata: UploadMetadata;
     content: string;
     // will probably add an ndjson row member
 
     constructor(
         packageName: string,
-        repository: TargetRepository,
+        repository: Repository,
         version: VersionNumbers,
         metadata: UploadMetadata,
         content: string
@@ -106,7 +106,7 @@ export class RegistryPackage {
         this.packageID = metadata.packageID;
         this.title = packageName;
         this.repo = repository;
-        this.repoURL = repository.Identifiers.url_info.gitURL;
+        this.repoURL = repository.ID.GitHubAddress;
         this.version = new PackageVersion(version.major, version.minor, version.patch);
         this.licenseName = repository.License;
         this.scores = repository.Scores;
@@ -140,7 +140,7 @@ export class RegistryPackage {
     get License(): string {
         return this.licenseName;
     }
-    get Scores(): RepoScoreSet {
+    get Scores(): RepoScoreset {
         return this.scores;
     }
     get Content(): string {

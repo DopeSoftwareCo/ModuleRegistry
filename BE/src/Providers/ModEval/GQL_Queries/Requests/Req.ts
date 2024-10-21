@@ -4,9 +4,9 @@
  * @author DSinc
  */
 
-import chalk from 'chalk';
-import { GraphQLResponse } from '../ResponseTypes/Query_ResponseTypes';
-import { LogDebug, LogInfo } from '../../../Utils/Log';
+import chalk from "chalk";
+import { GraphQLResponse } from "../../Querying/ResponseTypes/Query_ResponseTypes";
+import { LogDebug, LogInfo } from "../../../Utils/Log";
 
 /**
  * @author John Leidy
@@ -14,19 +14,19 @@ import { LogDebug, LogInfo } from '../../../Utils/Log';
  * @param query The query string built from our query builder {@type string}
  * @returns a promise {@type Promise<GraphQLResponse<T> | undefined>}
  */
-export const requestFromGQL = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
+export const RequestFromGQL = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
     if (!process.env.GITHUB_TOKEN) {
-        throw new Error('TOKEN NOT SET');
+        throw new Error("TOKEN NOT SET");
     }
-    const endpoint = 'https://api.github.com/graphql';
+    const endpoint = "https://api.github.com/graphql";
     const token = process.env.GITHUB_TOKEN;
 
     try {
         LogInfo(`Fetching from GQL`);
         const response = await fetch(endpoint, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ query }),
@@ -38,7 +38,7 @@ export const requestFromGQL = async <T>(query: string): Promise<GraphQLResponse<
             LogInfo(`Status from GQL: ${result.status}`);
             throw new Error(
                 `GQL Response returned a message: ${result.message} with a code: ${result.status}. ${
-                    result.message?.includes('credentials') || result.status === '401' ? 'INVALID TOKEN' : ''
+                    result.message?.includes("credentials") || result.status === "401" ? "INVALID TOKEN" : ""
                 }`
             );
         }
@@ -47,12 +47,12 @@ export const requestFromGQL = async <T>(query: string): Promise<GraphQLResponse<
         LogDebug(
             err instanceof Error
                 ? `ERR IN GQL ${chalk.red(err.message)}`
-                : 'An unknown error occured in requestFromGQL'
+                : "An unknown error occured in requestFromGQL"
         );
         throw new Error(
             err instanceof Error
                 ? `ERR IN GQL ${chalk.red(err.message)}`
-                : 'An unknown error occured in requestFromGQL'
+                : "An unknown error occured in requestFromGQL"
         );
     }
 };
