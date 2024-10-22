@@ -19,11 +19,15 @@ import { Repository } from "../RepoComponents/Repository";
 */
 
 export async function VersionDependence_Scorer(repo: Repository): Promise<number> {
-    let number_of_dependencies = 0; // Placeholder for value. 
+    let number_of_dependencies = repo.QueryResult?.DependencyData?.length; 
+    if (number_of_dependencies == undefined)
+    {
+        return 1;
+    }
     if (number_of_dependencies < 0) 
-        {
-            throw new Error("Number of dependencies cannot be negative."); // Can be changed to return 0; 
-        }
+    {
+        throw new Error("Number of dependencies cannot be negative."); // Can be changed to return 0; 
+    }
 
         return 1 / (1 + (number_of_dependencies/2));
 }
