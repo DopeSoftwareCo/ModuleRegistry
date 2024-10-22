@@ -1,6 +1,7 @@
 import { Repository } from "../RepoComponents/Repository";
 import { CreateTotalCommitsField, CreateReviewedPRField } from "../GQL_Queries/Builders/QueryFields";
 import { SendRequestToGQL } from "../GQL_Queries/Builders/QueryBuilder";
+import { TotalCommitsResponse, PullRequestsResponse } from "../GQL_Queries/QueryResponses/PR_ResponseTypes";
 
 // Recall the enum ...
 //VersionDependence = 5,
@@ -58,9 +59,9 @@ export async function MergeRestriction_Scorer(repo: Repository): Promise<number>
         return 0;
     }
 
-    const Score = prWithMultipleParents / totalCommits;
-
-    return Score;
+    const Score = (prWithMultipleParents / totalCommits) * 100;
+    const roundedScore = parseFloat(Score.toFixed(2));
+    return roundedScore;
 }
 
 async function fetchAllPullRequests(owner: string, repoName: string): Promise<any[]> {
