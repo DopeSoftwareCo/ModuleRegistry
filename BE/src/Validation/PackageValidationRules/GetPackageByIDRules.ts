@@ -1,3 +1,7 @@
+/**
+ * @author John Leidy
+ * @description This ensures the id field is proper and a valid mongodb id, some response messages were slightly different
+ */
 import { param } from "express-validator";
 import { isMongoDbID } from "./GeneralByIDRules";
 

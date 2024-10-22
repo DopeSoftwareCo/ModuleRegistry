@@ -1,3 +1,7 @@
+/**
+ * @author John Leidy
+ * @description This ensures the id field is proper and a valid mongodb id
+ */
 import { header, param } from "express-validator";
 import mongoose from "mongoose";
 

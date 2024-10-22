@@ -1,3 +1,9 @@
+/**
+ * @author John Leidy
+ * @description This validates the upload request. As requested via the schema either Content or URL may exist.
+ * Never both
+ * Never neither
+ */
 import { body, header } from "express-validator";
 
 const InvalidUploadPackageMessage =

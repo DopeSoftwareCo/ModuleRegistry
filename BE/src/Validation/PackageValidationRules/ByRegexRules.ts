@@ -1,3 +1,7 @@
+/**
+ * @author John Leidy
+ * @description This module is responsible for validating the regular expression request.
+ */
 import { body, header } from "express-validator";
 
 const InvalidReqMessageRegex =
@@ -5,9 +9,4 @@ const InvalidReqMessageRegex =
 
 export const ByRegexRules = [
     body("RegEx").exists().withMessage(InvalidReqMessageRegex).isString().withMessage(InvalidReqMessageRegex),
-    header("Authorization")
-        .exists()
-        .withMessage(InvalidReqMessageRegex)
-        .isString()
-        .withMessage(InvalidReqMessageRegex),
 ];
