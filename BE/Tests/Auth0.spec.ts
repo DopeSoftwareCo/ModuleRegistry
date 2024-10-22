@@ -22,6 +22,6 @@ describe("Auth0", () => {
             Secret: { password: "some password" },
         };
         const res = await authenticateViaAuth0(authRequestBody);
-        expect(res.token).toBe("TEST-TOKEN");
+        expect(res.token).toBe("Bearer TEST-TOKEN");
     });
 });
