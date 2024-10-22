@@ -32,9 +32,7 @@ export async function VersionDependence_Scorer(repo: TargetRepository): Promise<
 
 export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<number> {
     const owner = repo.Identifiers.owner;
-    //console.log("owner:", owner);
     const repoName = repo.Identifiers.repoName;
-    //console.log("repoName:", repoName);
 
     let prWithMultipleParents = 0;
 
@@ -44,7 +42,6 @@ export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<n
             (pr) => pr.mergeCommit && pr.mergeCommit.parents.totalCount >= 2
         ).length;
     } catch (error) {
-        // console.error(`Error fetching pull requests for ${owner}/${repoName}:`, error);
         return 0;
     }
 
@@ -55,13 +52,9 @@ export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<n
         if (result && result.data) {
             totalCommits = result.data.repository.object.history.totalCount;
         } else {
-            // // console.error(
-            //     `Result or result.data is undefined for total commits query in ${owner}/${repoName}`
-            // );
             return 0;
         }
     } catch (error) {
-        // console.error(`Error fetching total commits for ${owner}/${repoName}:`, error);
         return 0;
     }
 
@@ -70,11 +63,7 @@ export async function MergeRestriction_Scorer(repo: TargetRepository): Promise<n
     }
 
     const Score = (prWithMultipleParents / totalCommits) * 100;
-    // console.log(`Score for ${owner}/${repoName}:`, Score + "%");
     const roundedScore = parseFloat(Score.toFixed(2));
-    // console.log("prWithMultipleParents:", prWithMultipleParents);
-    // console.log("totalCommits:", totalCommits);
-    // console.log(`Score for ${owner}/${repoName}:`, roundedScore + "%");
     return roundedScore;
 }
 
@@ -102,21 +91,3 @@ async function fetchAllPullRequests(owner: string, repoName: string): Promise<an
 
     return allPullRequests;
 }
-
-//-------------------------------------------------------------------------// Delete after testing
-// dotenv.config();
-// const envVarNames = ["GITHUB_TOKEN"];
-
-// const url = "https://github.com";
-
-// async function main() {
-//     const repoID = await Generate_RepositoryID("https://github.com/cloudinary/cloudinary_npm");
-//     if (repoID) {
-//         const repo = new TargetRepository(repoID);
-//         const result = await MergeRestriction_Scorer(repo);
-//     } else {
-//         return 0;
-//     }
-// }
-
-// main();

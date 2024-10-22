@@ -38,9 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VersionDependence_Scorer = VersionDependence_Scorer;
 exports.MergeRestriction_Scorer = MergeRestriction_Scorer;
-var dotenv = require("dotenv"); //remove after testing
-var TargetRepository_1 = require("../SingleClasses/TargetRepository");
-var RepoIDTypes_1 = require("../Types/RepoIDTypes");
 var QueryBuilder_1 = require("../Querying/Builders/QueryBuilder");
 var QueryFields_1 = require("../Querying/Builders/QueryFields");
 var QueryFields_2 = require("../Querying/Builders/QueryFields");
@@ -88,7 +85,6 @@ function MergeRestriction_Scorer(repo) {
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();
-                    console.error("Error fetching pull requests:", error_1);
                     return [2 /*return*/, 0];
                 case 4:
                     queryString = (0, QueryFields_2.CreateTotalCommitsField)(owner, repoName);
@@ -103,18 +99,18 @@ function MergeRestriction_Scorer(repo) {
                         totalCommits = result.data.repository.object.history.totalCount;
                     }
                     else {
-                        console.error("Result or result.data is undefined");
                         return [2 /*return*/, 0];
                     }
                     return [3 /*break*/, 8];
                 case 7:
                     error_2 = _a.sent();
-                    console.error("Error fetching data from GraphQL:", error_2);
                     return [2 /*return*/, 0];
                 case 8:
+                    if (totalCommits === 0) {
+                        return [2 /*return*/, 0];
+                    }
                     Score = (prWithMultipleParents / totalCommits) * 100;
                     roundedScore = parseFloat(Score.toFixed(2));
-                    console.log("Score:", roundedScore + "%");
                     return [2 /*return*/, roundedScore];
             }
         });
@@ -146,13 +142,11 @@ function fetchAllPullRequests(owner, repoName) {
                         after = result.data.repository.pullRequests.pageInfo.endCursor;
                     }
                     else {
-                        console.error("Result or result.data is undefined");
                         return [3 /*break*/, 6];
                     }
                     return [3 /*break*/, 5];
                 case 4:
                     error_3 = _a.sent();
-                    console.error("Error fetching data from GraphQL:", error_3);
                     return [3 /*break*/, 6];
                 case 5: return [3 /*break*/, 1];
                 case 6: return [2 /*return*/, allPullRequests];
@@ -160,30 +154,3 @@ function fetchAllPullRequests(owner, repoName) {
         });
     });
 }
-//-------------------------------------------------------------------------// Delete after testing
-dotenv.config();
-var envVarNames = ["GITHUB_TOKEN"];
-var url = "https://github.com";
-function main() {
-    return __awaiter(this, void 0, void 0, function () {
-        var repoID, repo, result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, RepoIDTypes_1.Generate_RepositoryID)("https://github.com/cloudinary/cloudinary_npm")];
-                case 1:
-                    repoID = _a.sent();
-                    if (!repoID) return [3 /*break*/, 3];
-                    repo = new TargetRepository_1.TargetRepository(repoID);
-                    return [4 /*yield*/, MergeRestriction_Scorer(repo)];
-                case 2:
-                    result = _a.sent();
-                    return [3 /*break*/, 4];
-                case 3:
-                    console.error("Failed to generate repository ID");
-                    _a.label = 4;
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
-}
-main();
