@@ -24,12 +24,7 @@ export async function VersionDependence_Scorer(repo: Repository): Promise<number
     {
         return 1;
     }
-    if (number_of_dependencies < 0) 
-    {
-        throw new Error("Number of dependencies cannot be negative."); // Can be changed to return 0; 
-    }
-
-        return 1 / (1 + (number_of_dependencies/2));
+    return 1 / (1 + (number_of_dependencies/2));
 }
 
 export async function MergeRestriction_Scorer(repo: Repository): Promise<number> {
