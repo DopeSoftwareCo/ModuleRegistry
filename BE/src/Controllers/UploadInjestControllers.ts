@@ -38,7 +38,7 @@ export const UploadInjestController = asyncHandler(
             responseMessage = "Package exists already.";
             res.status(409).send(responseMessage);
         } else if (disqualified) {
-            responseMessage = "Pacakge is not uploaded due to disqualified rating.";
+            responseMessage = "Package is not uploaded due to disqualified rating.";
             res.status(424).send(responseMessage);
         }
     }

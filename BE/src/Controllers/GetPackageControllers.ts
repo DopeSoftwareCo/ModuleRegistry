@@ -50,29 +50,32 @@ export const GetPackagesFromRegistryController = asyncHandler(
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
-        console.log("original", req.originalUrl);
+        //console.log("original", req.originalUrl);
         //your code here using the id
+        const foundPackage = await PackageModel.findById(requestedPackageID);
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //return back something that signifies it was not found if that is the case;
-        const DNE = false;
-        //should return back here something typed as follows
-        const responseBody: GetPackageViaIDResponseBody = {
-            metadata: {
-                Name: "package name",
-                Version: "version",
-                ID: "id",
-            },
-            //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-            data: {},
-        };
-        let responseMessage: GetPackageViaIDInvalidResponseMessages;
-        if (!DNE) {
-            res.status(200).json(responseBody);
-        } else {
+        if (foundPackage == null) {
+            let responseMessage: GetPackageViaIDInvalidResponseMessages;
             responseMessage = "Package does not exist.";
             res.status(404).send(responseMessage);
         }
+        else {
+            const responseBody: GetPackageViaIDResponseBody = {
+                metadata: {
+                    Name: foundPackage?.metaData.Name,
+                    Version: foundPackage?.metaData.Version,
+                    ID: foundPackage.id,
+                },
+                //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
+                data: {
+                    Content: foundPackage.data.Content,
+                    URL: foundPackage.repoUrl,
+                    JSProgram: foundPackage.data.JSProgram,
+                },
+            };
+            res.status(200).json(responseBody);
+        }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^
     }
 );
 // /package/{id}/rate
