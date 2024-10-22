@@ -81,7 +81,7 @@ declare module "ResponseTypes" {
         | "There is missing field(s) in the PackageID"
         | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package does not exist."
-        | "The pacakge rating system choked on at least one of the metrics.";
+        | "The package rating system choked on at least one of the metrics.";
 
     export interface GetSizeCostForPackageResponse extends Response {
         body: GetSizeCostForPackageResponseBody;

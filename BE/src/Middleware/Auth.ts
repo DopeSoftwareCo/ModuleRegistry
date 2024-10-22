@@ -45,11 +45,11 @@ const processToken = (req: Request, res: Response, next: NextFunction) => {
         if (decodedToken?.permissions && decodedToken?.username) {
             req.username = decodedToken.username;
             req.permissions = decodedToken.permissions;
-            next();
+            return next();
         }
     }
 
-    returnProperInvalidResponse(req, res);
+    return returnProperInvalidResponse(req, res);
 };
 
 /**
@@ -74,6 +74,6 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             return returnProperInvalidResponse(req, res);
         }
     } else {
-        next();
+        return next();
     }
 };

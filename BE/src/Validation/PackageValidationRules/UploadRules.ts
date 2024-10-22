@@ -10,21 +10,23 @@ export const UploadPackageRules = [
     body("URL").optional().isString().withMessage(InvalidUploadPackageMessage),
 
     // Custom validator to check that only one of URL or Content exists
-    body().custom((value, { req }) => {
-        const { Content, URL } = req.body;
-        if ((Content && URL) || (!Content && !URL)) {
-            throw new Error(InvalidUploadPackageMessage);
-        }
-        return true;
-    }),
+    body()
+        .custom((value, { req }) => {
+            const { Content, URL } = req.body;
+            if ((Content && URL) || (!Content && !URL)) {
+                return false;
+            }
+            return true;
+        })
+        .withMessage(InvalidUploadPackageMessage),
     body("JSProgram")
         .exists()
         .withMessage(InvalidUploadPackageMessage)
         .isString()
         .withMessage(InvalidUploadPackageMessage),
-    header("Authorization")
+    body("debloat")
         .exists()
         .withMessage(InvalidUploadPackageMessage)
-        .isString()
+        .isBoolean()
         .withMessage(InvalidUploadPackageMessage),
 ];

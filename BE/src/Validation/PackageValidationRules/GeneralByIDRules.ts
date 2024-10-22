@@ -14,5 +14,4 @@ export const GeneralViaIDRuleset = [
         .withMessage(invalidByIdMessage)
         .custom(isMongoDbID)
         .withMessage(invalidByIdMessage),
-    header("Authorization").exists().withMessage(invalidByIdMessage),
 ];

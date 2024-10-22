@@ -40,7 +40,7 @@ export interface PackageRating {
 
 export interface PackageCost {
     //if dep=true in path means standaloneCost is required
-    standaloneCost: number;
+    standaloneCost?: number;
     totalCost: number;
 }
 

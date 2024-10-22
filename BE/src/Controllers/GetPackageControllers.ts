@@ -19,7 +19,9 @@ import {
     GetRatingsForPackageInvalidResponses,
     GetRatingsForPackageResponse,
     GetRatingsForPackageResponseBody,
+    GetSizeCostForPackageInvalidResponses,
     GetSizeCostForPackageResponse,
+    GetSizeCostForPackageResponseBody,
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
@@ -80,7 +82,44 @@ export const GetPackageViaIDController = asyncHandler(
 
 // /package/{id}/cost
 export const GetPackageSizeCostViaIDController = asyncHandler(
-    async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {}
+    async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {
+        const requestedPackageID = req.requestedId;
+        const dependencyCostRequested = req.query.dependency;
+        const pack = await PackageModel.findById(requestedPackageID);
+        //check if package exists
+        if (pack) {
+            const responseMessage: GetSizeCostForPackageInvalidResponses = "Package does not exist.";
+            return res.status(404).send(responseMessage);
+        }
+        let totalCost: number = 0;
+        let standaloneCost: number = 0;
+        let choked: boolean = false;
+        //your code with the package
+
+        if (dependencyCostRequested) {
+            //do something to get this value and set standalone cost
+        }
+
+        //if it chokes set choked to true
+
+        //^^^^^^^^^^^^^^^^^^^^^^^^^
+        //if dependency cost was requested...
+        //we have totalCost AND standaloneCost
+        //if it was not.. we only have totalcost
+        const responseBody: GetSizeCostForPackageResponseBody = {
+            totalCost: totalCost,
+            //if dep req add the standaloneCost field via spread, otherwise spread empty leaving only totalCost field
+            ...(dependencyCostRequested ? { standaloneCost } : {}),
+        };
+
+        if (!choked) {
+            res.status(200).json(responseBody);
+        } else if (choked) {
+            const responseMessage: GetSizeCostForPackageInvalidResponses =
+                "The package rating system choked on at least one of the metrics.";
+            res.status(500).send(responseMessage);
+        }
+    }
 );
 
 // /package/{id}/rate
@@ -147,7 +186,5 @@ export const GetPackagesViaRegexController = asyncHandler(
         }
     }
 );
-
-// /package/{}
 
 //did not add package history controller here, we are not implementing this.

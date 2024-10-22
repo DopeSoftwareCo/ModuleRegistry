@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
     GetPackageRatingsViaIDController,
+    GetPackageSizeCostViaIDController,
     GetPackagesViaRegexController,
     GetPackageViaIDController,
 } from "../Controllers/GetPackageControllers";
@@ -14,6 +15,7 @@ import { UploadPackageRules } from "../Validation/PackageValidationRules/UploadR
 import { verifyToken } from "../Middleware/Auth";
 import { appendMongoDBid } from "../Middleware/MongoDB";
 import { DeleteByIDRules } from "../Validation/PackageValidationRules/DeleteByIDRules";
+import { GetRatingByIdRules } from "../Validation/PackageValidationRules/GetRatingByIDRules";
 
 export const PackageRouter = Router();
 
@@ -50,10 +52,19 @@ PackageRouter.delete(
 PackageRouter.get(
     "/:id/rate",
     verifyToken,
-    GeneralViaIDRuleset,
+    GetRatingByIdRules,
     validateRequest,
     appendMongoDBid,
     GetPackageRatingsViaIDController
+);
+// /package/{id}/cost
+PackageRouter.get(
+    "/:id/cost",
+    verifyToken,
+    GetRatingByIdRules,
+    validateRequest,
+    appendMongoDBid,
+    GetPackageSizeCostViaIDController
 );
 // /package/byRegex
 PackageRouter.post("/byRegex", verifyToken, ByRegexRules, validateRequest, GetPackagesViaRegexController);
