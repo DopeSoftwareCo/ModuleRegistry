@@ -12,6 +12,7 @@ import { NextFunction } from "express";
 // /reset
 export const ResetControllerDANGER = asyncHandler(
     async (req: ResetRegistryRequest, res: ResetRegistryResponse, next: NextFunction) => {
+        //must verify the user can actually reset everything
         //your code here
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

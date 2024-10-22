@@ -6,7 +6,6 @@ import {
 import { AuthenticationRules } from "../src/Validation/AuthRules/AuthRules";
 import { ByRegexRules } from "../src/Validation/PackageValidationRules/ByRegexRules";
 import { GeneralViaIDRuleset } from "../src/Validation/PackageValidationRules/GeneralByIDRules";
-import { ResetRules } from "../src/Validation/PackageValidationRules/ResetRules";
 import { UploadPackageRules } from "../src/Validation/PackageValidationRules/UploadRules";
 import express, { Express, Request, Response } from "express";
 import { validateRequest } from "../src/Validation/validator";
@@ -16,7 +15,6 @@ const RuleSets = {
     GetPackages: GetPackagesRules,
     GetByRegex: ByRegexRules,
     ByID: GeneralViaIDRuleset,
-    Reset: ResetRules,
     UploadPackage: UploadPackageRules,
 };
 

@@ -2,16 +2,6 @@ import { Response, Request, NextFunction } from "express";
 import * as jwt from "express-jwt";
 import JwksRsa from "jwks-rsa";
 import * as jsonwebtoken from "jsonwebtoken";
-import {
-    DeletePackageViaIDResponseMessages,
-    GetPackagesInvalidResponseMessages,
-    GetPackageViaIDInvalidResponseMessages,
-    GetPackageViaRegexInvalidResponseMessages,
-    GetRatingsForPackageInvalidResponses,
-    ResetRegistryResponseMessages,
-    UpdatePackageViaIDResponseMessages,
-    UploadInjestResponseMessages,
-} from "ResponseTypes";
 
 /**
  * @author John Leidy
@@ -29,50 +19,6 @@ export const checkJwt = jwt.expressjwt({
     }) as jwt.GetVerificationKey,
 });
 
-const INVALID_MESSAGES: {
-    "/packages": GetPackagesInvalidResponseMessages;
-    "/reset": ResetRegistryResponseMessages;
-    "/package/":
-        | GetPackageViaIDInvalidResponseMessages
-        | UpdatePackageViaIDResponseMessages
-        | DeletePackageViaIDResponseMessages
-        | GetRatingsForPackageInvalidResponses;
-    "/package": UploadInjestResponseMessages;
-    byregex: GetPackageViaRegexInvalidResponseMessages;
-} = {
-    "/packages":
-        "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formatted improperly, or the AuthenticationToken is invalid.",
-    "/reset":
-        "There is missing field(s) in the AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.",
-    "/package/":
-        "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.",
-    "/package":
-        "There is missing field(s) in the PackageData/AuthenticationToken or it is formed improperly (e.g. Content and URL are both set), or the AuthenticationToken is invalid.",
-    byregex:
-        "There is missing field(S) in the PackageRegEx/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.",
-};
-
-/**
- * @author John Leidy
- * @description This function is responsible for getting a message to return to the user if the token was invalid.
- * @param url the original url from the request {@type string}
- * @returns an invalid message to return to the user or null @{@type string | undefined}
- */
-export const getInvalidMessage = (url: string) => {
-    if (url === "/packages") {
-        return INVALID_MESSAGES["/packages"];
-    } else if (url === "/reset") {
-        return INVALID_MESSAGES["/reset"];
-    } else if (/^\/package\/.*$/.test(url) && !url.includes("byRegEx")) {
-        return INVALID_MESSAGES["/package/"];
-    } else if (url === "/package") {
-        return INVALID_MESSAGES["/package"];
-    } else if (/^\/package\/.*$/.test(url) && url.includes("byRegEx")) {
-        return INVALID_MESSAGES.byregex;
-    }
-    return undefined; // No match found
-};
-
 /**
  * @author John Leidy
  * @param req the request object from express {@type Request}
@@ -80,14 +26,7 @@ export const getInvalidMessage = (url: string) => {
  * @returns  a response {@type Response<any, Record<string, any>> | undefined}
  */
 export const returnProperInvalidResponse = (req: Request, res: Response) => {
-    const regex = /^\/packages$|^\/reset$|^\/package\/.*$|^\/package$/;
-
-    if (regex.test(req.originalUrl)) {
-        const message = getInvalidMessage(req.originalUrl);
-        if (message) {
-            return res.status(400).send(message);
-        }
-    }
+    return res.status(403).send("Authentication failed due to invalid or missing AuthenticationToken.");
 };
 
 /**
@@ -106,11 +45,11 @@ const processToken = (req: Request, res: Response, next: NextFunction) => {
         if (decodedToken?.permissions && decodedToken?.username) {
             req.username = decodedToken.username;
             req.permissions = decodedToken.permissions;
-            next();
+            return next();
         }
     }
 
-    returnProperInvalidResponse(req, res);
+    return returnProperInvalidResponse(req, res);
 };
 
 /**
@@ -135,6 +74,6 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             return returnProperInvalidResponse(req, res);
         }
     } else {
-        next();
+        return next();
     }
 };
