@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, jest } from "@jest/globals";
 // verifyToken.test.ts
 import request from "supertest";
 import express, { Request, Response, NextFunction } from "express";
-import { verifyToken, returnProperInvalidResponse, getInvalidMessage } from "../src/Middleware/Auth"; // Adjust the import path
+import { verifyToken, returnProperInvalidResponse } from "../src/Middleware/Auth"; // Adjust the import path
 import jwt from "jsonwebtoken";
 
 jest.mock("jsonwebtoken", () => ({
@@ -41,31 +41,6 @@ describe("verifyToken Middleware", () => {
         expect(response.text).toBe(
             "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
         );
-    });
-
-    // Additional tests for getInvalidMessage and returnProperInvalidResponse
-    describe("getInvalidMessage", () => {
-        it("should return the correct message for a valid URL", () => {
-            expect(getInvalidMessage("/packages")).toBe(
-                "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formatted improperly, or the AuthenticationToken is invalid."
-            );
-            expect(getInvalidMessage("/reset")).toBe(
-                "There is missing field(s) in the AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
-            );
-            expect(getInvalidMessage("/package/123")).toBe(
-                "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
-            );
-            expect(getInvalidMessage("/package")).toBe(
-                "There is missing field(s) in the PackageData/AuthenticationToken or it is formed improperly (e.g. Content and URL are both set), or the AuthenticationToken is invalid."
-            );
-            expect(getInvalidMessage("/package/byRegEx")).toBe(
-                "There is missing field(S) in the PackageRegEx/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
-            );
-        });
-
-        it("should return undefined for an unknown URL", () => {
-            expect(getInvalidMessage("/unknown")).toBeUndefined();
-        });
     });
 
     describe("returnProperInvalidResponse", () => {

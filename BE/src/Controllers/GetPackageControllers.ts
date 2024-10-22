@@ -1,5 +1,6 @@
 import {
     GetPackageRatingsRequest,
+    GetPackageSizeCostRequest,
     GetPackagesRequest,
     GetPackagesViaRegexRequest,
     GetPackageViaIdRequest,
@@ -18,6 +19,7 @@ import {
     GetRatingsForPackageInvalidResponses,
     GetRatingsForPackageResponse,
     GetRatingsForPackageResponseBody,
+    GetSizeCostForPackageResponse,
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
@@ -75,6 +77,12 @@ export const GetPackageViaIDController = asyncHandler(
         }
     }
 );
+
+// /package/{id}/cost
+export const GetPackageSizeCostViaIDController = asyncHandler(
+    async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {}
+);
+
 // /package/{id}/rate
 export const GetPackageRatingsViaIDController = asyncHandler(
     async (req: GetPackageRatingsRequest, res: GetRatingsForPackageResponse, next: NextFunction) => {
@@ -139,5 +147,7 @@ export const GetPackagesViaRegexController = asyncHandler(
         }
     }
 );
+
+// /package/{}
 
 //did not add package history controller here, we are not implementing this.

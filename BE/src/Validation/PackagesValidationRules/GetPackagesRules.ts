@@ -1,7 +1,7 @@
 import { body, CustomValidator, header } from "express-validator";
 
 const InvalidGetPackagesMessage =
-    "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+    "There is missing field(s) in the PackageQuery or it is formed improperly, or is invalid.";
 
 export const hasVersionObject = (): CustomValidator => {
     return (value) => {

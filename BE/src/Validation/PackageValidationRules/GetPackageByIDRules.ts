@@ -1,12 +1,10 @@
-import { header, param } from "express-validator";
-import mongoose from "mongoose";
-
-export const isMongoDbID = (_id: any) => mongoose.Types.ObjectId.isValid(_id);
+import { param } from "express-validator";
+import { isMongoDbID } from "./GeneralByIDRules";
 
 const invalidByIdMessage =
     "There is missing field(s) in the PackageID or it is formed improperly, or is invalid.";
 
-export const GeneralViaIDRuleset = [
+export const GetPackageByIDRules = [
     param("id")
         .exists()
         .withMessage(invalidByIdMessage)
@@ -14,5 +12,4 @@ export const GeneralViaIDRuleset = [
         .withMessage(invalidByIdMessage)
         .custom(isMongoDbID)
         .withMessage(invalidByIdMessage),
-    header("Authorization").exists().withMessage(invalidByIdMessage),
 ];

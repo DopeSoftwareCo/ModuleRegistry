@@ -10,6 +10,7 @@ export type PackageData = {
     Content?: string;
     URL?: string;
     JSProgram?: string;
+    debloat?: boolean;
 };
 
 export interface Package {
@@ -35,6 +36,12 @@ export interface PackageRating {
     GoodPinningPractice: number;
     PullRequest: number;
     NetScore: number;
+}
+
+export interface PackageCost {
+    //if dep=true in path means standaloneCost is required
+    standaloneCost: number;
+    totalCost: number;
 }
 
 export type HistoryActions = "CREATE" | "UPDATE" | "DOWNLOAD" | "RATE";

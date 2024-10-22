@@ -13,6 +13,7 @@ import { ByRegexRules } from "../Validation/PackageValidationRules/ByRegexRules"
 import { UploadPackageRules } from "../Validation/PackageValidationRules/UploadRules";
 import { verifyToken } from "../Middleware/Auth";
 import { appendMongoDBid } from "../Middleware/MongoDB";
+import { DeleteByIDRules } from "../Validation/PackageValidationRules/DeleteByIDRules";
 
 export const PackageRouter = Router();
 
@@ -40,7 +41,7 @@ PackageRouter.put(
 PackageRouter.delete(
     "/:id",
     verifyToken,
-    GeneralViaIDRuleset,
+    DeleteByIDRules,
     validateRequest,
     appendMongoDBid,
     DeletePackageByIDController

@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 const InvalidAuthReqMessage =
-    "There is missing field(s) in the AuthenticationRequest or it is formed improperly.";
+    "There are missing field(s) in the AuthenticationRequest or it is formed improperly.";
 
 export const AuthenticationRules = [
     body("User").exists().withMessage(InvalidAuthReqMessage).isObject().withMessage(InvalidAuthReqMessage),
