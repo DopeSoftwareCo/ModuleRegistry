@@ -12,7 +12,7 @@ jest.mock("jsonwebtoken", () => ({
 
 describe("verifyToken Middleware", () => {
     let app: express.Express;
-
+    const authFailMessage = "Authentication failed due to invalid or missing AuthenticationToken.";
     beforeAll(() => {
         app = express();
         app.use(express.json());
@@ -26,10 +26,8 @@ describe("verifyToken Middleware", () => {
 
     it("should respond with 400 if invalid URL is accessed", async () => {
         const response = await request(app).get("/packages");
-        expect(response.status).toBe(400);
-        expect(response.text).toBe(
-            "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formatted improperly, or the AuthenticationToken is invalid."
-        );
+        expect(response.status).toBe(403);
+        expect(response.text).toBe(authFailMessage);
     });
 
     it("should return 400 for invalid token", async () => {
@@ -37,10 +35,8 @@ describe("verifyToken Middleware", () => {
         (jwt.decode as jest.Mock).mockReturnValue({});
 
         const response = await request(app).get("/package/somep");
-        expect(response.status).toBe(400);
-        expect(response.text).toBe(
-            "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
-        );
+        expect(response.status).toBe(403);
+        expect(response.text).toBe(authFailMessage);
     });
 
     describe("returnProperInvalidResponse", () => {
@@ -54,10 +50,8 @@ describe("verifyToken Middleware", () => {
                 send: jest.fn(),
             } as unknown as Response;
             returnProperInvalidResponse(req, res);
-            expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.send).toHaveBeenCalledWith(
-                "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formatted improperly, or the AuthenticationToken is invalid."
-            );
+            expect(res.status).toHaveBeenCalledWith(403);
+            expect(res.send).toHaveBeenCalledWith(authFailMessage);
         });
     });
 });

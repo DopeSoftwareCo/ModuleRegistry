@@ -3,6 +3,7 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import {
     GetPackageRatingsViaIDController,
     GetPackagesFromRegistryController,
+    GetPackageSizeCostViaIDController,
     GetPackagesViaRegexController,
     GetPackageViaIDController,
 } from "../src/Controllers/GetPackageControllers";
@@ -13,6 +14,7 @@ import { Authcontroller } from "../src/Controllers/AuthController";
 import SuperTest from "supertest";
 import { TestController } from "../src/Controllers/testController/testController";
 import PackageModel from "../src/Schemas/Package";
+import { GetTracksController } from "../src/Controllers/TracksController";
 
 // Mock the PackageModel
 jest.mock("../src/Schemas/Package");
@@ -54,6 +56,11 @@ const AppRoutes: Record<string, RouteConfig> = {
         responseCode: 404,
         requestType: "GET",
     },
+    GetPackageSizeCost: {
+        controller: GetPackageSizeCostViaIDController,
+        responseCode: 200,
+        requestType: "GET",
+    },
     Authentication: {
         controller: Authcontroller,
         responseCode: 401,
@@ -66,6 +73,11 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     TestController: {
         controller: TestController,
+        responseCode: 200,
+        requestType: "GET",
+    },
+    Track: {
+        controller: GetTracksController,
         responseCode: 200,
         requestType: "GET",
     },
