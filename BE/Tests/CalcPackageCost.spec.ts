@@ -70,21 +70,20 @@ describe("CalcPackageCost", () => {
         const mockPackage: RegistryPackage = {
             packageID: "123",
             title: "Test Package",
-            repo: {} as any, // Mock Repository object
+            repo: {} as any,
             repoURL: "https://github.com/test/test-package",
             version: new PackageVersion(1, 0, 0),
             licenseName: "MIT",
-            scores: {} as any, // Mock RepoScoreset object
+            scores: {} as any,
             uploadMetadata: {
-                uploader: {} as any, // Mock User object
+                uploader: {} as any,
                 dateOfUpload: new Date(),
                 visibility: 2,
                 secrecyEnabled: false,
                 packageID: "123",
             },
-            content: Buffer.from("Test content for the zip file").toString("base64"), // Mock Base64-encoded content,
+            content: Buffer.from("Test content for the zip file").toString("base64"),
 
-            // Mocking the getters
             get PackageID() {
                 return this.packageID;
             },
@@ -127,21 +126,21 @@ describe("CalcPackageCost", () => {
         const mockPackage: RegistryPackage = {
             packageID: "123",
             title: "Test Package",
-            repo: {} as any, // Mock Repository object
+            repo: {} as any,
             repoURL: "https://github.com/test/test-package",
             version: new PackageVersion(1, 0, 0),
             licenseName: "MIT",
-            scores: {} as any, // Mock RepoScoreset object
+            scores: {} as any,
             uploadMetadata: {
-                uploader: {} as any, // Mock User object
+                uploader: {} as any,
                 dateOfUpload: new Date(),
                 visibility: 2,
                 secrecyEnabled: false,
                 packageID: "123",
             },
-            content: "", // Empty content
+            // Suppose we get empty content
+            content: "",
 
-            // Mocking the getters
             get PackageID() {
                 return this.packageID;
             },
@@ -173,6 +172,7 @@ describe("CalcPackageCost", () => {
                 return this.content;
             },
         };
+
         // Ensure it returns zero for empty content
         const result = CalcPackageCost(mockPackage);
         expect(result).toBe(0);
@@ -183,21 +183,21 @@ describe("CalcPackageCost", () => {
         const mockPackage: RegistryPackage = {
             packageID: "123",
             title: "Test Package",
-            repo: {} as any, // Mock Repository object
+            repo: {} as any,
             repoURL: "https://github.com/test/test-package",
             version: new PackageVersion(1, 0, 0),
             licenseName: "MIT",
-            scores: {} as any, // Mock RepoScoreset object
+            scores: {} as any,
             uploadMetadata: {
-                uploader: {} as any, // Mock User object
+                uploader: {} as any,
                 dateOfUpload: new Date(),
                 visibility: 2,
                 secrecyEnabled: false,
                 packageID: "123",
             },
-            content: Buffer.from("Test content with padding").toString("base64") + "==", // Content with padding
+            // Suppose we get content with padding.
+            content: Buffer.from("Test content with padding").toString("base64") + "==",
 
-            // Mocking the getters
             get PackageID() {
                 return this.packageID;
             },
@@ -230,8 +230,9 @@ describe("CalcPackageCost", () => {
             },
         };
 
+        // Ensure it's greater than 0 since there's content with padding
         const result = CalcPackageCost(mockPackage);
-        expect(result).toBeGreaterThanOrEqual(0); // Ensure it's greater than 0 since there's content with padding
+        expect(result).toBeGreaterThanOrEqual(0);
     });
 
     // Test for CalcDependencyCost function. We will use "Hello" again but three times and expect it
@@ -254,7 +255,6 @@ describe("CalcPackageCost", () => {
             },
             content: Buffer.from("hello").toString("base64"),
 
-            // Mocking the getters
             get PackageID() {
                 return this.packageID;
             },
@@ -304,7 +304,6 @@ describe("CalcPackageCost", () => {
             },
             content: Buffer.from("hello").toString("base64"),
 
-            // Mocking the getters
             get PackageID() {
                 return this.packageID;
             },
@@ -354,7 +353,6 @@ describe("CalcPackageCost", () => {
             },
             content: Buffer.from("hello").toString("base64"),
 
-            // Mocking the getters
             get PackageID() {
                 return this.packageID;
             },
@@ -397,7 +395,7 @@ describe("CalcPackageCost", () => {
         const finalCost = expectedSizeInMB * 3;
         const roundedSize = Math.round(finalCost * 100) / 100;
 
-        // Must be the same
+        // Must be the same.
         expect(totalCost).toBe(roundedSize);
     });
 });
