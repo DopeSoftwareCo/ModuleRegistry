@@ -54,8 +54,7 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         const weightspecs = weights ? weights : this.default_weights;
 
         if (IsType_RepoID(source)) {
-            // I shouldn't need to await here, because nothing async happens in StartFrom_ID
-            creation = this.StartFrom_ID(source, weightspecs);
+            creation = await this.StartFrom_ID(source, weightspecs);
         } else if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_URL(source, weightspecs);
         } else {
@@ -72,9 +71,13 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         return id ? this.StartFrom_ID(id, weightsToUse) : undefined;
     }
 
-    private StartFrom_ID(id: RepoID, weights?: WeightSpecSet): Repository | undefined {
+    private async StartFrom_ID(id: RepoID, weights?: WeightSpecSet): Promise<Repository | undefined> {
         const weightsToUse = weights ? weights : this.default_weights;
         const scores = new RepoScoreset(weightsToUse);
-        return new Repository(id, scores);
+        const creation = new Repository(id, scores);
+
+        await creation.RequestFromGQL();
+        creation.Refresh_NDJSON();
+        return creation;
     }
 }

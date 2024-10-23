@@ -106,8 +106,8 @@
     "include": [
         "src/**/*.ts",
         "tests/**/*.ts",
-        "src/Providers/ModEval/GQL_Queries/QueryResponses",
-        "src/Providers/ModEval/GQL_Queries/CombinedResult",
+        "src/Providers/ModEval/GQL_Queries/Fields/Field_ResponseTypes",
+        "src/Providers/ModEval/GQL_Queries/Reponse",
         "src/classes/Essential_Interfaces"
     ],
     "exclude": ["node_modules"]

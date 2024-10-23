@@ -1,4 +1,9 @@
 import { Repository } from "../RepoComponents/Repository";
+import { ScoreBusFactor } from "./BusFactor_Scorer";
+import { ScoreCorrectness } from "./Correctness_Scorer";
+import { ScoreLicenseCompatibility } from "./LicenseCompatibility";
+import { ScoreRampupTime } from "./RampUp";
+import { ScoreReponsiveness } from "./Responsiveness";
 
 // Recall the enum ...
 //VersionDependence = 5,
@@ -17,6 +22,26 @@ import { Repository } from "../RepoComponents/Repository";
          PR Merge Restriction:      HIGH
 
 */
+
+export async function RampUp_Scorer(repo: Repository): Promise<number> {
+    return ScoreRampupTime(repo);
+}
+
+export async function Correctness_Scorer(repo: Repository): Promise<number> {
+    return ScoreCorrectness(repo);
+}
+
+export async function BusFactor_Scorer(repo: Repository): Promise<number> {
+    return ScoreBusFactor(repo);
+}
+
+export async function Responsiveness_Scorer(repo: Repository): Promise<number> {
+    return ScoreReponsiveness(repo);
+}
+
+export async function LicenseCompatibility_Scorer(repo: Repository): Promise<number> {
+    return ScoreLicenseCompatibility(repo);
+}
 
 export async function VersionDependence_Scorer(repo: Repository): Promise<number> {
     // Placeholder for actual functionality

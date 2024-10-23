@@ -179,4 +179,12 @@ export class RepoScoreset extends I_RepoScoreset {
     public CurrentScore(): number {
         return this.net;
     }
+
+    public GetMetricScore(metric: MetricName) {
+        return metric == MetricName.Unknown ? 0 : this.metrics[metric].AdjustedScore;
+    }
+
+    public GetMetricTime(metric: MetricName) {
+        return metric == MetricName.Unknown ? 0 : this.metrics[metric].Time;
+    }
 }

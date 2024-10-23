@@ -3,8 +3,8 @@
  * This module handles logging for our application!
  * @author DSinc
  */
-import './envConfig';
-import * as fs from 'fs';
+import "./EnvConfig";
+import * as fs from "fs";
 
 const now = Date.now();
 const date = new Date(now);
@@ -26,10 +26,10 @@ const SECRET_LEVEL = process.env.SECRET_LEVEL || undefined;
  */
 function CreateLogFile() {
     if (!fs.existsSync(LOG_FILE)) {
-        if (!fs.existsSync('./Logs')) {
-            fs.mkdirSync('./Logs');
+        if (!fs.existsSync("./Logs")) {
+            fs.mkdirSync("./Logs");
         }
-        fs.writeFileSync(LOG_FILE, '', { flag: 'w' });
+        fs.writeFileSync(LOG_FILE, "", { flag: "w" });
     }
 }
 
@@ -39,7 +39,7 @@ function CreateLogFile() {
  */
 const RemoveIfExists = () => {
     if (fs.existsSync(LOG_FILE)) {
-        if (fs.existsSync('./Logs')) {
+        if (fs.existsSync("./Logs")) {
             fs.rmSync(LOG_FILE);
         }
     }

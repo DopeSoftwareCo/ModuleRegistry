@@ -89,9 +89,9 @@ const runServer = async () => {
 };
 
 async function Execute() {
-    await runServer();
+    //await runServer();
     console.log("=== Here's an evaluation demo! ===");
-    await RunEvalSubsystemDemo(1);
+    await RunEvalSubsystemDemo(2);
 }
 
 Execute();
