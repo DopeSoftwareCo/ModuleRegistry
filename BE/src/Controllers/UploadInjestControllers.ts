@@ -12,6 +12,8 @@ export const UploadInjestController = asyncHandler(
         //hover for custom typed body
         const body = req.body;
         //use the body data for your code here
+        //must calculate all metrics here
+        //store everything in db using package model
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

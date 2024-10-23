@@ -27,6 +27,8 @@ export const createRandomPackage = async () => {
         score_pullrequest: Math.random(),
         score_responsiveMaintainer: Math.random(),
         score_goodPinningPractice: Math.random(),
+        score_sizeCostTotal: Math.random(),
+        score_sizeCostStandalone: Math.random(),
         netscore: Math.random(),
     });
     await newPackage.save();
