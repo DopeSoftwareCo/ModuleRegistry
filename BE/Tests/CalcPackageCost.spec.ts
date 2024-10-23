@@ -1,4 +1,4 @@
-import { CalcPackageCost, CalcDependencyCost } from "../src/CalcPackageCost";
+import { CalcPackageCost, CalcDependencyCost } from "../src/Services/CalcPackageCost";
 import { RegistryPackage, PackageVersion } from "../src/classes/RegistryPackage";
 import { describe, expect, it } from "@jest/globals";
 

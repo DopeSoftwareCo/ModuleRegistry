@@ -1,4 +1,4 @@
-import { RegistryPackage } from "./classes/RegistryPackage";
+import { RegistryPackage } from "../classes/RegistryPackage";
 
 /**
  * @author Jorge Puga Hernandez
