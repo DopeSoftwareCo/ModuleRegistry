@@ -81,7 +81,6 @@ readmeFile: object(expression: "HEAD:README.md") {
         }
 `;
 
-
 export const CreateDependenciesField = (first: number) => `
     dependencyGraphManifests(first: ${first}) {
         nodes {
@@ -97,7 +96,6 @@ export const CreateDependenciesField = (first: number) => `
         }
     }
 `;
-
 
 export const CreatePullRequestsField = (first: number) => `
     pullRequests(first: ${first}, orderBy: { field: CREATED_AT, direction: DESC }) {
@@ -141,7 +139,6 @@ export const CreatePullRequestsField = (first: number) => `
     }
 `;
 
-
 export const CreateContributorsField = (first: number) => `
     collaborators(first: ${first}) {
         edges {
@@ -159,7 +156,6 @@ export const CreateContributorsField = (first: number) => `
         }
     }
 `;
-
 
 export const CreateMergesField = (first: number) => `
     ref(qualifiedName: "main") {

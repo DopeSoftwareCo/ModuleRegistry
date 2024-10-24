@@ -12,7 +12,8 @@ import { PackagesRouter } from "./Routes/PackagesRoutes";
 import { ResetRouter } from "./Routes/ResetRoutes";
 import { AuthRouter } from "./Routes/AuthRoutes";
 import mongoose from "mongoose";
-
+import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
+import { TracksRouter } from "./Routes/TrackRoutes";
 dotenv.config();
 
 const envVarNames = [
@@ -51,6 +52,7 @@ const addRoutes = (app: Express) => {
     app.use("/packages", PackagesRouter);
     app.use("/reset", ResetRouter);
     app.use("/authenticate", AuthRouter);
+    app.use("/tracks", TracksRouter);
 };
 
 const addMiddleWare = (app: Express) => {
@@ -88,4 +90,10 @@ const runServer = async () => {
     });
 };
 
-runServer();
+async function Execute() {
+    await runServer();
+    console.log("=== Here's an evaluation demo! ===");
+    //await RunEvalSubsystemDemo(1);
+}
+
+Execute();

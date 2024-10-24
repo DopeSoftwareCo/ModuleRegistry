@@ -27,6 +27,8 @@ export interface Package extends Base {
     score_pullrequest: number;
     score_responsiveMaintainer: number;
     score_goodPinningPractice: number;
+    score_sizeCostTotal: number;
+    score_sizeCostStandalone: number;
     netscore: number;
 }
 
@@ -134,6 +136,14 @@ export const packageSchema: Schema<Package> = new Schema({
         required: true,
     },
     score_goodPinningPractice: {
+        type: Number,
+        required: true,
+    },
+    score_sizeCostStandalone: {
+        type: Number,
+        required: true,
+    },
+    score_sizeCostTotal: {
         type: Number,
         required: true,
     },

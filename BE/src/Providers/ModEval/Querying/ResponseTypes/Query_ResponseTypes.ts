@@ -1,16 +1,14 @@
-import { ContributorNode } from "./Contributors_ResponseTypes";
-import { MergeCommitNode } from "./Merges_ResponseTypes";
-import { PullRequestNode } from "./PR_ResponseTypes";
-import { DependencyManifestNode } from "./Dependency_ResponseTypes";
+import { ContributorNode } from "../../GQL_Queries/QueryResponses/Contributors_ResponseTypes";
+import { MergeCommitNode } from "../../GQL_Queries/QueryResponses/Merges_ResponseTypes";
+import { PullRequestNode } from "../../GQL_Queries/QueryResponses/PR_ResponseTypes";
+import { DependencyManifestNode } from "../../GQL_Queries/QueryResponses/Dependency_ResponseTypes";
 
 export type ErrorLocation = {
     line: number;
     column: number;
 };
 
-
 export type ErrorLocations = ErrorLocation[];
-
 
 export type GraphQLError = {
     type: string;
@@ -19,20 +17,17 @@ export type GraphQLError = {
     message: string;
 };
 
-
 export interface GraphQLResponse<T> {
     data: T;
     errors?: GraphQLError[];
     message?: string;
     status?: string;
-};
-
+}
 
 export type TestsFilesFromQuery = {
     name: string;
     type: string;
 }[];
-
 
 export type ContributorNodes = Array<ContributorNode>;
 export type MergeCommitNodes = Array<MergeCommitNode>;
@@ -40,7 +35,6 @@ export type PullRequestNodes = Array<PullRequestNode>;
 export type DependencyManifestNodes = Array<DependencyManifestNode>;
 
 export type Query_RefType = { target?: { history: { edges?: [{ node: { author: { name: string } } }] } } };
-
 
 export class RepoQueryResult {
     readonly repoName: string;
@@ -61,20 +55,20 @@ export class RepoQueryResult {
     private testsCheckMaster: { entries: TestsFilesFromQuery } | undefined;
 
     constructor(params: {
-        name: string,
-        repoURL: string,
-        description: string,
-        license?: string,
-        openIssues?: number,
-        stargazerCount?: number,
-        contributors?: ContributorNodes,
-        mergeData?: MergeCommitNodes,
-        pullRequestData?: PullRequestNodes,
-        dependencyData?: DependencyManifestNodes,
-        ref?: Query_RefType,
-        readmeFile?: { text: string },
-        testsCheckMain?: { entries: TestsFilesFromQuery },
-        testsCheckMaster?: { entries: TestsFilesFromQuery }
+        name: string;
+        repoURL: string;
+        description: string;
+        license?: string;
+        openIssues?: number;
+        stargazerCount?: number;
+        contributors?: ContributorNodes;
+        mergeData?: MergeCommitNodes;
+        pullRequestData?: PullRequestNodes;
+        dependencyData?: DependencyManifestNodes;
+        ref?: Query_RefType;
+        readmeFile?: { text: string };
+        testsCheckMain?: { entries: TestsFilesFromQuery };
+        testsCheckMaster?: { entries: TestsFilesFromQuery };
     }) {
         this.repoName = params.name;
         this.gitURL = params.repoURL;
@@ -91,24 +85,49 @@ export class RepoQueryResult {
         this.testsCheckMain = params.testsCheckMain;
         this.testsCheckMaster = params.testsCheckMaster;
     }
-    get Ref(): Query_RefType | undefined
-    { 
+    get Ref(): Query_RefType | undefined {
         return this.ref;
     }
 
-    get RepoName(): string { return this.repoName; }
-    get GitURL(): string { return this.gitURL; }
-    get Description(): string { return this.description; }
-    get License(): string | undefined { return this.license; }
-    get OpenIssueCount(): number | undefined { return this.openIssues; }
-    get StargazerCount(): number | undefined { return this.stargazerCount; }
-    get Contributors(): ContributorNodes | undefined { return this.contributors; }
-    get MergeData(): MergeCommitNodes | undefined { return this.mergeData; }
-    get PullRequestData(): PullRequestNodes | undefined { return this.pullRequestData; }
-    get DependencyData(): DependencyManifestNodes | undefined { return this.dependencyData; }
-    get README(): {text: string} | undefined { return this.readmeFile; }
-    get TestsCheck_Main(): {entries: TestsFilesFromQuery } | undefined { return this.testsCheckMain; }
-    get TestsCheck_Master(): {entries: TestsFilesFromQuery } | undefined { return this.testsCheckMaster; }
+    get RepoName(): string {
+        return this.repoName;
+    }
+    get GitURL(): string {
+        return this.gitURL;
+    }
+    get Description(): string {
+        return this.description;
+    }
+    get License(): string | undefined {
+        return this.license;
+    }
+    get OpenIssueCount(): number | undefined {
+        return this.openIssues;
+    }
+    get StargazerCount(): number | undefined {
+        return this.stargazerCount;
+    }
+    get Contributors(): ContributorNodes | undefined {
+        return this.contributors;
+    }
+    get MergeData(): MergeCommitNodes | undefined {
+        return this.mergeData;
+    }
+    get PullRequestData(): PullRequestNodes | undefined {
+        return this.pullRequestData;
+    }
+    get DependencyData(): DependencyManifestNodes | undefined {
+        return this.dependencyData;
+    }
+    get README(): { text: string } | undefined {
+        return this.readmeFile;
+    }
+    get TestsCheck_Main(): { entries: TestsFilesFromQuery } | undefined {
+        return this.testsCheckMain;
+    }
+    get TestsCheck_Master(): { entries: TestsFilesFromQuery } | undefined {
+        return this.testsCheckMaster;
+    }
 }
 
 /*
