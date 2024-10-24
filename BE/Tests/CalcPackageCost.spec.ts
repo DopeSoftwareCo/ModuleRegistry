@@ -60,10 +60,9 @@ describe("CalcPackageCost", () => {
         // Manually calculating the expected value for "hello" content
         const base64SizeInBytes = Buffer.byteLength(Buffer.from("hello").toString("base64"), "utf8");
         const expectedSizeInMB = ((base64SizeInBytes * 3) / 4 - 1) / (1024 * 1024);
-        const roundedSize = Math.round(expectedSizeInMB * 100) / 100;
 
         // Must be the same
-        expect(result).toBe(roundedSize);
+        expect(result).toBe(expectedSizeInMB);
     });
 
     it("Should calculate the size of a single package correctly.", () => {
@@ -393,9 +392,8 @@ describe("CalcPackageCost", () => {
         const base64SizeInBytes = Buffer.byteLength(Buffer.from("hello").toString("base64"), "utf8");
         const expectedSizeInMB = ((base64SizeInBytes * 3) / 4 - 1) / (1024 * 1024);
         const finalCost = expectedSizeInMB * 3;
-        const roundedSize = Math.round(finalCost * 100) / 100;
 
         // Must be the same.
-        expect(totalCost).toBe(roundedSize);
+        expect(totalCost).toBe(finalCost);
     });
 });

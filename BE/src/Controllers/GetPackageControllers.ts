@@ -85,31 +85,25 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
     async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
         const dependencyCostRequested = req.query.dependency;
+
+        // Request the package by ID.
         const pack = await PackageModel.findById(requestedPackageID);
-        //check if package exists
-        if (pack) {
+
+        // If the package does not exist, return not found code.
+        if (!pack) {
             const responseMessage: GetSizeCostForPackageInvalidResponses = "Package does not exist.";
             return res.status(404).send(responseMessage);
         }
-        let totalCost: number = 0;
-        let standaloneCost: number = 0;
+
+        // Rounding to one decimal place like in the examples.
+        let totalCost: number = Math.round(pack.score_sizeCostTotal * 10) / 10;
+        let standaloneCost: number = Math.round(pack.score_sizeCostStandalone * 10) / 10;
         let choked: boolean = false;
-        //your code with the package
 
-        if (dependencyCostRequested) {
-            //do something to get this value and set standalone cost
-        }
-
-        //if it chokes set choked to true
-
-        //^^^^^^^^^^^^^^^^^^^^^^^^^
-        //if dependency cost was requested...
-        //we have totalCost AND standaloneCost
-        //if it was not.. we only have totalcost
+        // If dependencies are requested, add the standaloneCost field via spread, otherwise show the totalCost field.
         const responseBody: GetSizeCostForPackageResponseBody = {
-            totalCost: totalCost,
-            //if dep req add the standaloneCost field via spread, otherwise spread empty leaving only totalCost field
             ...(dependencyCostRequested ? { standaloneCost } : {}),
+            totalCost: totalCost,
         };
 
         if (!choked) {

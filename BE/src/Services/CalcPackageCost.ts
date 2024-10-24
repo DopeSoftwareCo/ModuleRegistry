@@ -14,7 +14,7 @@ import { RegistryPackage } from "../classes/RegistryPackage";
  * https://stackoverflow.com/questions/34109053/what-file-size-is-data-if-its-450kb-base64-encoded
  *
  * @param pack - The RegistryPackage object containing Base64-encoded content. {@type RegistryPackage}
- * @returns {number} - The total size of the package in megabytes (MB) rounded two decimal places.
+ * @returns {number} - The total size of the package in megabytes (MB).
  */
 export const CalcPackageCost = (pack: RegistryPackage): number => {
     // Get the length in bytes of the Base64 encoded package.
@@ -28,7 +28,7 @@ export const CalcPackageCost = (pack: RegistryPackage): number => {
     const originalBytes = (base64Bytes * 3) / 4 - paddingBytes;
     const sizeInMB = originalBytes / (1024 * 1024);
 
-    return Math.round(sizeInMB * 100) / 100;
+    return sizeInMB;
 };
 
 /**
@@ -44,7 +44,7 @@ export const CalcPackageCost = (pack: RegistryPackage): number => {
  *
  * @param pack - The RegistryPackage object representing the main package. {@type RegistryPackage}
  * @param dependencies - An array of RegistryPackage objects representing the package's dependencies. {@type RegistryPackage[]}
- * @returns {number} - The total size (in MB) of the package and its dependencies rounded two decimal places.
+ * @returns {number} - The total size (in MB) of the package and its dependencies.
  */
 export const CalcDependencyCost = (pack: RegistryPackage, dependencies: RegistryPackage[]): number => {
     let totalDependencySize = 0;
@@ -58,5 +58,5 @@ export const CalcDependencyCost = (pack: RegistryPackage, dependencies: Registry
     // Return the total cost, which is the current package size + all dependencies
     const totalCost = CalcPackageCost(pack) + totalDependencySize;
 
-    return Math.round(totalCost * 100) / 100;
+    return totalCost;
 };
