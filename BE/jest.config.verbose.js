@@ -3,10 +3,7 @@ module.exports = {
   collectCoverageFrom: ["src/**/*.{ts,}"],
   testPathIgnorePatterns: ['dist','src/Providers/ModEval/Assets'],
   coveragePathIgnorePatterns: ['src/Types','src/Providers/ModEval/Assets'],
-  reporters: [
-    'default',
-    './dist/TestUtils/customReporter.js'
-  ],
+  reporters: ['default'],
   coverageProvider: 'v8',
   coverageReporters: ['text', 'json-summary'],
 };

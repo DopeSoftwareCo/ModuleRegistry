@@ -12,7 +12,7 @@ export class User {
     }
 }
 
-class USD_Permission {
+export class USD_Permission {
     uploadPermission: number;
     searchPermission: number;
     deletePermission: number;
