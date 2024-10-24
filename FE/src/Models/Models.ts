@@ -85,6 +85,8 @@ export interface DBPackageFromAPI {
     score_pullrequest: number;
     score_responsiveMaintainer: number;
     score_goodPinningPractice: number;
+    score_sizeCostTotal: number;
+    score_sizeCostStandalone: number;
     netscore: number;
     updatedAt: string;
 }
@@ -98,6 +100,8 @@ export interface Package {
     name: string;
     version: string;
     ratings: PackageRatingFromAPI;
+    standaloneCost: number;
+    totalCost: number;
     repoUrl: string;
     uploader: string;
     visibility: 'secret' | 'internal' | 'public';

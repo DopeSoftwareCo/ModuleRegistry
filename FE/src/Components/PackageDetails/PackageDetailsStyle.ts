@@ -1,6 +1,5 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { StyledBaseDiv } from '../../BaseStyledComponents/BaseStyled';
-import { getColor } from '../../Utils/utils';
 
 export const PackageField = styled(StyledBaseDiv)``;
 
@@ -10,17 +9,9 @@ export const PackageFieldRow = styled(StyledBaseDiv)`
     justify-content: space-between;
 `;
 
-interface ColorProps {
-    rating: string;
-}
-
 export const PackageFieldKey = styled(PackageField)``;
 
-export const PackageFieldValue = styled(PackageField)<ColorProps>`
-    ${({ rating }) => css`
-        color: ${getColor(rating)};
-    `}
-`;
+export const PackageFieldValue = styled(PackageField)``;
 
 const Frames = keyframes`
     0%{

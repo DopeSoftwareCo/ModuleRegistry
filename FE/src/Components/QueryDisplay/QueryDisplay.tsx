@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { PackagesComponent } from '../Packages/Packages';
 import { Packages } from '../../Models/Models';
 import { getRawDBPackages } from '../../Requests/rawDB';
+import { buildSpecificField, buildSpecificFields } from './Helpers/createSpecificFields';
 
 export const QueryDisplay = () => {
     const [packages, setPackages] = useState<Packages>([]);
 
     const popualtePackages = async (): Promise<void> => {
         const packagesFromRequest = await getRawDBPackages();
-        console.log(packagesFromRequest);
         setPackages(packagesFromRequest);
     };
 
@@ -20,7 +20,7 @@ export const QueryDisplay = () => {
         <>
             <>some input interface</>
             <>
-                <PackagesComponent packages={packages} />
+                <PackagesComponent packages={packages} specificDetails={buildSpecificFields([[]])} />
             </>
         </>
     );

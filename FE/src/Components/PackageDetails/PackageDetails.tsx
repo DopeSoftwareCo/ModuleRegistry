@@ -9,9 +9,10 @@ import {
 
 interface PackageComponentProps {
     packageProp: Package;
+    specificDetails?: { [key: string]: number | string };
 }
 
-export const PackageDetailsComponent = ({ packageProp }: PackageComponentProps) => {
+export const PackageDetailsComponent = ({ packageProp, specificDetails }: PackageComponentProps) => {
     return (
         <PackageDetailsContainer>
             <PackageDetailsIconsComponent
@@ -19,14 +20,13 @@ export const PackageDetailsComponent = ({ packageProp }: PackageComponentProps) 
                 safety={packageProp.safety}
                 isExternal={packageProp.isExternal}
             />
-            {Object.entries(packageProp.ratings).map(([ratingName, ratingValue]) => (
-                <PackageFieldRow>
-                    <PackageFieldKey>{ratingName}</PackageFieldKey>
-                    <PackageFieldValue rating={ratingValue}>
-                        {parseFloat(ratingValue).toFixed(4)}
-                    </PackageFieldValue>
-                </PackageFieldRow>
-            ))}
+            {specificDetails &&
+                Object.entries(specificDetails).map(([specificKey, specificValue]) => (
+                    <PackageFieldRow>
+                        <PackageFieldKey>{specificKey}</PackageFieldKey>
+                        <PackageFieldValue>{specificValue}</PackageFieldValue>
+                    </PackageFieldRow>
+                ))}
         </PackageDetailsContainer>
     );
 };

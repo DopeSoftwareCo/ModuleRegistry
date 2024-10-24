@@ -29,6 +29,8 @@ const DefaultPackageProps: { packageProp: Package } = {
             PullRequest: 0.06,
             NetScore: 0.07,
         },
+        standaloneCost: 0.04,
+        totalCost: 0.05,
         repoUrl: 'https://www.github.com/default/url',
         uploader: 'default uploader',
         visibility: 'secret',
@@ -42,9 +44,11 @@ const DefaultPackageProps: { packageProp: Package } = {
 
 interface PackageComponentProps {
     packageProp: Package;
+    specificDetails?: { [key: string]: number | string };
 }
 export const PackageComponent = ({
     packageProp = DefaultPackageProps.packageProp,
+    specificDetails,
 }: PackageComponentProps) => {
     const [showDetails, setShowDetails] = useState(false);
     return (
@@ -58,7 +62,9 @@ export const PackageComponent = ({
                         <PackageUpdatedAt>{packageProp.updatedAt}</PackageUpdatedAt>
                     </PackageVersionInfo>
                     <StyledHiddenButton onClick={() => setShowDetails((state) => !state)}>
-                        {showDetails ? <BiChevronUp /> : <BiChevronDown />}
+                        {showDetails
+                            ? specificDetails && <BiChevronUp />
+                            : specificDetails && <BiChevronDown />}
                     </StyledHiddenButton>
                 </HeaderFooter>
             </PackageHeader>

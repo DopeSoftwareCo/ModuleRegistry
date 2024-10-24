@@ -52,6 +52,8 @@ const mapRawDBPackagesResponse = (rawPackages: DBPackagesFromAPI): Packages =>
             PullRequest: dbPackage.score_pullrequest,
             NetScore: dbPackage.netscore,
         },
+        standaloneCost: dbPackage.score_sizeCostStandalone,
+        totalCost: dbPackage.score_sizeCostTotal,
         repoUrl: dbPackage.repoUrl,
         uploader: dbPackage.uploader,
         visibility: dbPackage.visibility,
