@@ -13,8 +13,7 @@ import { OpenAI } from "openai";
  *
  */
 export function ScoreLicenseCompatibility(repo: Repository): number {
-    const licenseName = repo.QueryResult?.LicenseInfo?.name;
-
+    const licenseName = repo.QueryResult?.licenseInfo.name;
     if (!licenseName) {
         return 0;
     }

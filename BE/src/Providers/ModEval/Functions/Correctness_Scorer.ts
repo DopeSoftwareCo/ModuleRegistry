@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { Repository } from "../RepoComponents/Repository";
 import { LogDebug, LogInfo } from "../../Utils/Log";
 import { RepoQueryResult } from "../GQL_Queries/Reponse/RepoQueryResult";
+import { EmbeddedGQLData, GQLResultData } from "../GQL_Queries/Reponse/GQLResponse";
 
 /**
  * @author Ben Kanter
@@ -16,12 +17,12 @@ const hasTests = <T>(repo: Repository) => {
     const result = repo.QueryResult;
     const testDirs = ["tests", "test", "e2e", "testing", "spec"];
 
-    if (result?.TestsCheck_Master) {
+    if (result?.testsCheckMaster) {
         LogInfo(`Repo ${repo.ID.Name} had a master branch, checking if it has test dir`);
-        return result?.TestsCheck_Master.entries.some((entry) => testDirs.includes(entry.name));
-    } else if (result?.TestsCheck_Main) {
+        return result?.testsCheckMaster.entries.some((entry) => testDirs.includes(entry.name));
+    } else if (result?.testsCheckMain) {
         LogInfo(`Repo ${repo.ID.Name} had a main branch, checking if it has test dir`);
-        return result?.TestsCheck_Main.entries.some((entry) => testDirs.includes(entry.name));
+        return result?.testsCheckMain.entries.some((entry) => testDirs.includes(entry.name));
     }
 };
 
@@ -30,16 +31,16 @@ export function ScoreCorrectness<T>(repo: Repository): number {
         return 0;
     }
 
-    const result: RepoQueryResult = repo.QueryResult;
+    const result: GQLResultData = repo.QueryResult;
     const tests = hasTests(repo);
 
     LogInfo(`Repo: ${repo.ID.Name} ${tests ? "has" : "does not have"} tests`);
     const goodRatio = 0.1;
-    const open = result.OpenIssueCount;
-    const closed = result.ClosedIssueCount;
+    const open = result.openIssues.totalCount;
+    const closed = result.closedIssues.totalCount;
     LogDebug(`Open issues: ${open}`);
     LogDebug(`Closed issues: ${closed}`);
-    if (result.ClosedIssueCount === 0) {
+    if (closed === 0) {
         LogDebug("No Closed Issues");
         return 0;
     }

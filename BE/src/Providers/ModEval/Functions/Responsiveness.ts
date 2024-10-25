@@ -16,8 +16,8 @@ export function ScoreReponsiveness(repo: Repository): number {
         return 0;
     }
 
-    const open = result.OpenIssueCount;
-    const closed = result.ClosedIssueCount;
+    const open = result.openIssues.totalCount;
+    const closed = result.closedIssues.totalCount;
 
     if (open == undefined || closed == undefined) {
         return 0;

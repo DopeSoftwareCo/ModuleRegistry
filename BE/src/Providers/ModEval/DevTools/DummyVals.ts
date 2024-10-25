@@ -40,6 +40,7 @@ export const urls_A = [
 ];
 
 export const urls_B = [
+    "https://github.com/DopeSoftwareCo/ModuleRegistry",
     "https://github.com/j-leidy/C-DatabaseExplorer",
     "https://www.npmjs.com/package/@angular-devkit/core",
     "https://github.com/BellDorian/CapstoneResearch",

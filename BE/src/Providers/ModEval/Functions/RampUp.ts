@@ -16,7 +16,7 @@ export function ScoreRampupTime(repo: Repository): number {
         return 0;
     }
 
-    const readmeSize = result.README?.text.length;
+    const readmeSize = result.readmeFile?.text.length;
     const benchmark = 10000;
     if (readmeSize == undefined) {
         LogDebug("Readme size was not defined for comparison");

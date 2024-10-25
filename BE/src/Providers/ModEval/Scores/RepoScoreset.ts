@@ -54,6 +54,12 @@ export class RepoScoreset extends I_RepoScoreset {
             this.versionDependence_score,
             this.mergeRestriction_score,
         ];
+
+        let sum: number = 0;
+        weights.forEach((spec) => {
+            sum += spec.Weight();
+        });
+        this.weightSum = sum;
     }
 
     ProcessWeightSpecSet(weightspecs: WeightSpecSet): WeightSpecSet {
@@ -142,7 +148,7 @@ export class RepoScoreset extends I_RepoScoreset {
             return;
         }
 
-        let newNet = this.weightSum > 0 ? this.scoreSum / this.weightSum : -1;
+        let newNet = this.weightSum > 0 ? this.scoreSum / this.weightSum : 0;
 
         if (round) {
             newNet = parseFloat(newNet.toPrecision(PRECISIONDEFAULT_NET));

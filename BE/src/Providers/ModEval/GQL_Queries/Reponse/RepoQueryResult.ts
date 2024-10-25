@@ -1,9 +1,6 @@
 import { Query_RefType, TestsFilesFromQuery } from "./RepoQueryResult.types";
-import { MergeCommitNode } from "../Fields/Field_ResponseTypes/Merges_ResponseTypes";
-import { PullRequestNode } from "../Fields/Field_ResponseTypes/PR_ResponseTypes";
-import { DependencyManifestNode } from "../Fields/Field_ResponseTypes/Dependency_ResponseTypes";
 import { CommitHistory } from "../Fields/Field_ResponseTypes/Commit_ResponseTypes";
-import { LicenseInfo, RepositoryWithLicense } from "../Fields/Field_ResponseTypes/LicenseInfo_ResponseType";
+import { LicenseInfo } from "../Fields/Field_ResponseTypes/LicenseInfo_ResponseType";
 import { MergeCommitNodes, PullRequestNodes, DependencyManifestNodes } from "./RepoQueryResult.types";
 
 export class RepoQueryResult {

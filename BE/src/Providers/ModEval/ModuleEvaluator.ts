@@ -25,6 +25,7 @@ import {
     MERGERESTRICT_WEIGHT_DEFAULT,
 } from "./Scores/Weightspec.const";
 import { BusFactor_WrappedScorer } from "./Functions/OctavoScorers";
+import { NDJSONRow } from "./RepoComponents/NDJSON/NDJSONRow";
 
 // How crucial are each of these factors on a 1-7 scale?
 /*
@@ -57,7 +58,7 @@ export class ModuleEvaluator {
 
         this.rampUp = new SubscoreCalculator(RampUp_Scorer, MetricName.RampUpTime, weights[0]);
         this.correctness = new SubscoreCalculator(Correctness_Scorer, MetricName.Correctness, weights[1]);
-        this.busFactor = new SubscoreCalculator(BusFactor_WrappedScorer, MetricName.BusFactor, weights[2]);
+        this.busFactor = new SubscoreCalculator(BusFactor_Scorer, MetricName.BusFactor, weights[2]);
         this.responsiveness = new SubscoreCalculator(
             Responsiveness_Scorer,
             MetricName.MaintainerResponsiveness,
@@ -152,6 +153,7 @@ export class ModuleEvaluator {
         repo.Scores.AddScore(scores[4]);
         repo.Scores.AddScore(scores[5]);
         repo.Scores.AddScore(scores[6]);
+        repo.Refresh_NDJSON();
 
         return repo.Scores.CurrentScore();
     }

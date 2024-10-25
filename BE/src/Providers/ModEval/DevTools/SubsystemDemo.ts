@@ -1,12 +1,11 @@
-import { WeightSpec } from "../Scores/WeightSpec";
 import { ModuleEvaluator } from "../ModuleEvaluator";
 import { dummy_links, dummy_weightspecs } from "./DummyVals";
 import { RepoID_Builder } from "../RepoComponents/ID/RepoID_Builder";
 import { URLProcessor } from "../RepoComponents/URL/URLProcessor";
 import { Repo_Builder } from "../RepoComponents/Repository_Builder";
 import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Scores/Weightspec.const";
-import supertest from "supertest";
 import { SuperRepoBuilder } from "../RepoComponents/SuperRepoBuilder";
+import { AsyncForEach } from "../../../DSinc_Modules/DSinc_LoopsMaps";
 
 export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: number = 0) {
     let urls: string[];
@@ -42,44 +41,23 @@ export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: n
 
     const evaluator = new ModuleEvaluator(weights);
 
-    /*console.log("--- #1: Building URLs ---");
-    const repoURLs = await processor.MultiProcess(urls);
-
+    console.log("--- #1: Building URLs ---");
     console.log("--- #2 Making IDs---");
-    const repoIDs = await id_builder.MultiBuild(repoURLs);
-
-    if (!repoIDs) {
-        console.log(" [x] FAILED TO BUILD IDs [x]");
-        return;
-    }
-
     console.log("--- #3 Assembling Repos ---");
-    let repos = await repo_builder.MultiBuild_ByID(repoIDs);
+
+    const superB = new SuperRepoBuilder();
+    let repos = await superB.MultiSuperBuild(urls);
 
     if (!repos) {
         console.log("[x] FAILED TO BUILD REPOSITORIES [X]");
         return;
     }
-
-    //const response = await repos[4].RequestFromGQL();
-    //console.log("--- GQL Response --- ");
-    //console.log(response);
-    //console.log("-----------------------------------------------------------");
-
-    //await evaluator.MultiEval(repos);
-    //repos.forEach((repo) => console.log(repo.QueryResult));*/
-    const superB = new SuperRepoBuilder();
-    const repo = await superB.SuperBuild(urls[3]);
-    console.log("License: %s", repo?.License);
-    console.log(repo?.NDJSONRow);
+    await evaluator.MultiEval(repos);
 
     console.log("========================= RESULT OF EVALUATION =========================");
 
-    /* repos.forEach((repo) => {
+    repos.forEach((repo) => {
         console.log("License: %s", repo.License);
         console.log(repo.NDJSONRow);
-    });*/
-
-    //repos.forEach((repo) => console.log(repo.QueryResult));
-    //repos.forEach((repo) => console.log(repo.ID));
+    });
 }

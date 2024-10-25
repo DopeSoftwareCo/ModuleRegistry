@@ -10,12 +10,13 @@ import { EMPTY_REPO_NDJSON, NDJSONRow } from "./NDJSON/NDJSONRow";
 import { MetricName } from "../Scores/Metric.const";
 import { Empty_CommitHistory } from "../GQL_Queries/Fields/Field_ResponseTypes/Commit_ResponseTypes";
 import { Empty_LicenseInfo } from "../GQL_Queries/Fields/Field_ResponseTypes/LicenseInfo_ResponseType";
+import { EmbeddedGQLData, GQLResultData } from "../GQL_Queries/Reponse/GQLResponse";
 
 export class Repository {
     private id: RepoID;
     private scores: RepoScoreset;
-    private queryResult: RepoQueryResult | undefined;
-    private queried: boolean = false;
+    private queryResult: GQLResultData | undefined;
+    private alreadyQueried: boolean = false;
     private ndjson: NDJSONRow;
     private license: string = "unknown";
 
@@ -26,33 +27,26 @@ export class Repository {
         this.queryResult = undefined;
     }
 
-    public async RequestFromGQL(): Promise<RepoQueryResult | undefined> {
-        if (this.queried) {
+    public async RequestFromGQL(): Promise<GQLResultData | undefined> {
+        if (this.alreadyQueried) {
             return this.queryResult;
         }
 
         const queryString = RepoQueryBuilder([this.id]);
-        const response = await SendRequestToGQL<RepoQueryResult>(queryString);
+        const response = await SendRequestToGQL<EmbeddedGQLData>(queryString);
 
         if (!response) {
             return this.queryResult;
         }
-        this.queryResult = response.data;
-        console.log(this.queryResult);
-        this.queryResult = new RepoQueryResult(response.data);
 
-        console.log("================= Result =================");
-        console.log(this.queryResult instanceof RepoQueryResult);
-        console.log(this.queryResult.LicenseInfo);
-        console.log("==========================================");
-        this.queried = true;
+        this.queryResult = response.data.repo0;
+        this.alreadyQueried = true;
 
         if (!this.queryResult) {
             return this.queryResult;
         }
 
-        const licenseName = this.queryResult.LicenseInfo?.name;
-
+        const licenseName = this.queryResult.licenseInfo.name;
         this.license = licenseName ? licenseName : "???";
         return this.queryResult;
     }
@@ -65,7 +59,7 @@ export class Repository {
         return this.id;
     }
 
-    get QueryResult(): RepoQueryResult | undefined {
+    get QueryResult(): GQLResultData | undefined {
         return this.queryResult;
     }
 
@@ -104,108 +98,3 @@ export class Repository {
         return this.ndjson;
     }
 }
-
-const EMPTY_QUERYRESULT = new RepoQueryResult({
-    name: "Unknown name",
-    repoURL: "Unknown url",
-    description: "",
-    licenseInfo: Empty_LicenseInfo,
-    openIssues: -1,
-    stargazerCount: -1,
-    commitHistory: Empty_CommitHistory,
-    mergeData: [],
-    pullRequestData: [],
-    dependencyData: [],
-
-    ref: undefined,
-    readmeFile: { text: "" },
-    testsCheckMain: { entries: [] },
-    testsCheckMaster: { entries: [] },
-});
-
-type LicenseInfo = {
-    name: string;
-    spdxId: string;
-    url: string;
-};
-
-type Owner = {
-    login: string;
-};
-
-type IssuesCount = {
-    totalCount: number;
-};
-
-type Watchers = {
-    totalCount: number;
-};
-
-type PrimaryLanguage = {
-    name: string;
-};
-
-type LanguageNode = {
-    // Adjust this based on the actual structure of the language nodes
-    name: string;
-};
-
-type VulnerabilityAlertNode = {
-    // Adjust this based on the actual structure of the vulnerability alert nodes
-    // For example, if they have a `message` or similar property
-};
-
-type ReactionNode = {
-    // Adjust this based on the actual structure of the reaction nodes
-};
-
-type ReadmeFile = {
-    text: string;
-};
-
-type DependencyGraphManifestNode = {
-    // Adjust this based on the actual structure of the dependency graph manifest nodes
-};
-
-type PullRequestEdge = {
-    // Adjust this based on the actual structure of the pull request edges
-};
-
-type TestsEntry = {
-    // Define properties for test entries if applicable
-};
-
-type RepoData = {
-    description: string;
-    name: string;
-    url: string;
-    owner: Owner;
-    openIssues: IssuesCount;
-    closedIssues: IssuesCount;
-    licenseInfo: LicenseInfo;
-    stargazerCount: number;
-    forkCount: number;
-    updatedAt: string;
-    pushedAt: string;
-    isPrivate: boolean;
-    isFork: boolean;
-    watchers: Watchers;
-    primaryLanguage: PrimaryLanguage;
-    languages: { nodes: LanguageNode[] };
-    vulnerabilityAlerts: { nodes: VulnerabilityAlertNode[] };
-    reactions: { nodes: ReactionNode[] };
-    ref: { target: any }; // Adjust based on the actual structure of the ref object
-    readmeFile: ReadmeFile;
-    dependencyGraphManifests: { nodes: DependencyGraphManifestNode[] };
-    pullRequests: { edges: PullRequestEdge[] };
-    testsCheckMain: { entries: TestsEntry[] } | null; // Assuming it can be null
-    testsCheckMaster: { entries: TestsEntry[] } | null; // Assuming it can be null
-};
-
-type RepoResponse = {
-    repo0: RepoData;
-};
-
-// Example of how to use the type
-//const response: RepoResponse = {
-// ... your response structure here };

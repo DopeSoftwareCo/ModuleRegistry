@@ -4,7 +4,7 @@ import * as fileSystem from "fs";
 import { LogDebug } from "../../Utils/Log";
 const http = require("isomorphic-git/http/node");
 
-const DUMP_DIRECTORY = "../REPO_DUMP";
+const DUMP_DIRECTORY = "./REPO_DUMP";
 
 export type Contributor = {
     name: string;
@@ -60,7 +60,7 @@ const handleRepoClone = async (repoDirectory: string, repo: Repository) => {
             http,
             singleBranch: true,
             dir: repoDirectory,
-            url: repo.QueryResult.GitURL,
+            url: repo.QueryResult.url,
         });
     } catch (err) {
         if (err instanceof Error) {
