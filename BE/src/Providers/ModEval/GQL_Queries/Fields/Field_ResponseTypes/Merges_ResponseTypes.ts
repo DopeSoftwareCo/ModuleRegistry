@@ -1,30 +1,30 @@
 type MergeCommitAuthor = {
-  name: string;
-  email: string;
+    name: string;
+    email: string;
 };
 
 type MergeCommitParent = {
-  totalCount: number;
+    totalCount: number;
 };
 
 export type MergeCommitNode = {
-  oid: string;
-  message: string;
-  committedDate: string;
-  author: MergeCommitAuthor;
-  parents: MergeCommitParent;
+    oid: string;
+    message: string;
+    committedDate: string;
+    author: MergeCommitAuthor;
+    parents: MergeCommitParent;
 };
 
 type MergeCommitEdge = {
-  node: MergeCommitNode;
+    node: MergeCommitNode;
 };
 
-export type MergesQueryResult = {
-  ref: {
-    target: {
-      history: {
-        edges: MergeCommitEdge[];
-      };
+export type MergeCommitQueryResult = {
+    ref: {
+        target: {
+            history: {
+                edges: MergeCommitEdge[];
+            };
+        };
     };
-  };
 };

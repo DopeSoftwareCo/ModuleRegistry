@@ -30,10 +30,6 @@ export const defaultFields = [
 ];
 
 export const extraFields = [
-    "name",
-    `owner {
-        login
-    }`,
     "stargazerCount",
     "forkCount",
     "updatedAt",
@@ -46,12 +42,9 @@ export const extraFields = [
     `primaryLanguage {
         name
     }`,
-    CreateLicenseField(),
     CreateLanguagesField(5),
     CreateVulnerabilityAlertsField(10),
-    CreateReactionsField(10),
     CreateIssuesField(0),
-    CreateCommitsField(10),
     CreateReadmeField(),
     CreateDependenciesField(10),
     CreateMergesField(10),

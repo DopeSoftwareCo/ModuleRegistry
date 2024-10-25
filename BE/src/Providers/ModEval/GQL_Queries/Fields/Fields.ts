@@ -141,7 +141,7 @@ export const CreatePullRequestsField = (first: number) => `
 `;
 
 export const CreateMergesField = (first: number) => `
-    ref(qualifiedName: "main") {
+    commitHistory: defaultBranchRef {
         target {
             ... on Commit {
                 history(first: ${first}) {

@@ -1,6 +1,6 @@
-import { WeightSpec } from "../Scores/WeightSpec";
-import { WeightSpecSet } from "../Scores/Weightspec.const";
-import { MetricName } from "../Scores/Metric.const";
+import { WeightSpec } from "../RepoComponents/Metrics_Scores/WeightSpec";
+import { WeightSpecSet } from "../RepoComponents/Metrics_Scores/Weightspec.const";
+import { MetricName } from "../RepoComponents/Metrics_Scores/Metric.const";
 
 export const wspec_A0 = new WeightSpec(MetricName.RampUpTime, 0.1);
 export const wspec_A1 = new WeightSpec(MetricName.Correctness, 0.2);

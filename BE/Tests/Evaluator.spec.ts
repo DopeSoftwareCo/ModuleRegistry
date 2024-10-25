@@ -1,7 +1,10 @@
 import { describe, expect, test } from "@jest/globals";
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "../src/Providers/ModEval/Scores/Weightspec.const";
+import {
+    DEFAULT_WEIGHTS,
+    WeightSpecSet,
+} from "../src/Providers/ModEval/RepoComponents/Metrics_Scores/Weightspec.const";
 import { ModuleEvaluator } from "../src/Providers/ModEval/ModuleEvaluator";
-import { SuperRepoBuilder } from "../src/Providers/ModEval/RepoComponents/SuperRepoBuilder";
+import { SuperRepoBuilder } from "../src/Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
 import { dummy_links, dummy_weightspecs } from "../src/Providers/ModEval/DevTools/DummyVals";
 
 const spec: WeightSpecSet = DEFAULT_WEIGHTS;

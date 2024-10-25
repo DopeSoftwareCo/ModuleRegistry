@@ -1,7 +1,10 @@
 import { RepoURL } from "../../Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
 import { Repository } from "../../Providers/ModEval/RepoComponents/Repository";
 import { RepoID } from "../../Providers/ModEval/RepoComponents/ID/RepoID";
-import { I_RepoScoreset, RepoScoreset } from "../../Providers/ModEval/Scores/RepoScoreset";
+import {
+    I_RepoScoreset,
+    RepoScoreset,
+} from "../../Providers/ModEval/RepoComponents/Metrics_Scores/RepoScoreset";
 
 export type GuardLogic = (value: any) => number;
 

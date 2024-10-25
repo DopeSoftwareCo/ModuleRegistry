@@ -2,10 +2,9 @@ import { ModuleEvaluator } from "../ModuleEvaluator";
 import { dummy_links, dummy_weightspecs } from "./DummyVals";
 import { RepoID_Builder } from "../RepoComponents/ID/RepoID_Builder";
 import { URLProcessor } from "../RepoComponents/URL/URLProcessor";
-import { Repo_Builder } from "../RepoComponents/Repository_Builder";
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Scores/Weightspec.const";
-import { SuperRepoBuilder } from "../RepoComponents/SuperRepoBuilder";
-import { AsyncForEach } from "../../../DSinc_Modules/DSinc_LoopsMaps";
+import { Repo_Builder } from "../RepoComponents/Builders/Repository_Builder";
+import { DEFAULT_WEIGHTS, WeightSpecSet } from "../RepoComponents/Metrics_Scores/Weightspec.const";
+import { SuperRepoBuilder } from "../RepoComponents/Builders/SuperRepoBuilder";
 
 export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: number = 0) {
     let urls: string[];

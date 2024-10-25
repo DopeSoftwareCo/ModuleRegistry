@@ -1,9 +1,9 @@
 import { Repository } from "./RepoComponents/Repository";
-import { Metric } from "./Scores/Metric";
-import { MetricName } from "./Scores/Metric.const";
-import { SubscoreCalculator } from "./Scores/ScoreCalculator";
-import { WeightSpec, FindWeightSpecByReceiver } from "./Scores/WeightSpec";
-import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./Scores/Weightspec.const";
+import { Metric } from "./RepoComponents/Metrics_Scores/Metric";
+import { MetricName } from "./RepoComponents/Metrics_Scores/Metric.const";
+import { SubscoreCalculator } from "./RepoComponents/Metrics_Scores/ScoreCalculator";
+import { WeightSpec, FindWeightSpecByReceiver } from "./RepoComponents/Metrics_Scores/WeightSpec";
+import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./RepoComponents/Metrics_Scores/Weightspec.const";
 import { AsyncLooper, TryIndexOrDefaultTo } from "../../DSinc_Modules/DSinc_LoopsMaps";
 import {
     RampUp_Scorer,
@@ -23,7 +23,7 @@ import {
     LICENSE_WEIGHT,
     VERSIONDEP_WEIGHT_DEFAULT,
     MERGERESTRICT_WEIGHT_DEFAULT,
-} from "./Scores/Weightspec.const";
+} from "./RepoComponents/Metrics_Scores/Weightspec.const";
 import { BusFactor_WrappedScorer } from "./Functions/OctavoScorers";
 import { NDJSONRow } from "./RepoComponents/NDJSON/NDJSONRow";
 

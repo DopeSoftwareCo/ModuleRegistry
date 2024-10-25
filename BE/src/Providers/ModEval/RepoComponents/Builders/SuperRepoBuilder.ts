@@ -1,9 +1,9 @@
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Scores/Weightspec.const";
-import { RepoID } from "./ID/RepoID";
-import { RepoID_Builder } from "./ID/RepoID_Builder";
-import { Repository } from "./Repository";
+import { DEFAULT_WEIGHTS, WeightSpecSet } from "./../Metrics_Scores/Weightspec.const";
+import { RepoID } from "../ID/RepoID";
+import { RepoID_Builder } from "../ID/RepoID_Builder";
+import { Repository } from "../Repository";
 import { Repo_Builder } from "./Repository_Builder";
-import { URLProcessor } from "./URL/URLProcessor";
+import { URLProcessor } from "../URL/URLProcessor";
 
 type Repos = Array<Repository>;
 type IDs = Array<RepoID>;

@@ -2,12 +2,12 @@
 // takes in strings
 
 import { RepoID } from "./ID/RepoID";
-import { RepoScoreset } from "../Scores/RepoScoreset";
+import { RepoScoreset } from "./Metrics_Scores/RepoScoreset";
 import { RepoQueryResult } from "../GQL_Queries/Reponse/RepoQueryResult";
 import { RepoQueryBuilder, SendRequestToGQL } from "../GQL_Queries/Requests/GQLRequests";
 import { GraphQLResponse } from "../GQL_Queries/Reponse/RepoQueryResult.types";
 import { EMPTY_REPO_NDJSON, NDJSONRow } from "./NDJSON/NDJSONRow";
-import { MetricName } from "../Scores/Metric.const";
+import { MetricName } from "./Metrics_Scores/Metric.const";
 import { Empty_CommitHistory } from "../GQL_Queries/Fields/Field_ResponseTypes/Commit_ResponseTypes";
 import { Empty_LicenseInfo } from "../GQL_Queries/Fields/Field_ResponseTypes/LicenseInfo_ResponseType";
 import { EmbeddedGQLData, GQLResultData } from "../GQL_Queries/Reponse/GQLResponse";
