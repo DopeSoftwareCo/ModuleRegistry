@@ -1,9 +1,17 @@
 import { Response } from "express";
-import { PackageData, PackageHistoryEntry, PackageMetaData, PackageRating, User } from "../Models";
+import {
+    PackageCost,
+    PackageData,
+    PackageHistoryEntry,
+    PackageMetaData,
+    PackageRating,
+    User,
+} from "../Models";
 
 declare module "ResponseTypes" {
     export type GetPackagesInvalidResponseMessages =
-        | "There is missing field(s) in the PackageQuery/AuthenticationToken or it is formatted improperly, or the AuthenticationToken is invalid."
+        | "There is missing field(s) in the PackageQuery or it is formed improperly, or is invalid."
+        | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Too many packages returned.";
 
     export type GetPackagesResponseBody = PackageMetaData[];
@@ -14,7 +22,7 @@ declare module "ResponseTypes" {
 
     export type ResetRegistryResponseMessages =
         | "Registry is reset."
-        | "There is missing field(s) in the AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
+        | "Authentication failed due to invalid or missing AuthenticationToken."
         | "You do not have permission to reset the registry.";
 
     export type ResetRegistryResponseBody = ResetRegistryResponseMessages;
@@ -24,7 +32,8 @@ declare module "ResponseTypes" {
     }
 
     export type GetPackageViaIDInvalidResponseMessages =
-        | "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
+        | "There is missing field(s) in the PackageID or it is formed improperly, or is invalid."
+        | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package does not exist.";
 
     export type GetPackageViaIDResponseBody = {
@@ -45,13 +54,15 @@ declare module "ResponseTypes" {
 
     export type DeletePackageViaIDResponseMessages =
         | "Package is deleted."
-        | "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
+        | "There is missing field(s) in the PackageID or it is formed improperly, or is invalid."
+        | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package does not exist.";
 
     export interface DeletePackageViaIDResponse extends Response {}
 
     export type UploadInjestResponseMessages =
-        | "There is missing field(s) in the PackageData/AuthenticationToken or it is formed improperly (e.g. Content and URL are both set), or the AuthenticationToken is invalid."
+        | "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL ar both set)"
+        | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package exists already."
         | "Pacakge is not uploaded due to disqualified rating.";
 
@@ -64,10 +75,23 @@ declare module "ResponseTypes" {
         body: UploadInjectNewPackageBody;
     }
 
+    export type GetSizeCostForPackageResponseBody = PackageCost;
+    //size cost and ratings are the same response messages
+    export type GetSizeCostForPackageInvalidResponses =
+        | "There is missing field(s) in the PackageID"
+        | "Authentication failed due to invalid or missing AuthenticationToken."
+        | "Package does not exist."
+        | "The package rating system choked on at least one of the metrics.";
+
+    export interface GetSizeCostForPackageResponse extends Response {
+        body: GetSizeCostForPackageResponseBody;
+    }
+
     export type GetRatingsForPackageResponseBody = PackageRating;
 
     export type GetRatingsForPackageInvalidResponses =
-        | "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
+        | "There is missing field(s) in the PackageID"
+        | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package does not exist."
         | "The package rating system choked on at least one of the metrics.";
 
@@ -100,11 +124,21 @@ declare module "ResponseTypes" {
     export interface DeletePackageByNameResponse extends Response {}
 
     export type GetPackageViaRegexInvalidResponseMessages =
-        | "There is missing field(S) in the PackageRegEx/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
+        | "There is missing field(s) in the PackageRegEx or it is formed improperly, or is invalid"
+        | "Authentication failed due to invalid or missing AuthenticationToken."
         | "No package found under this regex.";
 
     export type GetPackageViaRegexData = Omit<PackageMetaData, "ID">;
     export interface GetPackageViaRegexResponse extends Response {
         body: GetPackageViaRegexData[];
+    }
+
+    export type GetPlannedTracksInvalidResponseMessages =
+        "The system encountered an error when retrieving the student's track information.";
+
+    export interface GetPlannedTracksResponse extends Response {
+        body: {
+            plannedTracks: string[];
+        };
     }
 }

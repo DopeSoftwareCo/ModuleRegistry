@@ -6,6 +6,7 @@ import {
 import { ModuleEvaluator } from "../src/Providers/ModEval/ModuleEvaluator";
 import { SuperRepoBuilder } from "../src/Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
 import { dummy_links, dummy_weightspecs } from "../src/Providers/ModEval/DevTools/DummyVals";
+import { Repository } from "../src/Providers/ModEval/RepoComponents/Repository";
 
 const spec: WeightSpecSet = DEFAULT_WEIGHTS;
 const evaluator = new ModuleEvaluator(spec);

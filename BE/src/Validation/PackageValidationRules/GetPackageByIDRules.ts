@@ -1,16 +1,14 @@
 /**
  * @author John Leidy
- * @description This ensures the id field is proper and a valid mongodb id
+ * @description This ensures the id field is proper and a valid mongodb id, some response messages were slightly different
  */
-import { header, param } from "express-validator";
-import mongoose from "mongoose";
-
-export const isMongoDbID = (_id: any) => mongoose.Types.ObjectId.isValid(_id);
+import { param } from "express-validator";
+import { isMongoDbID } from "./GeneralByIDRules";
 
 const invalidByIdMessage =
     "There is missing field(s) in the PackageID or it is formed improperly, or is invalid.";
 
-export const GeneralViaIDRuleset = [
+export const GetPackageByIDRules = [
     param("id")
         .exists()
         .withMessage(invalidByIdMessage)
