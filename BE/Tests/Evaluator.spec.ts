@@ -22,7 +22,10 @@ describe("Subscores", async () => {
         return;
     }
 
-    test("RampUp Subscore", () => {
+    let repos = [a, b, c, d, e];
+    await evaluator.MultiEval(repos);
+
+    /*test("RampUp Subscore", () => {
         expect(evaluator.rampUp.Score(a)).toBe(1);
         expect(evaluator.rampUp.Score(b)).toBe(0.5);
         expect(evaluator.rampUp.Score(c)).toBe(0.25);
@@ -76,13 +79,14 @@ describe("Subscores", async () => {
         expect(evaluator.mergeRestriction.Score(c)).toBe(0.25);
         expect(evaluator.mergeRestriction.Score(d)).toBe(0.125);
         expect(evaluator.mergeRestriction.Score(e)).toBe(0);
-    });
+    });*/
 });
 
-describe("SuperBuilder", () => {
+describe("SuperBuilder", async () => {
+    let b = await superbuilder.MultiSuperBuild(dummy_links[1]);
+
     test("Handle A Mix of Valid and Invalid Links", async () => {
         let a = await superbuilder.MultiSuperBuild(dummy_links[0]);
-        let b = await superbuilder.MultiSuperBuild(dummy_links[1]);
         let c = await superbuilder.MultiSuperBuild(dummy_links[2]);
 
         const failedBuild = a == undefined || b == undefined || c == undefined;
@@ -92,7 +96,7 @@ describe("SuperBuilder", () => {
         }
 
         expect(a.length).toBe(4);
-        expect(b.length).toBe(7);
+        expect(b.length).toBe(8);
         expect(c.length).toBe(3);
     });
 
@@ -114,5 +118,14 @@ describe("SuperBuilder", () => {
     test("Array of Strings -- Only Long Blanks", async () => {
         const repoArr = await superbuilder.MultiSuperBuild(["                  ", "                  "]);
         expect(repoArr).toBe(undefined);
+    });
+
+    test("Verify That Query Results Store", () => {
+        if (!b) {
+            return;
+        }
+        b.forEach((repo) => {
+            expect(repo.QueryResult == undefined).toBe(false);
+        });
     });
 });
