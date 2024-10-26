@@ -26,9 +26,9 @@ const lightTheme: DefaultTheme = {
         errorRed: errorRed,
     },
     fontSizes: {
-        small: '0.5rem',
-        medium: '1rem',
-        large: '1.25rem',
+        small: '0.65rem',
+        medium: '0.875rem',
+        large: '1rem',
         xLarge: '2rem',
     },
     animationTime: {

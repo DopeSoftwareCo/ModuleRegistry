@@ -19,17 +19,29 @@ export interface Package extends Base {
     secrecyEnabled: boolean;
     license: string;
     rampup_score: number;
+    rampup_score_latency: number;
     score_correctness: number;
+    score_correctness_latency: number;
     score_busFactor: number;
+    score_busFactor_latency: number;
     score_license: number;
+    score_license_latency: number;
     score_versionDependence: number;
+    score_versionDependence_latency: number;
     score_mergeRestriction: number;
+    score_mergeRestriction_latency: number;
     score_pullrequest: number;
+    score_pullrequest_latency: number;
     score_responsiveMaintainer: number;
+    score_responsiveMaintainer_latency: number;
     score_goodPinningPractice: number;
+    score_goodPinningPractice_latency: number;
     score_sizeCostTotal: number;
+    score_sizeCostTotal_latency: number;
     score_sizeCostStandalone: number;
+    score_sizeCostStandalone_latency: number;
     netscore: number;
+    netscore_latency: number;
 }
 
 export const packageSchema: Schema<Package> = new Schema({
@@ -107,7 +119,15 @@ export const packageSchema: Schema<Package> = new Schema({
         type: Number,
         required: true,
     },
+    rampup_score_latency: {
+        type: Number,
+        required: true,
+    },
     score_correctness: {
+        type: Number,
+        required: true,
+    },
+    score_correctness_latency: {
         type: Number,
         required: true,
     },
@@ -115,7 +135,15 @@ export const packageSchema: Schema<Package> = new Schema({
         type: Number,
         required: true,
     },
+    score_busFactor_latency: {
+        type: Number,
+        required: true,
+    },
     score_license: {
+        type: Number,
+        required: true,
+    },
+    score_license_latency: {
         type: Number,
         required: true,
     },
@@ -123,7 +151,15 @@ export const packageSchema: Schema<Package> = new Schema({
         type: Number,
         required: true,
     },
+    score_versionDependence_latency: {
+        type: Number,
+        required: true,
+    },
     score_mergeRestriction: {
+        type: Number,
+        required: true,
+    },
+    score_mergeRestriction_latency: {
         type: Number,
         required: true,
     },
@@ -131,7 +167,15 @@ export const packageSchema: Schema<Package> = new Schema({
         type: Number,
         required: true,
     },
+    score_pullrequest_latency: {
+        type: Number,
+        required: true,
+    },
     score_responsiveMaintainer: {
+        type: Number,
+        required: true,
+    },
+    score_responsiveMaintainer_latency: {
         type: Number,
         required: true,
     },
@@ -139,7 +183,15 @@ export const packageSchema: Schema<Package> = new Schema({
         type: Number,
         required: true,
     },
+    score_goodPinningPractice_latency: {
+        type: Number,
+        required: true,
+    },
     score_sizeCostStandalone: {
+        type: Number,
+        required: true,
+    },
+    score_sizeCostStandalone_latency: {
         type: Number,
         required: true,
     },
@@ -147,7 +199,15 @@ export const packageSchema: Schema<Package> = new Schema({
         type: Number,
         required: true,
     },
+    score_sizeCostTotal_latency: {
+        type: Number,
+        required: true,
+    },
     netscore: {
+        type: Number,
+        required: true,
+    },
+    netscore_latency: {
         type: Number,
         required: true,
     },

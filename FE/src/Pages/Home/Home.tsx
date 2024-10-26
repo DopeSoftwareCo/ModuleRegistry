@@ -1,11 +1,10 @@
 import { StyledBasePageContiner } from '../../BaseStyledComponents/BaseStyled';
-import { QueryDisplay } from '../../Components/QueryDisplay/QueryDisplay';
 
 const Home = () => {
+    //should probably have all packages here since the IDs are used in other requests... users can use the IDs from here to use on other pages
     return (
         <StyledBasePageContiner>
             <>Home Page</>
-            <QueryDisplay />
         </StyledBasePageContiner>
     );
 };

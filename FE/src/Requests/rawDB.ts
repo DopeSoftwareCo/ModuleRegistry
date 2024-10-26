@@ -62,6 +62,7 @@ const mapRawDBPackagesResponse = (rawPackages: DBPackagesFromAPI): Packages =>
         secrecyEnabled: dbPackage.secrecyEnabled,
         license: dbPackage.license,
         updatedAt: getTimeAgoString(dbPackage.updatedAt),
+        specificFields: {},
     }));
 
 export const getRawDBPackages = async (): Promise<Packages> => {
