@@ -140,14 +140,22 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         }
 
         const responseBody: GetRatingsForPackageResponseBody = {
-            BusFactor: pack!.score_busFactor,
-            Correctness: pack!.score_correctness,
-            RampUp: pack!.rampup_score,
-            ResponsiveMaintainer: pack!.score_responsiveMaintainer,
-            LicenseScore: pack!.score_license,
-            GoodPinningPractice: pack!.score_goodPinningPractice,
-            PullRequest: pack!.score_pullrequest,
-            NetScore: pack!.netscore,
+            BusFactor: pack.score_busFactor,
+            BusFactorLatency: pack.score_busFactor_latency,
+            Correctness: pack.score_correctness,
+            CorrectnessLatency: pack.score_correctness_latency,
+            RampUp: pack.rampup_score,
+            RampUpLatency: pack.rampup_score_latency,
+            ResponsiveMaintainer: pack.score_responsiveMaintainer,
+            ResponsiveMaintainerLatency: pack.score_responsiveMaintainer_latency,
+            LicenseScore: pack.score_license,
+            LicenseScoreLatency: pack.score_license_latency,
+            GoodPinningPractice: pack.score_goodPinningPractice,
+            GoodPinningPracticeLatency: pack.score_goodPinningPractice_latency,
+            PullRequest: pack.score_pullrequest,
+            PullRequestLatency: pack.score_pullrequest_latency,
+            NetScore: pack.netscore,
+            NetScoreLatency: pack.netscore_latency,
         };
 
         //some return that states the system choked on at least one of the metrics

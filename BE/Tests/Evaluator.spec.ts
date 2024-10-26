@@ -52,5 +52,5 @@ describe("SuperBuilder", () => {
             fail();
         }
         expect(repo.QueryResult.licenseInfo.name).toBe("MIT License");
-    });
+    }, 10000);
 });

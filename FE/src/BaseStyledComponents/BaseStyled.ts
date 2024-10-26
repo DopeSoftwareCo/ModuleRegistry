@@ -1,15 +1,29 @@
 import { darken, lighten } from 'polished';
 import styled, { css } from 'styled-components';
 
-export const StyledBaseButton = styled.button`
+export const StyledHiddenButton = styled.button`
     border: none;
     font-family: inherit;
     background: inherit;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ${({ theme }) => css`
+        color: ${theme.colors.text};
+    `}
+`;
+
+export const StyledBaseButton = styled.button`
+    border: none;
+    font-family: inherit;
     padding: 0.2rem 0.4rem;
     font-size: inherit;
     text-transform: uppercase;
     font-weight: 600;
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
         color: ${theme.colors.background};
         border-radius: ${theme.borderRadius.small};
         background: ${theme.colors.text};
@@ -23,6 +37,7 @@ export const StyledBaseButton = styled.button`
 
 export const StyledBaseDiv = styled.div`
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
         background: ${theme.colors.background};
         color: ${theme.colors.text};
     `}
@@ -38,9 +53,10 @@ export const StyledBaseA = styled.a`
 export const StyledBaseTextInput = styled.input.attrs({ type: 'text' })`
     font-family: inherit;
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
         border-radius: ${theme.borderRadius.small};
         border: 1px solid ${theme.colors.text};
-        background: ${theme.colors.black};
+        background: ${theme.colors.background};
         color: ${theme.colors.text};
         padding: ${theme.padding.small};
         &:focus {
@@ -61,7 +77,14 @@ export const StyledBaseCard = styled(StyledBaseDiv)`
         border: 1px solid ${theme.colors.skyBlue};
         border-radius: ${theme.borderRadius.medium};
         padding: ${theme.padding.large};
+        transition: ${theme.animationTime.short} background ease;
         @media screen and (max-width: ${theme.breakpoint}) {
         }
     `}
+`;
+
+export const StyledBasePageContiner = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
