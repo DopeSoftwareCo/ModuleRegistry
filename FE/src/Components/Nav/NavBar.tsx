@@ -61,7 +61,7 @@ export const MobileMenu = () => {
     return (
         <NavContainer $show={translateNavBar}>
             <IconTextMoonContainer>
-                <NameText>NN</NameText>
+                <NameText>MR</NameText>
                 <MoonIcon />
             </IconTextMoonContainer>
             <BurgerCheckHolder>
