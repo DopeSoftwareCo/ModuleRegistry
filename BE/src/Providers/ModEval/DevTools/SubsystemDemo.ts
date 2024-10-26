@@ -1,10 +1,10 @@
-import { WeightSpec } from "../Scores/WeightSpec";
 import { ModuleEvaluator } from "../ModuleEvaluator";
 import { dummy_links, dummy_weightspecs } from "./DummyVals";
 import { RepoID_Builder } from "../RepoComponents/ID/RepoID_Builder";
 import { URLProcessor } from "../RepoComponents/URL/URLProcessor";
-import { Repo_Builder } from "../RepoComponents/Repository_Builder";
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Scores/Weightspec.const";
+import { Repo_Builder } from "../RepoComponents/Builders/Repository_Builder";
+import { DEFAULT_WEIGHTS, WeightSpecSet } from "../RepoComponents/Metrics_Scores/Weightspec.const";
+import { SuperRepoBuilder } from "../RepoComponents/Builders/SuperRepoBuilder";
 
 export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: number = 0) {
     let urls: string[];
@@ -41,18 +41,11 @@ export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: n
     const evaluator = new ModuleEvaluator(weights);
 
     console.log("--- #1: Building URLs ---");
-    const repoURLs = await processor.MultiProcess(urls);
-
     console.log("--- #2 Making IDs---");
-    const repoIDs = await id_builder.MultiBuild(repoURLs);
-
-    if (!repoIDs) {
-        console.log(" [x] FAILED TO BUILD IDs [x]");
-        return;
-    }
-
     console.log("--- #3 Assembling Repos ---");
-    let repos = await repo_builder.MultiBuild_ByID(repoIDs);
+
+    const superB = new SuperRepoBuilder();
+    let repos = await superB.MultiSuperBuild(urls);
 
     if (!repos) {
         console.log("[x] FAILED TO BUILD REPOSITORIES [X]");
@@ -62,5 +55,8 @@ export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: n
 
     console.log("========================= RESULT OF EVALUATION =========================");
 
-    repos.forEach((repo) => console.log(repo.Scores));
+    repos.forEach((repo) => {
+        console.log("License: %s", repo.License);
+        console.log(repo.NDJSONRow);
+    });
 }

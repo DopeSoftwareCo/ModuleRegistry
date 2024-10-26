@@ -2,6 +2,7 @@
  * This module creates various fields, some are used some are unused.
  * @author DSinc
  */
+
 export const CreateLanguagesField = (first: number) => `
     languages(first: ${first}) {
         nodes {
@@ -139,26 +140,8 @@ export const CreatePullRequestsField = (first: number) => `
     }
 `;
 
-export const CreateContributorsField = (first: number) => `
-    collaborators(first: ${first}) {
-        edges {
-            node {
-                login
-                name
-                contributionsCollection {
-                    contributionCalendar {
-                        totalContributions
-                    }
-                }
-                email
-                avatarUrl
-            }
-        }
-    }
-`;
-
 export const CreateMergesField = (first: number) => `
-    ref(qualifiedName: "main") {
+    commitHistory: defaultBranchRef {
         target {
             ... on Commit {
                 history(first: ${first}) {

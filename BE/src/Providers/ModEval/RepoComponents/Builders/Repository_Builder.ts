@@ -1,12 +1,12 @@
-import { Repository } from "./Repository";
-import { RepoID } from "./ID/RepoID";
-import { RepoID_Builder } from "./ID/RepoID_Builder";
-import { RepoURL } from "./URL/URLProcessor.interface";
-import { AsyncBuilder } from "../../../classes/Abstract/Abstract_Builders";
-import { AsyncLooper } from "../../../DSinc_Modules/DSinc_LoopsMaps";
-import { IsType_RepoID, IsType_RepoURL } from "../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
-import { RepoScoreset } from "../Scores/RepoScoreset";
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Scores/Weightspec.const";
+import { Repository } from "../Repository";
+import { RepoID } from "../ID/RepoID";
+import { RepoID_Builder } from "../ID/RepoID_Builder";
+import { RepoURL } from "../URL/URLProcessor.interface";
+import { AsyncBuilder } from "../../../../classes/Abstract/Abstract_Builders";
+import { AsyncLooper } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
+import { IsType_RepoID, IsType_RepoURL } from "../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
+import { RepoScoreset } from "../Metrics_Scores/RepoScoreset";
+import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Metrics_Scores/Weightspec.const";
 
 export class Repo_Builder extends AsyncBuilder<Repository> {
     asyncLooper: AsyncLooper;
@@ -54,8 +54,7 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         const weightspecs = weights ? weights : this.default_weights;
 
         if (IsType_RepoID(source)) {
-            // I shouldn't need to await here, because nothing async happens in StartFrom_ID
-            creation = this.StartFrom_ID(source, weightspecs);
+            creation = await this.StartFrom_ID(source, weightspecs);
         } else if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_URL(source, weightspecs);
         } else {
@@ -72,9 +71,13 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         return id ? this.StartFrom_ID(id, weightsToUse) : undefined;
     }
 
-    private StartFrom_ID(id: RepoID, weights?: WeightSpecSet): Repository | undefined {
+    private async StartFrom_ID(id: RepoID, weights?: WeightSpecSet): Promise<Repository | undefined> {
         const weightsToUse = weights ? weights : this.default_weights;
         const scores = new RepoScoreset(weightsToUse);
-        return new Repository(id, scores);
+        const creation = new Repository(id, scores);
+
+        await creation.RequestFromGQL();
+        creation.Refresh_NDJSON();
+        return creation;
     }
 }

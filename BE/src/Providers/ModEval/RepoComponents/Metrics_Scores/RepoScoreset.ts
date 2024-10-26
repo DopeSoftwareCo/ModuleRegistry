@@ -1,6 +1,6 @@
 import { FindWeightSpecByReceiver, WeightSpec } from "./WeightSpec";
 import { EMPTY_WEIGHTSPEC, WeightSpecSet, DEFAULT_WEIGHTS } from "./Weightspec.const";
-import { TryIndexOrDefaultTo } from "../../../DSinc_Modules/DSinc_LoopsMaps";
+import { TryIndexOrDefaultTo } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { MetricName } from "./Metric.const";
 import { Metric } from "./Metric";
 
@@ -54,6 +54,12 @@ export class RepoScoreset extends I_RepoScoreset {
             this.versionDependence_score,
             this.mergeRestriction_score,
         ];
+
+        let sum: number = 0;
+        weights.forEach((spec) => {
+            sum += spec.Weight();
+        });
+        this.weightSum = sum;
     }
 
     ProcessWeightSpecSet(weightspecs: WeightSpecSet): WeightSpecSet {
@@ -142,7 +148,7 @@ export class RepoScoreset extends I_RepoScoreset {
             return;
         }
 
-        let newNet = this.weightSum > 0 ? this.scoreSum / this.weightSum : -1;
+        let newNet = this.weightSum > 0 ? this.scoreSum / this.weightSum : 0;
 
         if (round) {
             newNet = parseFloat(newNet.toPrecision(PRECISIONDEFAULT_NET));
@@ -178,5 +184,13 @@ export class RepoScoreset extends I_RepoScoreset {
 
     public CurrentScore(): number {
         return this.net;
+    }
+
+    public GetMetricScore(metric: MetricName) {
+        return metric == MetricName.Unknown ? 0 : this.metrics[metric].AdjustedScore;
+    }
+
+    public GetMetricTime(metric: MetricName) {
+        return metric == MetricName.Unknown ? 0 : this.metrics[metric].Time;
     }
 }
