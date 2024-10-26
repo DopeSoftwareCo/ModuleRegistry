@@ -46,7 +46,7 @@ export class Repository {
             return this.queryResult;
         }
 
-        const licenseName = this.queryResult.licenseInfo.name;
+        const licenseName = this.queryResult.licenseInfo?.name;
         this.license = licenseName ? licenseName : "???";
         return this.queryResult;
     }
