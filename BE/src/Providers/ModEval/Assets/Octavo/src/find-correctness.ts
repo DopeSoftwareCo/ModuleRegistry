@@ -106,13 +106,13 @@ export async function calculateCorrectness(owner: string, repo: string): Promise
     //     return score;
     // }
 
-    const finalScore = (
+    const finalScore =
         // checkForVulnerabilities() +
-        checkForCommitHistory() +
-        checkForPrCount() +
-        checkForOpenIssuesLonger6Months() +
-        checkForAmountIssues()
-    ) / 5;
+        (checkForCommitHistory() +
+            checkForPrCount() +
+            checkForOpenIssuesLonger6Months() +
+            checkForAmountIssues()) /
+        5;
 
     const normalizedScore = Math.min(finalScore / 10, 1);
     return normalizedScore;
