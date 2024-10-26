@@ -15,6 +15,13 @@ export const RatingRow = styled(StyledBaseDiv)`
         }
     `}
 `;
+
+export const ErrorMessage = styled(StyledBaseDiv)`
+    ${({ theme }) => css`
+        color: ${theme.colors.errorRed};
+    `}
+`;
+
 export const RatingName = styled(StyledBaseDiv)``;
 export const RatingValue = styled(StyledBaseDiv)``;
 
