@@ -26,12 +26,14 @@ const Rating = () => {
                         setSearchID(e.target.value);
                     }}
                 />
-                <RatingRequestButton onClick={makeRequest}>Get Rating</RatingRequestButton>
+                <RatingRequestButton data-testid="ratings-request-button" onClick={makeRequest}>
+                    Get Rating
+                </RatingRequestButton>
             </Inputs>
             {ratings &&
                 Object.entries(ratings).map(([ratingName, ratingValue], idx) => (
                     <RatingRow key={idx}>
-                        <RatingName>{ratingName}</RatingName>
+                        <RatingName data-testid={ratingName}>{ratingName}</RatingName>
                         <RatingValue>{ratingValue}</RatingValue>
                     </RatingRow>
                 ))}
