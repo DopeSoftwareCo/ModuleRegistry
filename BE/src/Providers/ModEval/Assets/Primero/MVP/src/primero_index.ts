@@ -12,7 +12,7 @@ import { BaseRepoQueryResponse, ReposFromQuery } from './Types/ResponseTypes';
 import { requestFromGQL } from './Requests/GitHub/gql';
 import { mapGQLResultToRepos } from './Processors/gqlProcessor';
 import { DEFAULT_URLFILEPATH } from './Input/Input';
-import { ClearLogFile, LogDebug } from './Utils/log';
+//import { ClearLogFile, LogDebug } from './Utils/log';
 import { ProvideURLsForQuerying } from './Input/Sanitize';
 import { writeNDJSONToFile } from './Output/File';
 import { processArguments } from './Processors/argProcessor';
@@ -37,7 +37,7 @@ if (!process.env.LOG_FILE || !process.env.GITHUB_TOKEN) {
  * @returns nothing {@type void
  */
 const runner = async () => {
-    ClearLogFile();
+    // ClearLogFile();
     const filePath = await processArguments();
     const cleanUrls = ProvideURLsForQuerying(filePath ? filePath : DEFAULT_URLFILEPATH, true);
     const repos = await buildReposFromUrls<BaseRepoQueryResponse>(cleanUrls);
@@ -52,8 +52,8 @@ const runner = async () => {
     const cleanedRepos = mapGQLResultToRepos(result, repos);
     const res = await scoreRepositoriesArray<BaseRepoQueryResponse>(cleanedRepos); //mapper to clean the array of repos and add in their query results.
     writeNDJSONToFile(res); //result is the raw gql response... .data has your data, .errors has the errors
-    LogDebug('Successfully cleaned and scored repos');
+    // LogDebug('Successfully cleaned and scored repos');
     writeNDJSONToCLI(res);
 };
-LogDebug(`🌟 ${chalk.greenBright('Starting...')} 🌟`);
+//LogDebug(`🌟 ${chalk.greenBright('Starting...')} 🌟`);
 runner();

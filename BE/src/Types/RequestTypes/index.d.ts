@@ -39,6 +39,8 @@ declare module "RequestTypes" {
 
     export interface GetPackageRatingsRequest extends Request {}
 
+    export interface GetPackageSizeCostRequest extends Request {}
+
     export type AuthenticationRequestBody = AuthenticationRequestModel;
 
     export interface AuthenticationRequest extends Request {
@@ -58,4 +60,6 @@ declare module "RequestTypes" {
     }
 
     export interface GetPackageByNameRequest extends Request {}
+
+    export interface GetTracks extends Request {}
 }
