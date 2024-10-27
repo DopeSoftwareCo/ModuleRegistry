@@ -20,7 +20,8 @@ export const UpdatePackageViaIDController = asyncHandler(
             pack.data.Content = newData.data.Content!;
             pack.data.JSProgram = newData.data.JSProgram!;
             pack.repoUrl = newData.data.URL!;
-            pack.metaData = newData.metadata;
+            pack.metadata.Name = newData.metadata.Name;
+            pack.metadata.Version = newData.metadata.Version;
             pack.save();
             DNE = false;
         } else {

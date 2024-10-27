@@ -140,22 +140,22 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         }
 
         const responseBody: GetRatingsForPackageResponseBody = {
-            BusFactor: pack.score_busFactor,
-            BusFactorLatency: pack.score_busFactor_latency,
-            Correctness: pack.score_correctness,
-            CorrectnessLatency: pack.score_correctness_latency,
-            RampUp: pack.rampup_score,
-            RampUpLatency: pack.rampup_score_latency,
-            ResponsiveMaintainer: pack.score_responsiveMaintainer,
-            ResponsiveMaintainerLatency: pack.score_responsiveMaintainer_latency,
-            LicenseScore: pack.score_license,
-            LicenseScoreLatency: pack.score_license_latency,
-            GoodPinningPractice: pack.score_goodPinningPractice,
-            GoodPinningPracticeLatency: pack.score_goodPinningPractice_latency,
-            PullRequest: pack.score_pullrequest,
-            PullRequestLatency: pack.score_pullrequest_latency,
-            NetScore: pack.netscore,
-            NetScoreLatency: pack.netscore_latency,
+            BusFactor: pack.BusFactor.score_busFactor,
+            BusFactorLatency: pack.BusFactor.score_busFactor_latency,
+            Correctness: pack.Correctness.score_correctness,
+            CorrectnessLatency: pack.Correctness.score_correctness_latency,
+            RampUp: pack.RampupTime.rampup_score,
+            RampUpLatency: pack.RampupTime.rampup_score_latency,
+            ResponsiveMaintainer: pack.Responsiveness.score_responsiveMaintainer,
+            ResponsiveMaintainerLatency: pack.Responsiveness.score_responsiveMaintainer_latency,
+            LicenseScore: pack.LicenseCompatibility.score_license,
+            LicenseScoreLatency: pack.LicenseCompatibility.score_license_latency,
+            GoodPinningPractice: pack.GoodPinningPractice.score_goodPinningPractice,
+            GoodPinningPracticeLatency: pack.GoodPinningPractice.score_goodPinningPracticeLatency,
+            PullRequest: pack.PullRequest.score_pullRequest,
+            PullRequestLatency: pack.PullRequest.score_pullRequestLatency,
+            NetScore: pack.FinalRating.netscore,
+            NetScoreLatency: pack.FinalRating.netscore_latency,
         };
 
         //some return that states the system choked on at least one of the metrics
