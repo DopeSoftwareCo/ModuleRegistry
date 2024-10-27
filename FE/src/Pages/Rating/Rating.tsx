@@ -1,13 +1,10 @@
 import { useState } from 'react';
-import { StyledBasePageContiner } from '../../BaseStyledComponents/BaseStyled';
 import {
-    Inputs,
-    RatingIDInput,
-    RatingName,
-    RatingRequestButton,
-    RatingRow,
-    RatingValue,
-} from './RatingStyle';
+    StyledBaseKeyValuePairsContainer,
+    StyledBaseKeyValueRow,
+    StyledBasePageContiner,
+} from '../../BaseStyledComponents/BaseStyled';
+import { Inputs, RatingIDInput, RatingName, RatingRequestButton, RatingValue } from './RatingStyle';
 import { PackageRatingFromAPI } from '../../Models/Models';
 import { ratingsRequest } from './Requests';
 import { ErrorDisplay } from '../../Components/ErrorDisplay/ErrorDisplay';
@@ -27,6 +24,7 @@ const Rating = () => {
         <StyledBasePageContiner>
             <Inputs>
                 <RatingIDInput
+                    placeholder="ID"
                     onChange={(e) => {
                         setSearchID(e.target.value);
                     }}
@@ -36,13 +34,15 @@ const Rating = () => {
                 </RatingRequestButton>
             </Inputs>
             <ErrorDisplay err={err} setErr={setErr} />
-            {ratings &&
-                Object.entries(ratings).map(([ratingName, ratingValue], idx) => (
-                    <RatingRow key={idx}>
-                        <RatingName data-testid={ratingName}>{ratingName}</RatingName>
-                        <RatingValue>{ratingValue}</RatingValue>
-                    </RatingRow>
-                ))}
+            <StyledBaseKeyValuePairsContainer>
+                {ratings &&
+                    Object.entries(ratings).map(([ratingName, ratingValue], idx) => (
+                        <StyledBaseKeyValueRow key={idx}>
+                            <RatingName data-testid={ratingName}>{ratingName}</RatingName>
+                            <RatingValue>{ratingValue}</RatingValue>
+                        </StyledBaseKeyValueRow>
+                    ))}
+            </StyledBaseKeyValuePairsContainer>
         </StyledBasePageContiner>
     );
 };

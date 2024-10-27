@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { StyledBasePageContiner } from '../../BaseStyledComponents/BaseStyled';
+import {
+    StyledBaseKeyValuePairsContainer,
+    StyledBaseKeyValueRow,
+    StyledBasePageContiner,
+} from '../../BaseStyledComponents/BaseStyled';
 import {
     RegexInput,
     RegexInputs,
     RegexPackageName,
-    RegexPackageRow,
     RegexPackageVersion,
     RegexSearchButton,
 } from './RegexStyle';
@@ -27,19 +30,21 @@ const Regex = () => {
     return (
         <StyledBasePageContiner>
             <RegexInputs>
-                <RegexInput onChange={(e) => setRegexSearchString(e.target.value)} />
+                <RegexInput placeholder="REGEX" onChange={(e) => setRegexSearchString(e.target.value)} />
                 <RegexSearchButton data-testid="regex-search-button" onClick={makeRequest}>
-                    Submit
+                    Find Packages
                 </RegexSearchButton>
             </RegexInputs>
             <ErrorDisplay err={reqErr} setErr={setReqErr} />
-            {regexPackages &&
-                regexPackages.map((rPack, idx) => (
-                    <RegexPackageRow key={idx} data-testid={rPack.Name}>
-                        <RegexPackageName>{rPack.Name}</RegexPackageName>
-                        <RegexPackageVersion>{rPack.Version}</RegexPackageVersion>
-                    </RegexPackageRow>
-                ))}
+            <StyledBaseKeyValuePairsContainer>
+                {regexPackages &&
+                    regexPackages.map((rPack, idx) => (
+                        <StyledBaseKeyValueRow key={idx} data-testid={rPack.Name}>
+                            <RegexPackageName>{rPack.Name}</RegexPackageName>
+                            <RegexPackageVersion>{rPack.Version}</RegexPackageVersion>
+                        </StyledBaseKeyValueRow>
+                    ))}
+            </StyledBaseKeyValuePairsContainer>
         </StyledBasePageContiner>
     );
 };

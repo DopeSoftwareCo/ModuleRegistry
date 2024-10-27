@@ -10,10 +10,6 @@ export const RegexInput = styled(StyledBaseTextInput)``;
 
 export const RegexSearchButton = styled(StyledBaseButton)``;
 
-export const RegexPackageRow = styled(StyledBaseDiv)`
-    display: flex;
-`;
-
 export const RegexPackageName = styled(StyledBaseDiv)``;
 
 export const RegexPackageVersion = styled(StyledBaseDiv)``;
