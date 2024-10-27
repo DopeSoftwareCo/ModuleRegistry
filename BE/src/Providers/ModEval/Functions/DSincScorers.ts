@@ -88,3 +88,46 @@ async function fetchAllPullRequests(owner: string, repoName: string): Promise<an
 
     return allPullRequests;
 }
+
+//============================================================================// remove after testing
+import { RepoID } from "../RepoComponents/ID/RepoID";
+import { RepoURL } from "../RepoComponents/URL/URLProcessor.interface";
+// import { Repository } from "../RepoComponents/Repository";
+// import { MergeRestriction_Scorer } from "./DSincScorers";
+import { NullableArray } from "../../../classes/Essential_Interfaces/NullableArray";
+
+async function main() {
+    // URL of the repository
+    const url = "https://github.com/cloudinary/cloudinary_npm";
+
+    // Step 1: Create a RepoURL object
+    const tokens: NullableArray<string> = {
+        content: ["cloudinary", "cloudinary_npm"],
+        isEmpty: false,
+        isDefined: true,
+    };
+
+    const repoURL: RepoURL = {
+        providedURL: url,
+        domain: "github.com",
+        tokens: tokens,
+        gitURL: "https://github.com/cloudinary/cloudinary_npm.git",
+    };
+
+    // Step 2: Instantiate the RepoID class
+    const owner = "cloudinary";
+    const repoName = "cloudinary_npm";
+    const repoID = new RepoID(owner, repoName, repoURL);
+
+    // Step 3: Create Repository instance
+    const repository = new Repository(repoID);
+
+    // Call MergeRestriction_Scorer
+    const score = await MergeRestriction_Scorer(repository);
+
+    // Log the result
+    console.log(`Merge Restriction Score for cloudinary/cloudinary_npm: ${score}`);
+}
+
+// Call the main function
+main().catch(console.error);
