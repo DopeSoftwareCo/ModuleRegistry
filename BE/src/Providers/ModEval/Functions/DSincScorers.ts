@@ -67,7 +67,7 @@ export async function MergeRestriction_Scorer(repo: Repository): Promise<number>
             (pr) => pr.mergeCommit && pr.mergeCommit.parents.totalCount >= 2
         ).length;
     } catch (error) {
-        return -1;
+        return 0;
     }
 
     let queryString = CreateTotalCommitsField(Owner, Name);
@@ -77,17 +77,17 @@ export async function MergeRestriction_Scorer(repo: Repository): Promise<number>
         if (result && result.data) {
             totalCommits = result.data.repository.object.history.totalCount;
         } else {
-            return -2;
+            return 0;
         }
     } catch (error) {
-        return -3;
+        return 0;
     }
 
     if (totalCommits === 0) {
-        return -4;
+        return 0;
     }
 
-    const Score = (prWithMultipleParents / totalCommits) * 100;
+    const Score = prWithMultipleParents / totalCommits;
     const roundedScore = parseFloat(Score.toFixed(2));
     return roundedScore;
 }

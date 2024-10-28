@@ -129,7 +129,7 @@ describe("MergeRestriction_Scorer with real repository", () => {
         const repository = new Repository(repoID);
 
         const score = await MergeRestriction_Scorer(repository);
-        console.log(`Merge Restriction Score for cloudinary/cloudinary_npm: ${score}`);
-        expect(score).toBeCloseTo(7.59); // Adjust this expectation based on real data
+        //console.log(`Merge Restriction Score for cloudinary/cloudinary_npm: ${score}`);
+        expect(score).toBe(0.08); // Adjust this expectation based on real data
     });
 });
