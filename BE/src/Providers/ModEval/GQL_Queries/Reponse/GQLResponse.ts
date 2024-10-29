@@ -52,7 +52,7 @@ type ReadmeFile = {
     text: string;
 };
 
-type DependencyGraphManifestNode = {
+export type DependencyGraphManifestNode = {
     filename: {
         dependencies: {
             nodes: {

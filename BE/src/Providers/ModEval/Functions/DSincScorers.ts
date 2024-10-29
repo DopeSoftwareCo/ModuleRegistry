@@ -44,7 +44,7 @@ export async function LicenseCompatibility_Scorer(repo: Repository): Promise<num
 }
 
 export async function VersionDependence_Scorer(repo: Repository): Promise<number> {
-    let number_of_dependencies = repo.QueryResult?.DependencyData?.length; 
+    let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
     if (number_of_dependencies == undefined)
     {
         return 1;
