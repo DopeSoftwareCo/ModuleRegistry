@@ -6,16 +6,13 @@ import {
     UploadInjestResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-<<<<<<< HEAD
-// /package
-=======
 import PackageModel from "../Schemas/Package";
-// /packages
->>>>>>> dev
+
+// /package
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         //hover for custom typed body
-        const body = req.body; 
+        const body = req.body;
         PackageModel.findOne(body);
         //use the body data for your code here
         //must calculate all metrics here
