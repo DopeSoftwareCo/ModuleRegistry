@@ -4,14 +4,19 @@ export class User {
     UID: string;
     username: string;
     permission: USD_Permission;
+    activeUser: boolean;
 
     constructor(username: string, permissions: USD_Permission) {
         this.UID = "xxxx-xx"; // Will be generated
         this.username = username;
         this.permission = permissions;
+        this.activeUser = true;
     }
 }
-
+/**
+ * @class USD Permission
+ * Structure which defines the upload, search, and delete permission
+ */
 class USD_Permission {
     uploadPermission: number;
     searchPermission: number;
