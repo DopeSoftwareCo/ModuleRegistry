@@ -1,16 +1,9 @@
-import { useEffect, useState } from 'react';
-import {
-    ErrorMessage,
-    Form,
-    LoginField,
-    LoginLabel,
-    PasswordField,
-    SubmitButton,
-    LoginCard,
-} from './LoginStyle';
+import { useState } from 'react';
+import { Form, LoginField, LoginLabel, PasswordField, SubmitButton, LoginCard } from './LoginStyle';
 import { authenticateUserRequest } from './LoginRequest';
 import { decodeAndSetToken } from './Token';
 import { useNavigate } from 'react-router-dom';
+import { ErrorDisplay } from '../../Components/ErrorDisplay/ErrorDisplay';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -29,20 +22,6 @@ const Login = () => {
             }
         }
     };
-
-    useEffect(() => {
-        let timeout: number | null = null;
-        if (err) {
-            timeout = setTimeout(() => {
-                setErr(undefined);
-            }, 5000);
-        }
-        return () => {
-            if (timeout) {
-                clearTimeout(timeout);
-            }
-        };
-    }, [err]);
 
     const processFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -64,7 +43,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <SubmitButton type="submit">Login</SubmitButton>
-                <ErrorMessage>{err && err}</ErrorMessage>
+                <ErrorDisplay err={err} setErr={setErr} />
             </Form>
         </LoginCard>
     );
