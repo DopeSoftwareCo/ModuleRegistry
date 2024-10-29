@@ -87,4 +87,22 @@ export const StyledBasePageContiner = styled(StyledBaseDiv)`
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
+`;
+
+export const StyledBaseKeyValueRow = styled(StyledBaseDiv)`
+    display: flex;
+    justify-content: space-between;
+    ${({ theme }) => css`
+        min-width: 400px;
+        @media screen and (max-width: ${theme.breakpoint}) {
+            min-width: 80vw;
+        }
+    `}
+`;
+
+export const StyledBaseKeyValuePairsContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 `;
