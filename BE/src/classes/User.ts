@@ -11,7 +11,10 @@ export class User {
         this.permission = permissions;
     }
 }
-
+/**
+ * @class USD Permission
+ * Structure which defines the upload, search, and delete permission
+ */
 class USD_Permission {
     uploadPermission: number;
     searchPermission: number;

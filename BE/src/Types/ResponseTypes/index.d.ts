@@ -64,7 +64,7 @@ declare module "ResponseTypes" {
         | "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL ar both set)"
         | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package exists already."
-        | "Pacakge is not uploaded due to disqualified rating.";
+        | "Package is not uploaded due to disqualified rating.";
 
     export type UploadInjestNewPackageResponseBody = {
         metadata: PackageMetadataResponse;
