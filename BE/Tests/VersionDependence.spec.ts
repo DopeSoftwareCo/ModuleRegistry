@@ -7,43 +7,51 @@ import { GQLResultData, DependencyGraphManifestNode } from "../src/Providers/Mod
 
 describe("Version Dependence", () => {
     test("Size 0", async () => {
-        const repo1: Repository = {
+        const repo: Repository = {
             QueryResult: {
                 dependencyGraphManifests: {nodes: Array(0)}
             } as GQLResultData
         } as Partial<Repository> as Repository;
         // let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
-        const test1 = await VersionDependence_Scorer(repo1);
-        expect(test1).toBe(1);
+        const test = await VersionDependence_Scorer(repo);
+        expect(test).toBe(1);
     });
     test("Size 2", async () => {
-        const repo1: Repository = {
+        const repo: Repository = {
             QueryResult: {
                 dependencyGraphManifests: {nodes: Array(2)}
             } as GQLResultData
         } as Partial<Repository> as Repository;
         // let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
-        const test1 = await VersionDependence_Scorer(repo1);
-        expect(test1).toBe(0.5);
+        const test = await VersionDependence_Scorer(repo);
+        expect(test).toBe(0.5);
     });
     test("Size 6", async () => {
-        const repo1: Repository = {
+        const repo: Repository = {
             QueryResult: {
                 dependencyGraphManifests: {nodes: Array(6)}
             } as GQLResultData
         } as Partial<Repository> as Repository;
         // let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
-        const test1 = await VersionDependence_Scorer(repo1);
-        expect(test1).toBe(0.25);
+        const test = await VersionDependence_Scorer(repo);
+        expect(test).toBe(0.25);
     });
     test("Size 14", async () => {
-        const repo1: Repository = {
+        const repo: Repository = {
             QueryResult: {
                 dependencyGraphManifests: {nodes: Array(14)}
             } as GQLResultData
         } as Partial<Repository> as Repository;
         // let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
-        const test1 = await VersionDependence_Scorer(repo1);
-        expect(test1).toBe(0.125);
+        const test = await VersionDependence_Scorer(repo);
+        expect(test).toBe(0.125);
+    });
+    test("No Data Test", async () => {
+        const repo: Repository = {
+            QueryResult: undefined
+        } as Partial<Repository> as Repository;
+        // let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
+        const test = await VersionDependence_Scorer(repo);
+        expect(test).toBe(1);
     });
 });
