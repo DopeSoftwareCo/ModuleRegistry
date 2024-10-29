@@ -30,25 +30,29 @@ import PackageModel from "../Schemas/Package";
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
         const requestedPackages = req.body;
-        //hover to see types
-        //your code here
-
-        //^^^^^^^^^^^^^^^^
-        //should return back to here a typed arr like this, this is metadata ab the package
-        const responseBody: GetPackagesResponseBody = [
-            { Version: "Some version", Name: "Some name", ID: "Some ID" },
-            { Version: "Some version", Name: "Some name", ID: "Some ID" },
-        ];
-        //something to signify too many packages were returned
-        const tooManyreturned = false;
-        let responseMessage: GetPackagesInvalidResponseMessages;
-        if (!tooManyreturned) {
-            res.status(200).json(responseBody);
-        } else {
-            responseMessage = "Too many packages returned.";
-            res.status(413).send(responseMessage);
+        const foundPackage = await PackageModel.findById(req.requestedId);
+        const DNE = false;
+        if (foundPackage == null) {
+            let responseMessage: GetPackageViaIDInvalidResponseMessages;
+            responseMessage = "Package does not exist.";
+            res.status(404).send(responseMessage);
         }
-    }
+        else {
+            const responseBody: GetPackageViaIDResponseBody = {
+                metadata: {
+                    Name: foundPackage?.metadata.Name,
+                    Version: foundPackage?.metadata.Version,
+                    ID: foundPackage.id,
+                },
+                //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
+                data: {
+                    Content: foundPackage.data.Content,
+                    URL: foundPackage.repoUrl,
+                    JSProgram: foundPackage.data.JSProgram,
+                },
+            };
+            res.status(200).json(responseBody);
+        }
 );
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
