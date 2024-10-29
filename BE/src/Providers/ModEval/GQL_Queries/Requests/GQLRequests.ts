@@ -3,7 +3,7 @@
  * This module processes handles the request to GQL
  * @author DSinc
  */
-import { GITHUB_TOKEN } from "../../Assets/Octavo/src/Util/constant";
+import { GITHUB_TOKEN } from "../../Old_Assets/Octavo/src/Util/constant";
 import { GraphQLResponse } from "../Reponse/RepoQueryResult.types";
 import { RepoID } from "../../RepoComponents/ID/RepoID";
 import { LogDebug, LogInfo } from "../../../Utils/Log";

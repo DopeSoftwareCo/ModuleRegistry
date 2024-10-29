@@ -1,9 +1,9 @@
-import { calculateRampUp } from "../Assets/Octavo/src/ramp-up";
-import { calculateCorrectness } from "../Assets/Octavo/src/find-correctness";
-import { calculateBusFactor } from "../Assets/Octavo/src/bus-factor";
-import { calculateResponsiveMaintener } from "../Assets/Octavo/src/find-responsive-maintainer";
-import { calculateMetricsForRepo } from "../Assets/Octavo/src/github-wrapper";
-import { fetchRepoLicense } from "../Assets/Octavo/src/github-wrapper";
+import { calculateRampUp } from "../Old_Assets/Octavo/src/ramp-up";
+import { calculateCorrectness } from "../Old_Assets/Octavo/src/find-correctness";
+import { calculateBusFactor } from "../Old_Assets/Octavo/src/bus-factor";
+import { calculateResponsiveMaintener } from "../Old_Assets/Octavo/src/find-responsive-maintainer";
+import { calculateMetricsForRepo } from "../Old_Assets/Octavo/src/github-wrapper";
+import { fetchRepoLicense } from "../Old_Assets/Octavo/src/github-wrapper";
 import { Repository } from "../RepoComponents/Repository";
 import { FetchUniqueAuthors } from "../GQL_Queries/Requests/GQLRequests";
 
