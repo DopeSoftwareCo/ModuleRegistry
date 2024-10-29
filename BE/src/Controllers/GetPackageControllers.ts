@@ -53,32 +53,9 @@ export const GetPackagesFromRegistryController = asyncHandler(
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
-        console.log("original", req.originalUrl);
-        //your code here using the id
-
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //return back something that signifies it was not found if that is the case;
+        //console.log("original", req.originalUrl);
+        const foundPackage = await PackageModel.findById(req.requestedId);
         const DNE = false;
-        //should return back here something typed as follows
-        const responseBody: GetPackageViaIDResponseBody = {
-            metadata: {
-                Name: "package name",
-                Version: "version",
-                ID: "id",
-            },
-            //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-            data: {},
-        };
-        let responseMessage: GetPackageViaIDInvalidResponseMessages;
-        if (!DNE) {
-            res.status(200).json(responseBody);
-        } else {
-            responseMessage = "Package does not exist.";
-            res.status(404).send(responseMessage);
-        }
-        /*
-        const foundPackage = await PackageModel.findById(requestedPackageID);
-
         if (foundPackage == null) {
             let responseMessage: GetPackageViaIDInvalidResponseMessages;
             responseMessage = "Package does not exist.";
@@ -99,10 +76,8 @@ export const GetPackageViaIDController = asyncHandler(
                 },
             };
             res.status(200).json(responseBody);
-        } */
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^
-    }
-);
+        }
+    });
 
 // /package/{id}/cost
 export const GetPackageSizeCostViaIDController = asyncHandler(
