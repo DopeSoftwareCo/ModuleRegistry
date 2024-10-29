@@ -50,9 +50,12 @@ export async function LicenseCompatibility_Scorer(repo: Repository): Promise<num
 }
 
 export async function VersionDependence_Scorer(repo: Repository): Promise<number> {
-    // Placeholder for actual functionality
-    let result = 0;
-    return result;
+    let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
+    if (number_of_dependencies == undefined)
+    {
+        return 1;
+    }
+    return 1 / (1 + (number_of_dependencies/2));
 }
 
 export async function MergeRestriction_Scorer(repo: Repository): Promise<number> {

@@ -6,11 +6,13 @@ import {
     UploadInjestResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
+import PackageModel from "../Schemas/Package";
 // /packages
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         //hover for custom typed body
-        const body = req.body;
+        const body = req.body; 
+        PackageModel.findOne(body);
         //use the body data for your code here
         //must calculate all metrics here
         //store everything in db using package model
@@ -40,7 +42,7 @@ export const UploadInjestController = asyncHandler(
             responseMessage = "Package exists already.";
             res.status(409).send(responseMessage);
         } else if (disqualified) {
-            responseMessage = "Pacakge is not uploaded due to disqualified rating.";
+            responseMessage = "Package is not uploaded due to disqualified rating.";
             res.status(424).send(responseMessage);
         }
     }
