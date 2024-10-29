@@ -3,7 +3,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { VersionDependence_Scorer } from "../src/Providers/ModEval/Functions/DSincScorers";
 import { Repository } from "../src/Providers/ModEval/RepoComponents/Repository";
-import { GQLResultData, DependencyGraphManifestNode } from "../src/Providers/ModEval/GQL_Queries/Reponse/GQLResponse";
+import { GQLResultData } from "../src/Providers/ModEval/GQL_Queries/Reponse/GQLResponse";
 
 describe("Version Dependence", () => {
     test("Size 0", async () => {
