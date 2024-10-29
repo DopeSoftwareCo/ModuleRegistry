@@ -1,5 +1,5 @@
 import { NDJSONRow } from "../Providers/ModEval/Assets/Primero/MVP/src/Types/DataTypes";
-import { RepoScoreset } from "../Providers/ModEval/Scores/RepoScoreset";
+import { RepoScoreset } from "../Providers/ModEval/Metrics_Scores/RepoScoreset";
 import { Repository } from "../Providers/ModEval/RepoComponents/Repository";
 import { MakePositiveInteger } from "../DSinc_Modules/DSinc_Math";
 import { User } from "./User";

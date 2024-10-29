@@ -1,12 +1,20 @@
-import * as OctScore from "./ScoringFunctions/OctavoScorers";
 import { Repository } from "./RepoComponents/Repository";
-import { Metric } from "./Scores/Metric";
-import { MetricName } from "./Scores/Metric.const";
-import { SubscoreCalculator } from "./Scores/ScoreCalculator";
-import { WeightSpec, FindWeightSpecByReceiver } from "./Scores/WeightSpec";
-import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./Scores/Weightspec.const";
+import { Metric } from "./RepoComponents/Metrics_Scores/Metric";
+import { MetricName } from "./RepoComponents/Metrics_Scores/Metric.const";
+import { SubscoreCalculator } from "./RepoComponents/Metrics_Scores/ScoreCalculator";
+import { WeightSpec, FindWeightSpecByReceiver } from "./RepoComponents/Metrics_Scores/WeightSpec";
+import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./RepoComponents/Metrics_Scores/Weightspec.const";
 import { AsyncLooper, TryIndexOrDefaultTo } from "../../DSinc_Modules/DSinc_LoopsMaps";
-import * as DSincScore from "./ScoringFunctions/DSincScorers";
+import {
+    RampUp_Scorer,
+    Correctness_Scorer,
+    BusFactor_Scorer,
+    Responsiveness_Scorer,
+    LicenseCompatibility_Scorer,
+    VersionDependence_Scorer,
+    MergeRestriction_Scorer,
+} from "./Functions/DSincScorers";
+
 import {
     RAMPUP_WEIGHT_DEFAULT,
     CORRECTNESS_WEIGHT_DEFAULT,
@@ -15,7 +23,9 @@ import {
     LICENSE_WEIGHT,
     VERSIONDEP_WEIGHT_DEFAULT,
     MERGERESTRICT_WEIGHT_DEFAULT,
-} from "./Scores/Weightspec.const";
+} from "./RepoComponents/Metrics_Scores/Weightspec.const";
+import { BusFactor_WrappedScorer } from "./Functions/OctavoScorers";
+import { NDJSONRow } from "./RepoComponents/NDJSON/NDJSONRow";
 
 // How crucial are each of these factors on a 1-7 scale?
 /*
@@ -46,38 +56,26 @@ export class ModuleEvaluator {
         this.asyncLooper = new AsyncLooper();
         const weights = this.ProcessWeightSpecSet(weightspecs);
 
-        this.rampUp = new SubscoreCalculator(
-            OctScore.RampUp_WrappedScorer,
-            MetricName.RampUpTime,
-            weights[0]
-        );
-        this.correctness = new SubscoreCalculator(
-            OctScore.Correctness_WrappedScorer,
-            MetricName.Correctness,
-            weights[1]
-        );
-        this.busFactor = new SubscoreCalculator(
-            OctScore.BusFactor_WrappedScorer,
-            MetricName.BusFactor,
-            weights[2]
-        );
+        this.rampUp = new SubscoreCalculator(RampUp_Scorer, MetricName.RampUpTime, weights[0]);
+        this.correctness = new SubscoreCalculator(Correctness_Scorer, MetricName.Correctness, weights[1]);
+        this.busFactor = new SubscoreCalculator(BusFactor_Scorer, MetricName.BusFactor, weights[2]);
         this.responsiveness = new SubscoreCalculator(
-            OctScore.Responsiveness_WrappedScorer,
+            Responsiveness_Scorer,
             MetricName.MaintainerResponsiveness,
             weights[3]
         );
         this.licensing = new SubscoreCalculator(
-            OctScore.LicenseCompatibility_WrapperScorer,
+            LicenseCompatibility_Scorer,
             MetricName.LienseCompatibility,
             weights[4]
         );
         this.versionDependence = new SubscoreCalculator(
-            DSincScore.VersionDependence_Scorer,
+            VersionDependence_Scorer,
             MetricName.VersionDependence,
             weights[5]
         );
         this.mergeRestriction = new SubscoreCalculator(
-            DSincScore.MergeRestriction_Scorer,
+            MergeRestriction_Scorer,
             MetricName.PRMergeRestriction,
             weights[6]
         );
@@ -155,6 +153,7 @@ export class ModuleEvaluator {
         repo.Scores.AddScore(scores[4]);
         repo.Scores.AddScore(scores[5]);
         repo.Scores.AddScore(scores[6]);
+        repo.Refresh_NDJSON();
 
         return repo.Scores.CurrentScore();
     }

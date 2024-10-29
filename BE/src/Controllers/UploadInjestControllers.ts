@@ -14,6 +14,8 @@ export const UploadInjestController = asyncHandler(
         const body = req.body; 
         PackageModel.findOne(body);
         //use the body data for your code here
+        //must calculate all metrics here
+        //store everything in db using package model
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

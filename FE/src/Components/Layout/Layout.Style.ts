@@ -7,6 +7,7 @@ export const PageContainer = styled.div`
     min-height: 100vh;
     max-width: 100%;
     ${({ theme }) => css`
+        font-size: ${theme.fontSizes.small};
         color: ${theme.colors.text};
         background: ${theme.colors.background};
         transition: 0.3s all ease;

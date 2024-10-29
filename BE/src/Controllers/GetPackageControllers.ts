@@ -143,14 +143,22 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         }
 
         const responseBody: GetRatingsForPackageResponseBody = {
-            BusFactor: pack!.score_busFactor,
-            Correctness: pack!.score_correctness,
-            RampUp: pack!.rampup_score,
-            ResponsiveMaintainer: pack!.score_responsiveMaintainer,
-            LicenseScore: pack!.score_license,
-            GoodPinningPractice: pack!.score_goodPinningPractice,
-            PullRequest: pack!.score_pullrequest,
-            NetScore: pack!.netscore,
+            BusFactor: pack.BusFactor.score_busFactor,
+            BusFactorLatency: pack.BusFactor.score_busFactor_latency,
+            Correctness: pack.Correctness.score_correctness,
+            CorrectnessLatency: pack.Correctness.score_correctness_latency,
+            RampUp: pack.RampupTime.rampup_score,
+            RampUpLatency: pack.RampupTime.rampup_score_latency,
+            ResponsiveMaintainer: pack.Responsiveness.score_responsiveMaintainer,
+            ResponsiveMaintainerLatency: pack.Responsiveness.score_responsiveMaintainer_latency,
+            LicenseScore: pack.LicenseCompatibility.score_license,
+            LicenseScoreLatency: pack.LicenseCompatibility.score_license_latency,
+            GoodPinningPractice: pack.GoodPinningPractice.score_goodPinningPractice,
+            GoodPinningPracticeLatency: pack.GoodPinningPractice.score_goodPinningPracticeLatency,
+            PullRequest: pack.PullRequest.score_pullRequest,
+            PullRequestLatency: pack.PullRequest.score_pullRequestLatency,
+            NetScore: pack.FinalRating.netscore,
+            NetScoreLatency: pack.FinalRating.netscore_latency,
         };
 
         //some return that states the system choked on at least one of the metrics

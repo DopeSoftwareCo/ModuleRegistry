@@ -90,10 +90,13 @@ const runServer = async () => {
     });
 };
 
+async function RunDemo_ModEval() {
+    console.log("=== Here's an evaluation demo! ===");
+    await RunEvalSubsystemDemo(2);
+}
+
 async function Execute() {
     await runServer();
-    console.log("=== Here's an evaluation demo! ===");
-    //await RunEvalSubsystemDemo(1);
 }
 
 Execute();
