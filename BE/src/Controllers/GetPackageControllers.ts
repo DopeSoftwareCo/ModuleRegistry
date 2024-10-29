@@ -66,8 +66,8 @@ export const GetPackageViaIDController = asyncHandler(
         else {
             const responseBody: GetPackageViaIDResponseBody = {
                 metadata: {
-                    Name: foundPackage?.metaData.Name,
-                    Version: foundPackage?.metaData.Version,
+                    Name: foundPackage?.metadata.Name,
+                    Version: foundPackage?.metadata.Version,
                     ID: foundPackage.id,
                 },
                 //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
