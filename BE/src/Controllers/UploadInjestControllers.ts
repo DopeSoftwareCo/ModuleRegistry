@@ -6,7 +6,7 @@ import {
     UploadInjestResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-// /packages
+// /package
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         //hover for custom typed body

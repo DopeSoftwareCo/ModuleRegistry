@@ -11,5 +11,6 @@ import { checkJwt, verifyToken } from "../Middleware/Auth";
 
 export const PackagesRouter = Router();
 
-// /packages
+// /package
+// route got changed to package after creation
 PackagesRouter.post("/", verifyToken, GetPackagesRules, validateRequest, GetPackagesFromRegistryController);
