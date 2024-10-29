@@ -3,12 +3,12 @@ import { Navigate } from 'react-router-dom';
 
 const isTokenValid = () => {
     const token = localStorage.getItem('token');
-    if (!token) return true; //revert this to false
+    if (!token) return false;
 
     const expirationTime = localStorage.getItem('tokenExpirationDate');
-    if (!expirationTime) return true; //revert this to false
+    if (!expirationTime) return false;
 
-    return new Date().getTime() < parseInt(expirationTime) || true; //remove || true
+    return new Date().getTime() < parseInt(expirationTime);
 };
 
 interface ProtectedRouteProps {

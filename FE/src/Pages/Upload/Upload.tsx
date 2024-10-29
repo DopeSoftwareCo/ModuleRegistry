@@ -1,31 +1,58 @@
 import { useRef, useState } from 'react';
-import { StyledBasePageContiner } from '../../BaseStyledComponents/BaseStyled';
 import {
-    ButtonCheckContainer,
+    StyledBaseButton,
+    StyledBasePageContiner,
+    StyledBaseTextInput,
+} from '../../BaseStyledComponents/BaseStyled';
+import {
     DebloatCheck,
+    DebloatCheckTextRow,
     FileInputButton,
     FileNameDisplay,
     FileUploadContainer,
     HiddenFileInput,
+    InputRow,
 } from './UploadStyle';
-import { ErrorDisplay } from '../../Components/ErrorDisplay/ErrorDisplay';
 import { uploadFile } from './Requests';
+import { StatusDisplay } from '../../Components/StatusDisplay/StatusDisplay';
 
 const Upload = () => {
     const [fileName, setFileName] = useState('');
     const [err, setErr] = useState<undefined | string>(undefined);
+    const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
     const [debloat, setDebloat] = useState(false);
+    const [base64, setBase64] = useState<undefined | string>(undefined);
+    const [url, setUrl] = useState<undefined | string>(undefined);
+    const [jsProgram, setJsProgram] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    const handleButtonClick = () => {
+    const handleChooseClick = () => {
         fileInputRef.current?.click();
+    };
+
+    const handleUploadClick = async () => {
+        await uploadFile(
+            debloat,
+            (error) => setErr(error),
+            (message) => setSuccessMessage(message),
+            jsProgram,
+            base64,
+            url
+        );
     };
 
     const handleCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target) {
             setDebloat(event.target.checked);
         }
+    };
+
+    const handleClearClick = () => {
+        setFileName('');
+        setDebloat(false);
+        setBase64(undefined);
+        setUrl(undefined);
     };
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +64,7 @@ const Upload = () => {
                 reader.onload = async () => {
                     const base64 = reader.result;
                     if (typeof base64 === 'string') {
-                        await uploadFile(base64, debloat, (error) => setErr(error));
+                        setBase64(base64);
                     }
                 };
                 reader.onerror = () => {
@@ -51,13 +78,31 @@ const Upload = () => {
         <StyledBasePageContiner>
             <FileUploadContainer>
                 <HiddenFileInput ref={fileInputRef} onChange={handleFileChange} />
-                <ButtonCheckContainer>
-                    <FileInputButton onClick={handleButtonClick}>Upload File</FileInputButton>
-                    <DebloatCheck onChange={handleCheckChange} />
-                    debloat
-                </ButtonCheckContainer>
+                <InputRow>
+                    <StyledBaseTextInput onChange={(e) => setUrl(e.target.value)} placeholder="URL" />
+                    <StyledBaseTextInput
+                        onChange={(e) => setJsProgram(e.target.value)}
+                        placeholder="JSProgram"
+                    />
+                </InputRow>
+                <InputRow>
+                    <FileInputButton onClick={handleChooseClick}>File</FileInputButton>
+                    <DebloatCheckTextRow>
+                        <DebloatCheck onChange={handleCheckChange} />
+                        debloat
+                    </DebloatCheckTextRow>
+                </InputRow>
                 <FileNameDisplay>{fileName}</FileNameDisplay>
-                <ErrorDisplay err={err} setErr={setErr} />
+                <StyledBaseButton onClick={handleClearClick}>Clear</StyledBaseButton>
+                <StyledBaseButton data-testid="upload-button" onClick={handleUploadClick}>
+                    Upload
+                </StyledBaseButton>
+                <StatusDisplay
+                    err={err}
+                    setErr={setErr}
+                    successMessage={successMessage}
+                    setSuccess={setSuccessMessage}
+                />
             </FileUploadContainer>
         </StyledBasePageContiner>
     );
