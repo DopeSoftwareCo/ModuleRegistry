@@ -10,8 +10,8 @@ import PackageModel from "../Schemas/Package";
 // /packages
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
-        //hover for custom typed body
         const body = req.body; 
+        const url = body.URL;
         PackageModel.findOne(body);
         //use the body data for your code here
         //must calculate all metrics here
