@@ -53,7 +53,7 @@ export const GetPackagesFromRegistryController = asyncHandler(
             };
             res.status(200).json(responseBody);
         }
-);
+});
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
