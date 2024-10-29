@@ -1,5 +1,6 @@
 import {
     GetPackageRatingsRequest,
+    GetPackageSizeCostRequest,
     GetPackagesRequest,
     GetPackagesViaRegexRequest,
     GetPackageViaIdRequest,
@@ -18,6 +19,9 @@ import {
     GetRatingsForPackageInvalidResponses,
     GetRatingsForPackageResponse,
     GetRatingsForPackageResponseBody,
+    GetSizeCostForPackageInvalidResponses,
+    GetSizeCostForPackageResponse,
+    GetSizeCostForPackageResponseBody,
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
@@ -75,6 +79,49 @@ export const GetPackageViaIDController = asyncHandler(
         }
     }
 );
+
+// /package/{id}/cost
+export const GetPackageSizeCostViaIDController = asyncHandler(
+    async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {
+        const requestedPackageID = req.requestedId;
+        const dependencyCostRequested = req.query.dependency;
+        const pack = await PackageModel.findById(requestedPackageID);
+        //check if package exists
+        if (pack) {
+            const responseMessage: GetSizeCostForPackageInvalidResponses = "Package does not exist.";
+            return res.status(404).send(responseMessage);
+        }
+        let totalCost: number = 0;
+        let standaloneCost: number = 0;
+        let choked: boolean = false;
+        //your code with the package
+
+        if (dependencyCostRequested) {
+            //do something to get this value and set standalone cost
+        }
+
+        //if it chokes set choked to true
+
+        //^^^^^^^^^^^^^^^^^^^^^^^^^
+        //if dependency cost was requested...
+        //we have totalCost AND standaloneCost
+        //if it was not.. we only have totalcost
+        const responseBody: GetSizeCostForPackageResponseBody = {
+            totalCost: totalCost,
+            //if dep req add the standaloneCost field via spread, otherwise spread empty leaving only totalCost field
+            ...(dependencyCostRequested ? { standaloneCost } : {}),
+        };
+
+        if (!choked) {
+            res.status(200).json(responseBody);
+        } else if (choked) {
+            const responseMessage: GetSizeCostForPackageInvalidResponses =
+                "The package rating system choked on at least one of the metrics.";
+            res.status(500).send(responseMessage);
+        }
+    }
+);
+
 // /package/{id}/rate
 export const GetPackageRatingsViaIDController = asyncHandler(
     async (req: GetPackageRatingsRequest, res: GetRatingsForPackageResponse, next: NextFunction) => {
@@ -93,14 +140,22 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         }
 
         const responseBody: GetRatingsForPackageResponseBody = {
-            BusFactor: pack!.score_busFactor,
-            Correctness: pack!.score_correctness,
-            RampUp: pack!.rampup_score,
-            ResponsiveMaintainer: pack!.score_responsiveMaintainer,
-            LicenseScore: pack!.score_license,
-            GoodPinningPractice: pack!.score_goodPinningPractice,
-            PullRequest: pack!.score_pullrequest,
-            NetScore: pack!.netscore,
+            BusFactor: pack.BusFactor.score_busFactor,
+            BusFactorLatency: pack.BusFactor.score_busFactor_latency,
+            Correctness: pack.Correctness.score_correctness,
+            CorrectnessLatency: pack.Correctness.score_correctness_latency,
+            RampUp: pack.RampupTime.rampup_score,
+            RampUpLatency: pack.RampupTime.rampup_score_latency,
+            ResponsiveMaintainer: pack.Responsiveness.score_responsiveMaintainer,
+            ResponsiveMaintainerLatency: pack.Responsiveness.score_responsiveMaintainer_latency,
+            LicenseScore: pack.LicenseCompatibility.score_license,
+            LicenseScoreLatency: pack.LicenseCompatibility.score_license_latency,
+            GoodPinningPractice: pack.GoodPinningPractice.score_goodPinningPractice,
+            GoodPinningPracticeLatency: pack.GoodPinningPractice.score_goodPinningPracticeLatency,
+            PullRequest: pack.PullRequest.score_pullRequest,
+            PullRequestLatency: pack.PullRequest.score_pullRequestLatency,
+            NetScore: pack.FinalRating.netscore,
+            NetScoreLatency: pack.FinalRating.netscore_latency,
         };
 
         //some return that states the system choked on at least one of the metrics

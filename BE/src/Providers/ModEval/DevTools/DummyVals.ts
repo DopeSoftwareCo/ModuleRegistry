@@ -1,6 +1,6 @@
-import { WeightSpec } from "../Scores/WeightSpec";
-import { WeightSpecSet } from "../Scores/Weightspec.const";
-import { MetricName } from "../Scores/Metric.const";
+import { WeightSpec } from "../RepoComponents/Metrics_Scores/WeightSpec";
+import { WeightSpecSet } from "../RepoComponents/Metrics_Scores/Weightspec.const";
+import { MetricName } from "../RepoComponents/Metrics_Scores/Metric.const";
 
 export const wspec_A0 = new WeightSpec(MetricName.RampUpTime, 0.1);
 export const wspec_A1 = new WeightSpec(MetricName.Correctness, 0.2);
@@ -40,12 +40,13 @@ export const urls_A = [
 ];
 
 export const urls_B = [
+    "https://github.com/DopeSoftwareCo/ModuleRegistry",
     "https://github.com/j-leidy/C-DatabaseExplorer",
-    "https://www.npmjs.com/package/property-information",
-    "https://github.com/BellDorian/Capstone_Resources",
+    "https://www.npmjs.com/package/@angular-devkit/core",
+    "https://github.com/BellDorian/CapstoneResearch",
     "https://www.npmjs.com/package/array-buffer-byte-length",
-    "https://github.com/DOCGroup/MPC",
-    "https://www.npmjs.com/package/@ref-finance/ref-sdk",
+    "https://github.com/facebookresearch/lingua",
+    "https://www.npmjs.com/package/isomorphic-git",
     "https://github.com/google/material-design-lite",
 ];
 
