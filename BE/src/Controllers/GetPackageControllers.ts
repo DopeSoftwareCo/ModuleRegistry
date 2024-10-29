@@ -53,29 +53,28 @@ export const GetPackagesFromRegistryController = asyncHandler(
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
-        //console.log("original", req.originalUrl);
-        const foundPackage = await PackageModel.findById(req.requestedId);
+        console.log("original", req.originalUrl);
+        //your code here using the id
+
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^
+        //return back something that signifies it was not found if that is the case;
         const DNE = false;
-        if (foundPackage == null) {
-            let responseMessage: GetPackageViaIDInvalidResponseMessages;
+        //should return back here something typed as follows
+        const responseBody: GetPackageViaIDResponseBody = {
+            metadata: {
+                Name: "package name",
+                Version: "version",
+                ID: "id",
+            },
+            //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
+            data: {},
+        };
+        let responseMessage: GetPackageViaIDInvalidResponseMessages;
+        if (!DNE) {
+            res.status(200).json(responseBody);
+        } else {
             responseMessage = "Package does not exist.";
             res.status(404).send(responseMessage);
-        }
-        else {
-            const responseBody: GetPackageViaIDResponseBody = {
-                metadata: {
-                    Name: foundPackage?.metadata.Name,
-                    Version: foundPackage?.metadata.Version,
-                    ID: foundPackage.id,
-                },
-                //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-                data: {
-                    Content: foundPackage.data.Content,
-                    URL: foundPackage.repoUrl,
-                    JSProgram: foundPackage.data.JSProgram,
-                },
-            };
-            res.status(200).json(responseBody);
         }
     });
 
