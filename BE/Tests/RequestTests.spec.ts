@@ -38,7 +38,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     GetPackageWithID: {
         controller: GetPackageViaIDController,
-        responseCode: 200,
+        responseCode: 404,
         requestType: "GET",
     },
     UpdatePackage: {
