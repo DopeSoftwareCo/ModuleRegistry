@@ -2,7 +2,7 @@ import { NDJSONRow } from "../Providers/ModEval/Assets/Primero/MVP/src/Types/Dat
 import { RepoScoreset } from "../Providers/ModEval/Metrics_Scores/RepoScoreset";
 import { Repository } from "../Providers/ModEval/RepoComponents/Repository";
 import { MakePositiveInteger } from "../DSinc_Modules/DSinc_Math";
-import { User } from "./User";
+import { User } from "./Users";
 
 export enum PackageVisibility {
     SecretScope = 0,
