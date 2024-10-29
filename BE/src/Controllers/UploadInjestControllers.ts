@@ -19,7 +19,7 @@ export const UploadInjestController = asyncHandler(
         // p.save()
 
         //package will not exist yet see above
-        PackageModel.findOne(body);
+        // PackageModel.findOne(body);
         //use the body data for your code here
         //must calculate all metrics here
         //store everything in db using package model
