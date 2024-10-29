@@ -3,52 +3,70 @@ type PullRequestCommit = {
     message: string;
     committedDate: string;
     author: {
-      name: string;
-      email: string;
+        name: string;
+        email: string;
     };
-  };
-  
-  
-  type PullRequestReview = {
+};
+
+type PullRequestReview = {
     author: {
-      login: string;
+        login: string;
     };
     state: string;
     submittedAt: string;
-  };
-  
+};
 
-  export type PullRequestNode = {
+export type PullRequestNode = {
     id: string;
     title: string;
     number: number;
     body: string;
     createdAt: string;
     updatedAt: string;
-    state: 'OPEN' | 'CLOSED' | 'MERGED';
+    state: "OPEN" | "CLOSED" | "MERGED";
     mergedAt: string | null;
     author: {
-      login: string;
+        login: string;
     };
     reviews: {
-      nodes: PullRequestReview[];
+        nodes: PullRequestReview[];
     };
     commits: {
-      nodes: {
-        commit: PullRequestCommit;
-      }[];
+        nodes: {
+            commit: PullRequestCommit;
+        }[];
     };
-  };
-  
+};
 
-  type PullRequestEdge = {
+type PullRequestEdge = {
     node: PullRequestNode;
-  };
+};
 
-  
-  export type PullRequestsQueryResult = {
+export type PullRequestsQueryResult = {
     pullRequests: {
-      edges: PullRequestEdge[];
+        edges: PullRequestEdge[];
     };
-  };
-  
+};
+
+// GraphQLResponseTypes.ts
+export type TotalCommitsResponse = {
+    repository: {
+        object: {
+            history: {
+                totalCount: number;
+            };
+        };
+    };
+};
+
+export type PullRequestsResponse = {
+    repository: {
+        pullRequests: {
+            nodes: any[];
+            pageInfo: {
+                hasNextPage: boolean;
+                endCursor: string;
+            };
+        };
+    };
+};
