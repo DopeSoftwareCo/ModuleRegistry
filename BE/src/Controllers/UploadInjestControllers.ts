@@ -7,12 +7,30 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
+import { ModuleEvaluator } from "../Providers/ModEval/ModuleEvaluator";
+import { dummy_weightspecs } from "../Providers/ModEval/DevTools/DummyVals";
+import { Repository } from "../Providers/ModEval/RepoComponents/Repository";
 // /packages
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         const body = req.body; 
         const url = body.URL;
-        PackageModel.findOne(body);
+
+        let responseMessage: UploadInjestResponseMessages;
+
+        // Checks if exists
+        const queriedPackage = PackageModel.findOne({ repoUrl: url})
+        if (queriedPackage != null) {
+            responseMessage = "Package exists already.";
+            res.status(409).send(responseMessage);
+        }
+
+        // Checks if Disqualified
+        const evaluator = new ModuleEvaluator(dummy_weightspecs[0]); // Needs to be updated with real weights
+        /*evaluator.Eval(Repository {
+            ,
+        }) */
+
         //use the body data for your code here
         //must calculate all metrics here
         //store everything in db using package model
@@ -20,7 +38,6 @@ export const UploadInjestController = asyncHandler(
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         //will need some return that signifies package exists already
-        const existsAlready = false;
 
         //will need some return that signifies package is not uploaded due to disqualified rating
         const disqualified = false;
@@ -35,12 +52,8 @@ export const UploadInjestController = asyncHandler(
             data: {},
         };
         //this type is a union of our return strings
-        let responseMessage: UploadInjestResponseMessages;
-        if (!existsAlready && !disqualified) {
+        if (!disqualified) {
             res.status(200).json(returnBody);
-        } else if (existsAlready) {
-            responseMessage = "Package exists already.";
-            res.status(409).send(responseMessage);
         } else if (disqualified) {
             responseMessage = "Package is not uploaded due to disqualified rating.";
             res.status(424).send(responseMessage);
