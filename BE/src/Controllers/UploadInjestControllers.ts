@@ -6,6 +6,8 @@ import {
     UploadInjestResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
+import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/CalcPackageCost";
+
 // /packages
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
@@ -14,6 +16,13 @@ export const UploadInjestController = asyncHandler(
         //use the body data for your code here
         //must calculate all metrics here
         //store everything in db using package model
+
+        // Given the URL, calculate both cost function values. In the GetPackageController,
+        // I will look at the request and only display one of them if they don't want deps.
+        if (body.URL) {
+            const standaloneCost = await CalculateStandaloneCost(body.URL); // No deps
+            const totalCost = await CalculateTotalCost(body.URL); //With deps
+        }
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
