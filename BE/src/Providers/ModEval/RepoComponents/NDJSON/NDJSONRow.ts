@@ -1,4 +1,4 @@
-export type NDJSONRow = Partial<{
+export type NDJSONRow = {
     URL: string;
     NetScore: number;
     NetScore_Latency: number;
@@ -16,7 +16,7 @@ export type NDJSONRow = Partial<{
     VersionDependence_Latency: number;
     MergeControl: number;
     MergeControl_Latency: number;
-}>;
+};
 
 export const EMPTY_REPO_NDJSON: NDJSONRow = {
     URL: "unknown",
