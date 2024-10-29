@@ -13,6 +13,12 @@ export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         //hover for custom typed body
         const body = req.body;
+
+        // const p = new PackageModel();
+        //set properties after creating the model
+        // p.save()
+
+        //package will not exist yet see above
         PackageModel.findOne(body);
         //use the body data for your code here
         //must calculate all metrics here
