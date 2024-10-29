@@ -14,17 +14,20 @@ export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         //hover for custom typed body
         const body = req.body;
-        PackageModel.findOne(body);
+
         //use the body data for your code here
         //must calculate all metrics here
         //store everything in db using package model
 
-        // Given the URL, calculate both cost function values. In the GetPackageController,
-        // I will look at the request and only display one of them if they don't want deps.
-        if (body.URL) {
-            const standaloneCost = await CalculateStandaloneCost(body.URL); // No deps
-            const totalCost = await CalculateTotalCost(body.URL); //With deps
-        }
+        // A URL will need to be obtained to run Evaluator and other scoring functions.
+        // The uploadInjest request will either have URL or Content (base64 string encoded), but never both.
+        // If we get Content, then the package will need to be saved and parsed to find the required values (URLs only afaik)
+        // If we get URL, the package will need to be downloaded, but the URL can be used for all scoring.
+        // John is open to questions if you require more information about this.
+
+        let url: string = "";
+        const standaloneCost = await CalculateStandaloneCost(url); // No deps
+        const totalCost = await CalculateTotalCost(url); // With deps
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
