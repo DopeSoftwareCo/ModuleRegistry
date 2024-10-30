@@ -34,11 +34,15 @@ export const GetPackagesFromRegistryController = asyncHandler(
         const tooManyPackagesThreshold = 10; // Arbitrary Number, But Needed to Define One
         const numberOfRequestedPackages = requestedPackages.length;
 
+        /* // I at least get the status message here. 
+        responseMessage = "Package count cannot be zero";
+        res.status(404).send(responseMessage);
+        */
         let responseBody: GetPackagesResponseBody[] = [];
         let responseMessage: GetPackagesInvalidResponseMessages;
 
         // Validate Input
-        if (numberOfRequestedPackages == 0)
+        if (numberOfRequestedPackages == 0) // 
         {
             responseMessage = "Package count cannot be zero";
             res.status(404).send(responseMessage);
@@ -48,7 +52,13 @@ export const GetPackagesFromRegistryController = asyncHandler(
             res.status(413).send(responseMessage);
         }
 
+        /* // I at least get the status message here. 
+        responseMessage = "Package count cannot be zero";
+        res.status(404).send(responseMessage);
+        */
         requestedPackages.forEach((requestedPackage) => {
+            responseMessage = "Package count cannot be zero"; // Putting the response here causes the 500 error, so any code past here is not running?
+            res.status(404).send(responseMessage);
             // Checks if exists
             PackageModel.findOne({ metadata: {name: requestedPackage.Name}})
                 .then((queriedPackage) => { // Have to do it this way since inside a forEach
@@ -60,7 +70,7 @@ export const GetPackagesFromRegistryController = asyncHandler(
                     }]);
                     }
                 })
-            });
+        });
         res.status(200).json(responseBody);
 });
 // /package/{id}
