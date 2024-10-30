@@ -51,8 +51,10 @@ export const UploadInjestController = asyncHandler(
             res.status(424).send(responseMessage);
         }
         else {
+            const buffer = Buffer.from(content, "base64");
+            let binaryContent = buffer.toString("binary");
             if (body.debloat == true) {
-                content = debloatUploadedContent(content);
+                binaryContent = debloatUploadedContent(binaryContent);
             }
 
         }
