@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import express, { Express, NextFunction, Request, Response } from "express";
+import express, { Express, NextFunction, Request, RequestHandler, Response } from "express";
 import {
     GetPackageRatingsViaIDController,
     GetPackagesFromRegistryController,
@@ -15,6 +15,9 @@ import SuperTest from "supertest";
 import { TestController } from "../src/Controllers/testController/testController";
 import PackageModel from "../src/Schemas/Package";
 import { GetTracksController } from "../src/Controllers/TracksController";
+import { GetPackagesRules } from "../src/Validation/PackagesValidationRules/GetPackagesRules";
+import { ValidationChain } from "express-validator";
+import { validateRequest } from "../src/Validation/validator";
 
 // Mock the PackageModel
 jest.mock("../src/Schemas/Package");
@@ -23,13 +26,15 @@ type RouteConfig = {
     controller: any; // Replace `any` with the appropriate type for your controllers
     responseCode: number;
     requestType: "GET" | "POST" | "PUT" | "DELETE"; // Add more types as needed
+    middleware?: (RequestHandler | ValidationChain[])[];
 };
 
 const AppRoutes: Record<string, RouteConfig> = {
     Packages: {
         controller: GetPackagesFromRegistryController,
-        responseCode: 200,
+        responseCode: 400,
         requestType: "GET",
+        middleware: [GetPackagesRules, validateRequest],
     },
     Reset: {
         controller: ResetControllerDANGER,
@@ -89,20 +94,21 @@ const assignRouteViaString = (
     app: Express,
     routePath: string,
     requestType: string,
-    controller: (req: Request, res: Response, next: NextFunction) => void
+    controller: (req: Request, res: Response, next: NextFunction) => void,
+    middleware?: (RequestHandler | ValidationChain[])[]
 ) => {
     switch (requestType) {
         case "GET":
-            app.get(routePath, controller);
+            app.get(routePath, ...(middleware ?? []), controller);
             break;
         case "POST":
-            app.post(routePath, controller);
+            app.post(routePath, ...(middleware ?? []), controller);
             break;
         case "PUT":
-            app.put(routePath, controller);
+            app.put(routePath, ...(middleware ?? []), controller);
             break;
         case "DELETE":
-            app.delete(routePath, controller);
+            app.delete(routePath, ...(middleware ?? []), controller);
             break;
         default:
             throw new Error(`Unsupported request type: ${requestType}`);
@@ -131,7 +137,7 @@ describe("Request tests", () => {
         app.use(express.json());
         Object.entries(AppRoutes).forEach(([routeName, config]) => {
             const routePath = `/${routeName}`;
-            assignRouteViaString(app, routePath, config.requestType, config.controller);
+            assignRouteViaString(app, routePath, config.requestType, config.controller, config.middleware);
         });
         const mockedPackages = [
             { _id: "1", name: "Package 1" },
