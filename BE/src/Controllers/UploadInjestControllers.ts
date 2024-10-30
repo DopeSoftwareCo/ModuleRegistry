@@ -21,7 +21,7 @@ export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         const body = req.body; 
         const repositoryUrl = body.URL;
-        const content = body.Content;
+        let content = body.Content;
 
         let responseMessage: UploadInjestResponseMessages;
 
@@ -50,10 +50,13 @@ export const UploadInjestController = asyncHandler(
             responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
             res.status(424).send(responseMessage);
         }
-        else if (body.debloat == true) {
-            debloatUploadedContent(content);
-        }
+        else {
+            if (body.debloat == true) {
+                content = debloatUploadedContent(content);
+            }
 
+        }
+        
         //store everything in db using package model
 
         // A URL will need to be obtained to run Evaluator and other scoring functions.
