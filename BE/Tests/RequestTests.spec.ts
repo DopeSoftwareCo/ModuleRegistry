@@ -63,7 +63,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     GetPackageSizeCost: {
         controller: GetPackageSizeCostViaIDController,
-        responseCode: 200,
+        responseCode: 404,
         requestType: "GET",
     },
     Authentication: {
