@@ -8,20 +8,21 @@ import {
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/CalcPackageCost";
+import { minify } from 'terser';
 
-import { ModuleEvaluator } from "../Providers/ModEval/ModuleEvaluator";
-import { dummy_weightspecs } from "../Providers/ModEval/DevTools/DummyVals";
-import { Repository } from "../Providers/ModEval/RepoComponents/Repository";
 // /packages
 
-function debloatUploadedContent(content: string): string {
-    return content;
+async function debloatUploadedContent(content: string): Promise<string> {
+    const result = (await minify(content)).code as string; // Since we are passing a string into the function, result has to be a string
+    return result;
 }
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         const body = req.body; 
         const repositoryUrl = body.URL;
-        let content = body.Content;
+        const content = body.Content;
+        const disqualifiedStandaloneSizeInGB = 750 // Approximately 1GB
+        const disqualifiedTotalSizeInGB = 1000 // Approximately 1GB
 
         let responseMessage: UploadInjestResponseMessages;
 
@@ -35,7 +36,7 @@ export const UploadInjestController = asyncHandler(
             if (repositoryUrl != undefined) {
                 const standaloneCost = await CalculateStandaloneCost(repositoryUrl); // No deps
                 const totalCost = await CalculateTotalCost(repositoryUrl); // With deps
-                if (false) { // Placeholder for checking if package is disqualified
+                if (totalCost > disqualifiedTotalSizeInGB || standaloneCost > disqualifiedStandaloneSizeInGB) {
                     responseMessage = "Package is not uploaded due to disqualified rating.";
                     res.status(424).send(responseMessage);
                 }
@@ -54,9 +55,20 @@ export const UploadInjestController = asyncHandler(
             const buffer = Buffer.from(content, "base64");
             let binaryContent = buffer.toString("binary");
             if (body.debloat == true) {
-                binaryContent = debloatUploadedContent(binaryContent);
+                binaryContent = await debloatUploadedContent(binaryContent);
             }
 
+            // PackageModel.create(); // Need to get ID from this
+            const returnBody: UploadInjestNewPackageResponseBody = {
+                metadata: {
+                    Name: "Name",
+                    Version: "1.0.0", // Since this is an initial release
+                    ID: "Some id", // Pull from Package
+                },
+                //all fields are optional in data
+                data: {},
+            };
+            res.status(200).json(returnBody)
         }
         
         //store everything in db using package model
@@ -69,25 +81,5 @@ export const UploadInjestController = asyncHandler(
 
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-        //will need some return that signifies package is not uploaded due to disqualified rating
-        const disqualified = false;
-
-        const returnBody: UploadInjestNewPackageResponseBody = {
-            metadata: {
-                Name: "some name",
-                Version: "Some version",
-                ID: "Some id",
-            },
-            //all fields are optional in data
-            data: {},
-        };
-        //this type is a union of our return strings
-        if (!disqualified) {
-            res.status(200).json(returnBody);
-        } else if (disqualified) {
-            responseMessage = "Package is not uploaded due to disqualified rating.";
-            res.status(424).send(responseMessage);
-        }
     }
 );
