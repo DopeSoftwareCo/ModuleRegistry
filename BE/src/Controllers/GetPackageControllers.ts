@@ -25,6 +25,7 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
+import { Buffer } from 'buffer';
 
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
@@ -74,6 +75,8 @@ export const GetPackageViaIDController = asyncHandler(
             res.status(404).send(responseMessage);
         }
         else {
+            const binaryData = Buffer.from(foundPackage.data.Content, "binary");
+            const foundContent = binaryData.toString("base64");
             const responseBody: GetPackageViaIDResponseBody = {
                 metadata: {
                     Name: foundPackage?.metadata.Name,
@@ -82,7 +85,7 @@ export const GetPackageViaIDController = asyncHandler(
                 },
                 //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
                 data: {
-                    Content: foundPackage.data.Content,
+                    Content: foundContent,
                     URL: foundPackage.repoUrl,
                     JSProgram: foundPackage.data.JSProgram,
                 },
