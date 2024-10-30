@@ -13,12 +13,13 @@ import {
 } from './RegexStyle';
 import { RegexPackagesFromAPI } from '../../Models/Models';
 import { getPackagesViaRegexRequest } from './Requests';
-import { ErrorDisplay } from '../../Components/ErrorDisplay/ErrorDisplay';
+import { StatusDisplay } from '../../Components/StatusDisplay/StatusDisplay';
 
 const Regex = () => {
     const [regexPackages, setRegexPackages] = useState<undefined | RegexPackagesFromAPI>(undefined);
     const [regexSearchString, setRegexSearchString] = useState('');
     const [reqErr, setReqErr] = useState<string | undefined>(undefined);
+    const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
 
     const makeRequest = async () => {
         const regexPacakgesFromRequest = await getPackagesViaRegexRequest(regexSearchString, (err) =>
@@ -35,7 +36,12 @@ const Regex = () => {
                     Find Packages
                 </RegexSearchButton>
             </RegexInputs>
-            <ErrorDisplay err={reqErr} setErr={setReqErr} />
+            <StatusDisplay
+                err={reqErr}
+                setErr={setReqErr}
+                successMessage={successMessage}
+                setSuccess={setSuccessMessage}
+            />
             <StyledBaseKeyValuePairsContainer>
                 {regexPackages &&
                     regexPackages.map((rPack, idx) => (
