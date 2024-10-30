@@ -22,6 +22,7 @@ export const StyledBaseButton = styled.button`
     font-size: inherit;
     text-transform: uppercase;
     font-weight: 600;
+    min-width: 90px;
     ${({ theme }) => css`
         transition: ${theme.animationTime.short} background ease;
         color: ${theme.colors.background};

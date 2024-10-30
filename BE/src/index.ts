@@ -63,7 +63,7 @@ const addMiddleWare = (app: Express) => {
             allowedHeaders: "*",
         })
     );
-    app.use(express.json());
+    app.use(express.json({ limit: "10mb" }));
     app.use(logRequest);
     app.use(responseLogger);
 };

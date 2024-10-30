@@ -80,7 +80,7 @@ const routes = [
         label: 'cost',
     },
     {
-        path: GeneralConfig.REMOVE_URL,
+        path: GeneralConfig.UPLOAD_URL,
         element: (
             <ProtectedRoute>
                 <Upload />
