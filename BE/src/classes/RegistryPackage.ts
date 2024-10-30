@@ -1,8 +1,8 @@
-import { NDJSONRow } from "../Providers/ModEval/Assets/Primero/MVP/src/Types/DataTypes";
-import { RepoScoreset } from "../Providers/ModEval/Metrics_Scores/RepoScoreset";
-import { Repository } from "../Providers/ModEval/RepoComponents/Repository";
-import { MakePositiveInteger } from "../DSinc_Modules/DSinc_Math";
-import { User } from "./Users";
+import { NDJSONRow } from '../Providers/ModEval/Assets/Primero/MVP/src/Types/DataTypes';
+import { RepoScoreset } from '../Providers/ModEval/RepoComponents/Metrics_Scores/RepoScoreset';
+import { Repository } from '../Providers/ModEval/RepoComponents/Repository';
+import { MakePositiveInteger } from '../DSinc_Modules/DSinc_Math';
+import { User } from './Users/User';
 
 export enum PackageVisibility {
     SecretScope = 0,
@@ -17,7 +17,7 @@ type VersionNumbers = {
 };
 
 export class PackageVersion {
-    private versionString: string = "";
+    private versionString: string = '';
     private major: number;
     private minor: number;
     private patch: number;
@@ -31,11 +31,11 @@ export class PackageVersion {
     }
 
     private BuildVersionString(): string {
-        let vstring = "";
+        let vstring = '';
         vstring += this.major.toString();
-        vstring += ".";
+        vstring += '.';
         vstring += this.minor.toString();
-        vstring += ".";
+        vstring += '.';
         vstring += this.patch.toString();
         return vstring;
     }
