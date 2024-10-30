@@ -34,7 +34,7 @@ export const GetPackagesFromRegistryController = asyncHandler(
         const tooManyPackagesThreshold = 10; // Arbitrary Number, But Needed to Define One
         const numberOfRequestedPackages = requestedPackages.length;
 
-        let responseBody: GetPackagesResponseBody[] = Array(numberOfRequestedPackages).fill({});
+        let responseBody: GetPackagesResponseBody[] = [];
         let responseMessage: GetPackagesInvalidResponseMessages;
 
         // Validate Input
@@ -48,19 +48,16 @@ export const GetPackagesFromRegistryController = asyncHandler(
             res.status(413).send(responseMessage);
         }
 
-        requestedPackages.forEach((requestedPackage, index) => {
+        requestedPackages.forEach((requestedPackage) => {
             // Checks if exists
             PackageModel.findOne({ metadata: {name: requestedPackage.Name}})
-                .then((queriedPackage) => {
-                    if (queriedPackage == null) {
-                        responseBody.pop(); // Shrinks the array since it did not find it
-                    }
-                    else {
-                        responseBody[index] = [{
+                .then((queriedPackage) => { // Have to do it this way since inside a forEach
+                    if (queriedPackage != null) {
+                        responseBody.push ([{
                             Version: queriedPackage.metadata.Version,
                             Name: queriedPackage.metadata.Name,
                             ID: queriedPackage._id.toString()
-                    }];
+                    }]);
                     }
                 })
             });
