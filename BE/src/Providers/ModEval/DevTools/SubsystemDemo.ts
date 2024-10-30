@@ -1,10 +1,10 @@
-import { ModuleEvaluator } from "../ModuleEvaluator";
-import { dummy_links, dummy_weightspecs } from "./DummyVals";
-import { RepoID_Builder } from "../RepoComponents/ID/RepoID_Builder";
-import { URLProcessor } from "../RepoComponents/URL/URLProcessor";
-import { Repo_Builder } from "../RepoComponents/Builders/Repository_Builder";
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "../RepoComponents/Metrics_Scores/Weightspec.const";
-import { SuperRepoBuilder } from "../RepoComponents/Builders/SuperRepoBuilder";
+import { ModuleEvaluator } from '../ModuleEvaluator';
+import { dummy_links, dummy_weightspecs } from './DummyVals';
+import { RepoID_Builder } from '../RepoComponents/ID/RepoID_Builder';
+import { URLProcessor } from '../RepoComponents/URL/URLProcessor';
+import { Repo_Builder } from '../RepoComponents/Builders/Repository_Builder';
+import { DEFAULT_WEIGHTS, WeightSpecSet } from '../RepoComponents/Metrics_Scores/Weightspec.const';
+import { SuperRepoBuilder } from '../RepoComponents/Builders/SuperRepoBuilder';
 
 export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: number = 0) {
     let urls: string[];
@@ -39,24 +39,18 @@ export async function RunEvalSubsystemDemo(linkChoice: number = 0, specChoice: n
     }
 
     const evaluator = new ModuleEvaluator(weights);
-
-    console.log("--- #1: Building URLs ---");
-    console.log("--- #2 Making IDs---");
-    console.log("--- #3 Assembling Repos ---");
-
     const superB = new SuperRepoBuilder();
     let repos = await superB.MultiSuperBuild(urls);
 
     if (!repos) {
-        console.log("[x] FAILED TO BUILD REPOSITORIES [X]");
+        console.log('[x] FAILED TO BUILD REPOSITORIES [X]');
         return;
     }
     await evaluator.MultiEval(repos);
 
-    console.log("========================= RESULT OF EVALUATION =========================");
+    console.log('========================= RESULT OF EVALUATION =========================');
 
     repos.forEach((repo) => {
-        console.log("License: %s", repo.License);
         console.log(repo.NDJSONRow);
     });
 }
