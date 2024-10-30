@@ -13,28 +13,47 @@ import { ModuleEvaluator } from "../Providers/ModEval/ModuleEvaluator";
 import { dummy_weightspecs } from "../Providers/ModEval/DevTools/DummyVals";
 import { Repository } from "../Providers/ModEval/RepoComponents/Repository";
 // /packages
+
+function debloatUploadedContent(content: string): string {
+    return content;
+}
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         const body = req.body; 
-        const url = body.URL;
+        const repositoryUrl = body.URL;
+        const content = body.Content;
 
         let responseMessage: UploadInjestResponseMessages;
 
         // Checks if exists
-        const queriedPackage = PackageModel.findOne({ repoUrl: url})
+        const queriedPackage = PackageModel.findOne({ repoUrl: repositoryUrl})
         if (queriedPackage != null) {
             responseMessage = "Package exists already.";
             res.status(409).send(responseMessage);
         }
+        else { // Checks if Disqualified
+            if (repositoryUrl != undefined) {
+                const standaloneCost = await CalculateStandaloneCost(repositoryUrl); // No deps
+                const totalCost = await CalculateTotalCost(repositoryUrl); // With deps
+                if (false) { // Placeholder for checking if package is disqualified
+                    responseMessage = "Package is not uploaded due to disqualified rating.";
+                    res.status(424).send(responseMessage);
+                }
+            }
+            else {
+                responseMessage = "Package is not uploaded due to disqualified rating.";
+                res.status(424).send(responseMessage);
+            }
+        }
 
-        // Checks if Disqualified
-        const evaluator = new ModuleEvaluator(dummy_weightspecs[0]); // Needs to be updated with real weights
-        /*evaluator.Eval(Repository {
-            ,
-        }) */
+        if (content == undefined) {
+            responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+            res.status(424).send(responseMessage);
+        }
+        else if (body.debloat == true) {
+            debloatUploadedContent(content);
+        }
 
-        //use the body data for your code here
-        //must calculate all metrics here
         //store everything in db using package model
 
         // A URL will need to be obtained to run Evaluator and other scoring functions.
@@ -43,13 +62,8 @@ export const UploadInjestController = asyncHandler(
         // If we get URL, the package will need to be downloaded, but the URL can be used for all scoring.
         // John is open to questions if you require more information about this.
 
-        let url: string = "";
-        const standaloneCost = await CalculateStandaloneCost(url); // No deps
-        const totalCost = await CalculateTotalCost(url); // With deps
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-        //will need some return that signifies package exists already
 
         //will need some return that signifies package is not uploaded due to disqualified rating
         const disqualified = false;

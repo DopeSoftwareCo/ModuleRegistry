@@ -61,7 +61,7 @@ declare module "ResponseTypes" {
     export interface DeletePackageViaIDResponse extends Response {}
 
     export type UploadInjestResponseMessages =
-        | "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL ar both set)"
+        | "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)"
         | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package exists already."
         | "Package is not uploaded due to disqualified rating.";
