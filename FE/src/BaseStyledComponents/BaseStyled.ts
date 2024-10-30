@@ -22,6 +22,7 @@ export const StyledBaseButton = styled.button`
     font-size: inherit;
     text-transform: uppercase;
     font-weight: 600;
+    min-width: 90px;
     ${({ theme }) => css`
         transition: ${theme.animationTime.short} background ease;
         color: ${theme.colors.background};
@@ -87,4 +88,22 @@ export const StyledBasePageContiner = styled(StyledBaseDiv)`
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 1rem;
+`;
+
+export const StyledBaseKeyValueRow = styled(StyledBaseDiv)`
+    display: flex;
+    justify-content: space-between;
+    ${({ theme }) => css`
+        min-width: 400px;
+        @media screen and (max-width: ${theme.breakpoint}) {
+            min-width: 80vw;
+        }
+    `}
+`;
+
+export const StyledBaseKeyValuePairsContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 `;

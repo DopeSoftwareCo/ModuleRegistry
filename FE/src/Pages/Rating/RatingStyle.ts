@@ -6,15 +6,12 @@ export const Inputs = styled(StyledBaseDiv)`
     gap: 1rem;
 `;
 
-export const RatingRow = styled(StyledBaseDiv)`
-    display: flex;
-    justify-content: space-between;
+export const ErrorMessage = styled(StyledBaseDiv)`
     ${({ theme }) => css`
-        min-width: 50vw;
-        @media screen and (max-width: ${theme.breakpoint}) {
-        }
+        color: ${theme.colors.errorRed};
     `}
 `;
+
 export const RatingName = styled(StyledBaseDiv)``;
 export const RatingValue = styled(StyledBaseDiv)``;
 

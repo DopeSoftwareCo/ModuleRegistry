@@ -26,10 +26,10 @@ const lightTheme: DefaultTheme = {
         errorRed: errorRed,
     },
     fontSizes: {
-        small: '0.65rem',
-        medium: '0.875rem',
-        large: '1rem',
-        xLarge: '2rem',
+        small: '1rem',
+        medium: '1.5rem',
+        large: '2rem',
+        xLarge: '3rem',
     },
     animationTime: {
         short: '0.3s',
@@ -64,10 +64,10 @@ const darkTheme: DefaultTheme = {
         errorRed: errorRed,
     },
     fontSizes: {
-        small: '0.65rem',
-        medium: '0.875rem',
-        large: '1rem',
-        xLarge: '2rem',
+        small: '1rem',
+        medium: '1.5rem',
+        large: '2rem',
+        xLarge: '3rem',
     },
     animationTime: {
         short: '0.3s',

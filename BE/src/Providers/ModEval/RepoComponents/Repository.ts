@@ -1,54 +1,24 @@
 // Evaluate modules associated with string using 7 metrics
 // takes in strings
 
-import { RepoID } from "./ID/RepoID";
-import { RepoScoreset } from "./Metrics_Scores/RepoScoreset";
-import { RepoQueryResult } from "../GQL_Queries/Reponse/RepoQueryResult";
-import { RepoQueryBuilder, SendRequestToGQL } from "../GQL_Queries/Requests/GQLRequests";
-import { GraphQLResponse } from "../GQL_Queries/Reponse/RepoQueryResult.types";
-import { EMPTY_REPO_NDJSON, NDJSONRow } from "./NDJSON/NDJSONRow";
-import { MetricName } from "./Metrics_Scores/Metric.const";
-import { Empty_CommitHistory } from "../GQL_Queries/Fields/Field_ResponseTypes/Commit_ResponseTypes";
-import { Empty_LicenseInfo } from "../GQL_Queries/Fields/Field_ResponseTypes/LicenseInfo_ResponseType";
-import { EmbeddedGQLData, GQLResultData } from "../GQL_Queries/Reponse/GQLResponse";
+import { RepoID } from './ID/RepoID';
+import { RepoScoreset } from './Metrics_Scores/RepoScoreset';
+import { EMPTY_REPO_NDJSON, NDJSONRow } from './NDJSON/NDJSONRow';
+import { MetricName } from './Metrics_Scores/Metric.const';
+import { GQLResultData } from '../GQL_Queries/Reponse/GQLResponse';
 
 export class Repository {
     private id: RepoID;
     private scores: RepoScoreset;
     private queryResult: GQLResultData | undefined;
-    private alreadyQueried: boolean = false;
     private ndjson: NDJSONRow;
-    private license: string = "unknown";
+    private license: string = 'unknown';
 
     constructor(id: RepoID, scoreset?: RepoScoreset) {
         this.id = id;
         this.ndjson = EMPTY_REPO_NDJSON;
         this.scores = scoreset ? scoreset : new RepoScoreset();
         this.queryResult = undefined;
-    }
-
-    public async RequestFromGQL(): Promise<GQLResultData | undefined> {
-        if (this.alreadyQueried) {
-            return this.queryResult;
-        }
-
-        const queryString = RepoQueryBuilder([this.id]);
-        const response = await SendRequestToGQL<EmbeddedGQLData>(queryString);
-
-        if (!response) {
-            return this.queryResult;
-        }
-
-        this.queryResult = response.data.repo0;
-        this.alreadyQueried = true;
-
-        if (!this.queryResult) {
-            return this.queryResult;
-        }
-
-        const licenseName = this.queryResult.licenseInfo?.name;
-        this.license = licenseName ? licenseName : "???";
-        return this.queryResult;
     }
 
     get License(): string {

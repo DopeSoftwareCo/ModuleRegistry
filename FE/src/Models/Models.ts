@@ -66,6 +66,13 @@ export interface PackageQuery {
     Name: string;
 }
 
+export interface RegexPackageFromAPI {
+    Version: string;
+    Name: string;
+}
+
+export type RegexPackagesFromAPI = RegexPackageFromAPI[];
+
 export interface DBPackageFromAPI {
     _id: string;
     metaData: {
