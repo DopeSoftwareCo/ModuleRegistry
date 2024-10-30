@@ -29,37 +29,48 @@ import PackageModel from "../Schemas/Package";
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
+        
         const requestedPackages = req.body;
-        const foundPackage = await PackageModel.findById(req.requestedId);
-        const DNE = false;
-        if (foundPackage == null) {
-            let responseMessage: GetPackageViaIDInvalidResponseMessages;
-            responseMessage = "Package does not exist.";
+        const tooManyPackagesThreshold = 10; // Arbitrary Number, But Needed to Define One
+        const numberOfRequestedPackages = requestedPackages.length;
+
+        let responseBody: GetPackagesResponseBody[] = Array(numberOfRequestedPackages).fill({});
+        let responseMessage: GetPackagesInvalidResponseMessages;
+
+        // Validate Input
+        if (numberOfRequestedPackages == 0)
+        {
+            responseMessage = "Package count cannot be zero";
             res.status(404).send(responseMessage);
         }
-        else {
-            const responseBody: GetPackageViaIDResponseBody = {
-                metadata: {
-                    Name: foundPackage?.metadata.Name,
-                    Version: foundPackage?.metadata.Version,
-                    ID: foundPackage.id,
-                },
-                //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-                data: {
-                    Content: foundPackage.data.Content,
-                    URL: foundPackage.repoUrl,
-                    JSProgram: foundPackage.data.JSProgram,
-                },
-            };
-            res.status(200).json(responseBody);
+        else if (numberOfRequestedPackages  >= tooManyPackagesThreshold) { // Check if too many packages
+            responseMessage = "Too many packages returned.";
+            res.status(413).send(responseMessage);
         }
+
+        requestedPackages.forEach((requestedPackage, index) => {
+            // Checks if exists
+            PackageModel.findOne({ metadata: {name: requestedPackage.Name}})
+                .then((queriedPackage) => {
+                    if (queriedPackage == null) {
+                        responseBody.pop(); // Shrinks the array since it did not find it
+                    }
+                    else {
+                        responseBody[index] = [{
+                            Version: queriedPackage.metadata.Version,
+                            Name: queriedPackage.metadata.Name,
+                            ID: queriedPackage._id.toString()
+                    }];
+                    }
+                })
+            });
+        res.status(200).json(responseBody);
 });
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         //console.log("original", req.originalUrl);
         const foundPackage = await PackageModel.findById(req.requestedId);
-        const DNE = false;
         if (foundPackage == null) {
             let responseMessage: GetPackageViaIDInvalidResponseMessages;
             responseMessage = "Package does not exist.";

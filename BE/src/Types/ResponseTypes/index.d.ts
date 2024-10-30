@@ -12,7 +12,9 @@ declare module "ResponseTypes" {
     export type GetPackagesInvalidResponseMessages =
         | "There is missing field(s) in the PackageQuery or it is formed improperly, or is invalid."
         | "Authentication failed due to invalid or missing AuthenticationToken."
-        | "Too many packages returned.";
+        | "Too many packages returned."
+        | "Package does not exist."
+        | "Package count cannot be zero";
 
     export type GetPackagesResponseBody = PackageMetaData[];
 
