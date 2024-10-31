@@ -8,14 +8,9 @@ import {
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/CalcPackageCost";
-import { minify } from 'terser';
+import { debloatUploadedContent } from "../DSinc_Modules/DSinc_PackageHandling";
 
-// /packages
 
-async function debloatUploadedContent(content: string): Promise<string> {
-    const result = (await minify(content)).code as string; // Since we are passing a string into the function, result has to be a string
-    return result;
-}
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         const body = req.body; 
