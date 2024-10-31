@@ -62,4 +62,32 @@ declare module "RequestTypes" {
     export interface GetPackageByNameRequest extends Request {}
 
     export interface GetTracks extends Request {}
+
+    export type AddUserRequestBody = {
+        username: string;
+        email: string;
+        password: string;
+    };
+
+    export interface AddUserRequest extends Request {
+        body: AddUserRequestBody;
+    }
+
+    export type DeleteUserRequestBody = {
+        id: string;
+        username: string;
+        email: string;
+    };
+
+    export interface DeleteUserRequest extends Reequest {
+        body: DeleteUserRequestBody;
+    }
+
+    export type UpdateUserRequestBody = {
+        permissions: string[];
+    };
+
+    export interface UpdateUserRequest extends Request {
+        body: UpdateUserRequestBody;
+    }
 }

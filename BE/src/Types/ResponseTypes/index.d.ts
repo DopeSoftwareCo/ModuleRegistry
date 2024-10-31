@@ -141,4 +141,16 @@ declare module "ResponseTypes" {
             plannedTracks: string[];
         };
     }
+
+    export type AddUserResponseMessages = "User added." | "Adding user failed." | "Invalid request body.";
+
+    export type UpdateUserResponseMessages =
+        | "User permissions updated."
+        | "User permissions update failed."
+        | "Invalid request body.";
+
+    export type DeleteUserResponseMessages =
+        | "User deleted."
+        | "Failed to delete user."
+        | "Invalid request body.";
 }
