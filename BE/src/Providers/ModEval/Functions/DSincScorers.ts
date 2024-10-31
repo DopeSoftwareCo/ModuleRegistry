@@ -1,15 +1,15 @@
-import { Repository } from "../RepoComponents/Repository";
-import { CreateTotalCommitsField, CreateReviewedPRField } from "../GQL_Queries/Fields/Fields";
-import { SendRequestToGQL } from "../GQL_Queries/Requests/GQLRequests";
+import { Repository } from '../RepoComponents/Repository';
+import { CreateTotalCommitsField, CreateReviewedPRField } from '../GQL_Queries/Fields/Fields';
+import { SendRequestToGQL } from '../GQL_Queries/Requests/GQLRequests';
 import {
     TotalCommitsResponse,
     PullRequestsResponse,
-} from "../GQL_Queries/Fields/Field_ResponseTypes/PR_ResponseTypes";
-import { ScoreBusFactor } from "./BusFactor_Scorer";
-import { ScoreCorrectness } from "./Correctness_Scorer";
-import { ScoreLicenseCompatibility } from "./LicenseCompatibility";
-import { ScoreRampupTime } from "./RampUp";
-import { ScoreReponsiveness } from "./Responsiveness";
+} from '../GQL_Queries/Fields/Field_ResponseTypes/PR_ResponseTypes';
+import { ScoreBusFactor } from './BusFactor_Scorer';
+import { ScoreCorrectness } from './Correctness_Scorer';
+import { ScoreLicenseCompatibility } from './LicenseCompatibility';
+import { ScoreRampupTime } from './RampUp';
+import { ScoreReponsiveness } from './Responsiveness';
 
 // Recall the enum ...
 //VersionDependence = 5,
@@ -50,16 +50,16 @@ export async function LicenseCompatibility_Scorer(repo: Repository): Promise<num
 }
 
 export async function VersionDependence_Scorer(repo: Repository): Promise<number> {
-    let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length; 
-    if (number_of_dependencies == undefined)
-    {
+    let number_of_dependencies = repo.QueryResult?.dependencyGraphManifests?.nodes.length;
+    if (number_of_dependencies == undefined) {
         return 1;
     }
-    return 1 / (1 + (number_of_dependencies/2));
+    return 1 / (1 + number_of_dependencies / 2);
 }
 
 export async function MergeRestriction_Scorer(repo: Repository): Promise<number> {
-    const Name = repo.ID.Name;
+    return 0;
+    /*const Name = repo.ID.Name;
     const Owner = repo.ID.Owner;
 
     let prWithMultipleParents = 0;
@@ -92,7 +92,7 @@ export async function MergeRestriction_Scorer(repo: Repository): Promise<number>
 
     const Score = prWithMultipleParents / totalCommits;
     const roundedScore = parseFloat(Score.toFixed(2));
-    return roundedScore;
+    return roundedScore;*/
 }
 
 async function fetchAllPullRequests(owner: string, repoName: string): Promise<any[]> {
