@@ -3,14 +3,14 @@
  * This module processes handles the request to GQL
  * @author DSinc
  */
-import { GITHUB_TOKEN } from "../../Assets/Octavo/src/Util/constant";
-import { GraphQLResponse } from "../Reponse/RepoQueryResult.types";
-import { RepoID } from "../../RepoComponents/ID/RepoID";
-import { LogDebug, LogInfo } from "../../../Utils/Log";
-import chalk from "chalk";
-import { defaultFields, extraFields } from "../Fields/Field.const";
+import { GITHUB_TOKEN } from '../../Assets/Octavo/src/Util/constant';
+import { GraphQLResponse } from '../Reponse/RepoQueryResult.types';
+import { RepoID } from '../../RepoComponents/ID/RepoID';
+import { LogDebug, LogInfo } from '../../../Utils/Log';
+import chalk from 'chalk';
+import { defaultFields, extraFields } from '../Fields/Field.const';
 
-const GITHUB_API_BASE_URL = "https://api.github.com/graphql"; // GitHub GraphQL API URL
+const GITHUB_API_BASE_URL = 'https://api.github.com/graphql'; // GitHub GraphQL API URL
 
 //const DEFAULT_FIELDS: string[] = [];
 
@@ -21,27 +21,27 @@ export const RepoQueryBuilder = <T>(repos: Array<RepoID>, bonusFields: string[] 
                 .map((repo, idx) => {
                     return `    
                 repo${idx}: repository(owner: "${repo.Owner}", name: "${repo.Name}") {
-                                ${[...defaultFields, ...bonusFields].join("\n")}
+                                ${[...defaultFields, ...bonusFields].join('\n')}
                                   
                             }
                         `;
                 })
-                .join("\n")}
+                .join('\n')}
         }
     `;
 };
 
 export const SendRequestToGQL = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
     if (!process.env.GITHUB_TOKEN) {
-        throw new Error("TOKEN NOT SET");
+        throw new Error('TOKEN NOT SET');
     }
-    const endpoint = "https://api.github.com/graphql";
+    const endpoint = 'https://api.github.com/graphql';
     const token = process.env.GITHUB_TOKEN;
     try {
         const response = await fetch(endpoint, {
-            method: "POST",
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ query }),
@@ -50,7 +50,7 @@ export const SendRequestToGQL = async <T>(query: string): Promise<GraphQLRespons
         if (result.message || (result.status && !result.data)) {
             throw new Error(
                 `GQL Response returned a message: ${result.message} with a code: ${result.status}. ${
-                    result.message?.includes("credentials") || result.status === "401" ? "INVALID TOKEN" : ""
+                    result.message?.includes('credentials') || result.status === '401' ? 'INVALID TOKEN' : ''
                 }`
             );
         }
@@ -59,17 +59,13 @@ export const SendRequestToGQL = async <T>(query: string): Promise<GraphQLRespons
         throw new Error(
             err instanceof Error
                 ? `ERR IN GQL ${chalk.red(err.message)}`
-                : "An unknown error occured in requestFromGQL"
+                : 'An unknown error occured in requestFromGQL'
         );
     }
 };
 
-export async function FetchUniqueAuthors(
-    owner: string,
-    repo: string,
-    existingAuthors = new Set<string>()
-): Promise<Array<string> | undefined> {
-    const authorsSet = new Set(existingAuthors); // Initialize with existing authors
+export async function FetchUniqueAuthors(owner: string, repo: string): Promise<Array<string> | undefined> {
+    const authorsSet = new Set<string>(); // Initialize with existing authors
     let hasNextPage = true; // Flag to check if there are more pages
     let endCursor = null; // To keep track of the cursor for pagination
 
@@ -80,7 +76,7 @@ export async function FetchUniqueAuthors(
                     ref(qualifiedName: "main") {
                         target {
                             ... on Commit {
-                                history(first: 10, after: ${endCursor ? `"${endCursor}"` : null}) {
+                                history(first: 50) {
                                     edges {
                                         node {
                                             author {
@@ -104,10 +100,10 @@ export async function FetchUniqueAuthors(
 
         try {
             const response = await fetch(`${GITHUB_API_BASE_URL}/graphql`, {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     Authorization: `Bearer ${GITHUB_TOKEN}`,
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ query }),
             });

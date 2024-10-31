@@ -1,12 +1,12 @@
-import { Repository } from "../Repository";
-import { RepoID } from "../ID/RepoID";
-import { RepoID_Builder } from "../ID/RepoID_Builder";
-import { RepoURL } from "../URL/URLProcessor.interface";
-import { AsyncBuilder } from "../../../../classes/Abstract/Abstract_Builders";
-import { AsyncLooper } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
-import { IsType_RepoID, IsType_RepoURL } from "../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
-import { RepoScoreset } from "../Metrics_Scores/RepoScoreset";
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Metrics_Scores/Weightspec.const";
+import { Repository } from '../Repository';
+import { RepoID } from '../ID/RepoID';
+import { RepoID_Builder } from '../ID/RepoID_Builder';
+import { RepoURL } from '../URL/URLProcessor.interface';
+import { AsyncBuilder } from '../../../../classes/Abstract/Abstract_Builders';
+import { AsyncLooper } from '../../../../DSinc_Modules/DSinc_LoopsMaps';
+import { IsType_RepoID, IsType_RepoURL } from '../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards';
+import { RepoScoreset } from '../Metrics_Scores/RepoScoreset';
+import { DEFAULT_WEIGHTS, WeightSpecSet } from '../Metrics_Scores/Weightspec.const';
 
 export class Repo_Builder extends AsyncBuilder<Repository> {
     asyncLooper: AsyncLooper;
@@ -26,7 +26,7 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
             repoURLs,
             creations,
             this.Build.bind(this),
-            true
+            false
         );
         return creations;
     }
@@ -76,8 +76,8 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         const scores = new RepoScoreset(weightsToUse);
         const creation = new Repository(id, scores);
 
-        await creation.RequestFromGQL();
-        creation.Refresh_NDJSON();
+        //await creation.RequestFromGQL();
+        //creation.Refresh_NDJSON();
         return creation;
     }
 }

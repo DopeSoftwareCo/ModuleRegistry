@@ -1,11 +1,12 @@
-import { calculateRampUp } from "../Assets/Octavo/src/ramp-up";
-import { calculateCorrectness } from "../Assets/Octavo/src/find-correctness";
-import { calculateBusFactor } from "../Assets/Octavo/src/bus-factor";
-import { calculateResponsiveMaintener } from "../Assets/Octavo/src/find-responsive-maintainer";
-import { calculateMetricsForRepo } from "../Assets/Octavo/src/github-wrapper";
-import { fetchRepoLicense } from "../Assets/Octavo/src/github-wrapper";
-import { Repository } from "../RepoComponents/Repository";
-import { FetchUniqueAuthors } from "../GQL_Queries/Requests/GQLRequests";
+import { calculateRampUp } from '../Assets/Octavo/src/ramp-up';
+import { calculateCorrectness } from '../Assets/Octavo/src/find-correctness';
+import { calculateBusFactor } from '../Assets/Octavo/src/bus-factor';
+import { calculateResponsiveMaintener } from '../Assets/Octavo/src/find-responsive-maintainer';
+import { calculateMetricsForRepo } from '../Assets/Octavo/src/github-wrapper';
+import { fetchRepoLicense } from '../Assets/Octavo/src/github-wrapper';
+import { Repository } from '../RepoComponents/Repository';
+import { FetchUniqueAuthors } from '../GQL_Queries/Requests/GQLRequests';
+import { fetchContributors } from '../Assets/Octavo/src/api-calls/github-adapter';
 
 const CONTRIBUTION_THRESHOLD = 50;
 
@@ -21,12 +22,12 @@ export async function Correctness_WrappedScorer(repo: Repository): Promise<numbe
 
 export async function BusFactor_WrappedScorer(repo: Repository): Promise<number> {
     const id = repo.ID;
-    let contributors = await FetchUniqueAuthors(id.Owner, id.Name);
-
+    const contributors = await fetchContributors(id.Owner, id.Name);
     if (!contributors) {
         return 0;
     }
-    return calculateBusFactor(contributors, CONTRIBUTION_THRESHOLD);
+    const score = calculateBusFactor(contributors, CONTRIBUTION_THRESHOLD);
+    return score >= 0 ? score : 0;
 }
 
 export async function Responsiveness_WrappedScorer(repo: Repository): Promise<number> {
