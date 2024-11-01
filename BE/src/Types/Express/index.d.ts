@@ -8,6 +8,7 @@ declare global {
             username?: string;
             permissions?: string[];
             requestedId?: string;
+            userID?: string;
         }
     }
 }
