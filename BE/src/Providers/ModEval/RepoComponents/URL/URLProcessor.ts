@@ -1,20 +1,17 @@
-import { AsyncLooper } from '../../../../DSinc_Modules/DSinc_LoopsMaps';
-import { RetrieveGitHubURL } from '../../DevTools/URLValidation';
-import { RepoURL, I_URLProcessor } from './URLProcessor.interface';
-import { NullableArray } from '../../../../classes/Essential_Interfaces/NullableArray';
+import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
+import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
+import { RepoURL, I_URLProcessor } from "./URLProcessor.interface";
+import { NullableArray } from "../../../../classes/Essential_Interfaces/NullableArray";
 
-export class URLProcessor extends I_URLProcessor {
+export class URLProcessor {
     private created?: Array<RepoURL>;
     private trackingHistory: boolean;
-    private looper: AsyncLooper;
 
     constructor(trackHistory: boolean = false) {
-        super();
         if (trackHistory) {
             this.created = new Array<RepoURL>(10);
         }
         this.trackingHistory = trackHistory;
-        this.looper = new AsyncLooper();
     }
 
     public async Process(raw: string): Promise<RepoURL | undefined> {
@@ -29,7 +26,7 @@ export class URLProcessor extends I_URLProcessor {
     public async MultiProcess(urls: Array<string>): Promise<Array<RepoURL>> {
         let repoURLs: Array<RepoURL> = [];
 
-        await this.looper.DiscardUndefined_StoreForEach<string, RepoURL>(
+        await AsyncLoops.DiscardUndefined_StoreForEach<string, RepoURL>(
             urls,
             repoURLs,
             this.Process.bind(this),
@@ -51,7 +48,7 @@ export class URLProcessor extends I_URLProcessor {
             if (repoDetails) {
                 const repo: RepoURL = {
                     providedURL: raw,
-                    domain: 'github.com',
+                    domain: "github.com",
                     tokens: new NullableArray<string>(repoDetails.tokens),
                     gitURL: repoDetails.repoURL,
                 };
