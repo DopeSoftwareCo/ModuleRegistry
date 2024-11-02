@@ -1,12 +1,12 @@
-import { Auth0_Database } from "./DatabaseOps";
+import { Auth0_Database } from "../../Providers/Auth0/Auth0_DB";
 import { UDS } from "./UDS_Permissions/subdir.const";
-import { MapPermissionStringToUDS } from "./UDS_Permissions/subdir.utils";
+import { PermissionStringToUDS } from "./UDS_Permissions/subdir.utils";
 import { Role, UNKNOWN_ROLE } from "./Roles/subdir.const";
 
 export class User {
     protected readonly uid: string;
     protected readonly email: string;
-    protected readonly username?: string = undefined;
+    protected username?: string = undefined;
     protected UDS: UDS;
     protected role: Role;
 
@@ -19,9 +19,9 @@ export class User {
     ) {
         this.uid = uid;
         this.email = email;
-        this.UDS = MapPermissionStringToUDS(permissions);
-        this.username = username;
+        this.UDS = PermissionStringToUDS(permissions);
         this.role = role;
+        this.username = username;
     }
 
     async SelfDelete(): Promise<boolean> {

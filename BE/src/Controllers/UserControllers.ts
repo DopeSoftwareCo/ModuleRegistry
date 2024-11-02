@@ -1,7 +1,7 @@
 import asyncHandler from "../Middleware/asyncHandler";
 import { NextFunction, Response } from "express";
 import { AddUserRequest, DeleteUserRequest, UpdateUserRequest } from "RequestTypes";
-import { Auth0_Database, RegistrationInfo } from "../classes/Users/DatabaseOps";
+import { Auth0_Database, RegistrationInfo } from "../Providers/Auth0/Auth0_DB";
 import { UNKNOWN_ROLE } from "../classes/Users/Roles/subdir.const";
 import { UDS_CODES } from "../classes/Users/UDS_Permissions/subdir.const";
 

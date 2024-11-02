@@ -2,10 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import axios from "axios";
-import { LogDebug } from "../../Providers/Utils/Log";
-import { UDS } from "./UDS_Permissions/subdir.const";
-import { getManagementToken } from "../../Providers/Auth0/ManagementToken";
-import { UDSToString } from "./UDS_Permissions/subdir.utils";
+import { LogDebug } from "../Utils/Log";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 const managementToken = process.env.AUTH0_MANAGEMENT_TOKEN;
@@ -128,5 +125,3 @@ export namespace Auth0_Database {
         }
     }
 }
-
-export namespace Mongo_Database {}

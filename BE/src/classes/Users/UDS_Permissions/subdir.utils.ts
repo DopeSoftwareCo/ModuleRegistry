@@ -1,6 +1,6 @@
 import { PERMISSIONS_UDS, UDS, UDS_CODES } from "./subdir.const";
 
-export function MapPermissionStringToUDS(permissionString: string): UDS {
+export function PermissionStringToUDS(permissionString: string): UDS {
     let decimalCode = 0;
 
     if (permissionString.length == 3) {

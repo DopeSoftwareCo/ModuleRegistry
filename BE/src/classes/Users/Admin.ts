@@ -1,5 +1,5 @@
 import { User } from "./User";
-import { Auth0_Database, RegistrationInfo } from "./DatabaseOps";
+import { Auth0_Database, RegistrationInfo } from "../../Providers/Auth0/Auth0_DB";
 import { ADMIN_ROLE } from "./Roles/subdir.const";
 import { Role } from "./Roles/subdir.const";
 
