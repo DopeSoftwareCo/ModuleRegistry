@@ -1,9 +1,9 @@
-import { RepoURL } from "../URL/URLProcessor.interface";
-import { URLProcessor } from "../URL/URLProcessor";
-import { AsyncBuilder } from "../../../../classes/Abstract/Abstract_Builders";
-import { IsType_RepoURL } from "../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
-import { AsyncLooper } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
-import { RepoID } from "./RepoID";
+import { RepoURL } from '../URL/URLProcessor.interface';
+import { URLProcessor } from '../URL/URLProcessor';
+import { AsyncBuilder } from '../../../../classes/Abstract/Abstract_Builders';
+import { IsType_RepoURL } from '../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards';
+import { AsyncLooper } from '../../../../DSinc_Modules/DSinc_LoopsMaps';
+import { RepoID } from './RepoID';
 
 export class RepoID_Builder extends AsyncBuilder<RepoID> {
     asyncLooper: AsyncLooper;
@@ -23,7 +23,7 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
             repoURLs,
             creations,
             this.Build.bind(this),
-            true
+            false
         );
         return creations;
     }
@@ -38,7 +38,7 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
             return undefined;
         }
 
-        if (typeof source === "string") {
+        if (typeof source === 'string') {
             creation = await this.StartFrom_String(source);
         } else if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_RepoURL(source);
@@ -64,8 +64,8 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
             if (!repoURL) {
                 return undefined;
             }
-            let nameofOwner = "";
-            let nameofRepo = "";
+            let nameofOwner = '';
+            let nameofRepo = '';
 
             if (repoURL.tokens.IsDefined) {
                 const content = repoURL.tokens.Content;

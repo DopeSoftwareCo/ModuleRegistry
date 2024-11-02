@@ -128,6 +128,7 @@ describe("MergeRestriction_Scorer with real repository", () => {
         const repoID = new RepoID(owner, repoName, repoURL);
         const repository = new Repository(repoID);
 
+        //the response you get wherever you query for this should be mocked, if the repo changes, the test expected value changes and fails.
         const score = await MergeRestriction_Scorer(repository);
         //console.log(`Merge Restriction Score for cloudinary/cloudinary_npm: ${score}`);
         expect(score).toBe(0.69); // Adjust this expectation based on real data

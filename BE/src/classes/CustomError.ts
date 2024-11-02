@@ -12,3 +12,9 @@ export abstract class CustomError extends Error {
         Object.setPrototypeOf(this, CustomError.prototype);
     }
 }
+
+interface AuthError {
+    statusCode: number;
+    errors: CustomErrorContent[];
+    logging: boolean;
+}

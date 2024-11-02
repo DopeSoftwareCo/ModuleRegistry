@@ -15,6 +15,7 @@ import SuperTest from "supertest";
 import { TestController } from "../src/Controllers/testController/testController";
 import PackageModel from "../src/Schemas/Package";
 import { GetTracksController } from "../src/Controllers/TracksController";
+import { deleteUserController, updateUserController } from "../src/Controllers/UserControllers";
 
 // Mock the PackageModel
 jest.mock("../src/Schemas/Package");
@@ -80,6 +81,21 @@ const AppRoutes: Record<string, RouteConfig> = {
         controller: GetTracksController,
         responseCode: 200,
         requestType: "GET",
+    },
+    AddUser: {
+        controller: updateUserController,
+        responseCode: 200,
+        requestType: "POST",
+    },
+    DeleteUser: {
+        controller: deleteUserController,
+        responseCode: 200,
+        requestType: "POST",
+    },
+    UpdateUser: {
+        controller: updateUserController,
+        responseCode: 200,
+        requestType: "POST",
     },
 };
 const app: Express = express();

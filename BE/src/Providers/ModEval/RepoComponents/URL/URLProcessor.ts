@@ -1,7 +1,7 @@
-import { AsyncLooper } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
-import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
-import { RepoURL, I_URLProcessor } from "./URLProcessor.interface";
-import { NullableArray } from "../../../../classes/Essential_Interfaces/NullableArray";
+import { AsyncLooper } from '../../../../DSinc_Modules/DSinc_LoopsMaps';
+import { RetrieveGitHubURL } from '../../DevTools/URLValidation';
+import { RepoURL, I_URLProcessor } from './URLProcessor.interface';
+import { NullableArray } from '../../../../classes/Essential_Interfaces/NullableArray';
 
 export class URLProcessor extends I_URLProcessor {
     private created?: Array<RepoURL>;
@@ -33,7 +33,7 @@ export class URLProcessor extends I_URLProcessor {
             urls,
             repoURLs,
             this.Process.bind(this),
-            true
+            false
         );
 
         return repoURLs;
@@ -51,7 +51,7 @@ export class URLProcessor extends I_URLProcessor {
             if (repoDetails) {
                 const repo: RepoURL = {
                     providedURL: raw,
-                    domain: "github.com",
+                    domain: 'github.com',
                     tokens: new NullableArray<string>(repoDetails.tokens),
                     gitURL: repoDetails.repoURL,
                 };
