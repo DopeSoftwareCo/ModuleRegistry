@@ -187,38 +187,15 @@ export const CreateTestMasterQuery = () => `
     }
 `;
 
-export function CreateReviewedPRField(owner: string, repoName: string, after: string | null = null): string {
-    const afterClause = after ? `, after: "${after}"` : "";
+export function CreatePRMergesField(owner: string, repoName: string): string {
     return `
     {
         repository(owner: "${owner}", name: "${repoName}") {
-            pullRequests(first: 100, states: MERGED${afterClause}) {
-                pageInfo {
-                    endCursor
-                    hasNextPage
-                }
+            pullRequests(first: 100, states: MERGED) {
                 nodes {
                     number
-                    title
-                    mergeCommit {
-                        parents(first: 2) {
-                            totalCount
-                        }
-                    }
-                }
-            }
-        }
-    }
-    `;
-}
-
-export function CreateTotalCommitsField(owner: string, repoName: string): string {
-    return `
-    {
-        repository(owner: "${owner}", name: "${repoName}") {
-            object(expression: "HEAD") {
-                ... on Commit {
-                    history {
+                    additions
+                    reviews(first: 1) {
                         totalCount
                     }
                 }

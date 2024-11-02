@@ -130,6 +130,6 @@ describe("MergeRestriction_Scorer with real repository", () => {
 
         const score = await MergeRestriction_Scorer(repository);
         //console.log(`Merge Restriction Score for cloudinary/cloudinary_npm: ${score}`);
-        expect(score).toBe(0.08); // Adjust this expectation based on real data
-    });
+        expect(score).toBe(0.69); // Adjust this expectation based on real data
+    }, 10000); // Increase the timeout to 10000 ms (10 seconds)
 });
