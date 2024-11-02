@@ -1,29 +1,31 @@
-import { Package } from '../../Types/Models';
-import { DeleteFromDB } from './DatabaseOps';
-import { UDS, MapPermissionStringToUDS, UDS_CODES, PERMISSIONS_UDS } from './Permissions';
-
-export enum Classification {
-    Unknown = -1,
-    External = 0,
-    Internal = 1,
-    Administrator = 2,
-}
+import { Auth0_Database } from "./DatabaseOps";
+import { UDS } from "./UDS_Permissions/subdir.const";
+import { MapPermissionStringToUDS } from "./UDS_Permissions/subdir.utils";
+import { Role, UNKNOWN_ROLE } from "./Roles/subdir.const";
 
 export class User {
     protected readonly uid: string;
     protected readonly email: string;
+    protected readonly username?: string = undefined;
     protected UDS: UDS;
-    protected classification: Classification;
+    protected role: Role;
 
-    constructor(uid: string, email: string, permissions: string, classification: Classification) {
-        this.uid = uid; // Will be generated
+    constructor(
+        uid: string,
+        email: string,
+        permissions: string,
+        role: Role = UNKNOWN_ROLE,
+        username?: string
+    ) {
+        this.uid = uid;
         this.email = email;
         this.UDS = MapPermissionStringToUDS(permissions);
-        this.classification = classification;
+        this.username = username;
+        this.role = role;
     }
 
-    SelfDelete(): boolean {
-        return DeleteFromDB(this.uid);
+    async SelfDelete(): Promise<boolean> {
+        return await Auth0_Database.DELETE(this.uid);
     }
 
     Upload(item: any): boolean {
@@ -36,30 +38,32 @@ export class User {
         return true;
     }
 
-    Downlod(packageID: string) {
+    Downlod(packageID: string): boolean {
         // Block operation if user lacks upload permission
         if (!this.UDS.D) {
             return false;
         }
 
         // functionality goes here
+        return true;
     }
 
-    Search(request: string) {
+    Search(request: string): boolean {
         // Block operation if user lacks upload permission
         if (!this.UDS.S) {
             return false;
         }
 
         // functionality goes here
+        return true;
     }
 
     get Permissions(): UDS {
         return this.UDS;
     }
 
-    get Classification(): Classification {
-        return this.classification;
+    get Role(): Role {
+        return this.role;
     }
 
     get Email(): string {
@@ -67,5 +71,9 @@ export class User {
     }
     get UID(): string {
         return this.uid;
+    }
+
+    get Username(): string | undefined {
+        return this.username;
     }
 }

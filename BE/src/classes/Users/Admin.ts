@@ -1,34 +1,47 @@
-import { User, Classification } from './User';
-import { AddToDB, DeleteFromDB } from './DatabaseOps';
+import { User } from "./User";
+import { Auth0_Database, RegistrationInfo } from "./DatabaseOps";
+import { ADMIN_ROLE } from "./Roles/subdir.const";
+import { Role } from "./Roles/subdir.const";
 
 export class Admin extends User {
-    constructor(uid: string, email: string) {
-        super(uid, email, '111', Classification.Administrator);
+    constructor(uid: string, email: string, username: string | undefined) {
+        super(uid, email, "111", ADMIN_ROLE, username);
     }
 
-    DeleteOtherUser(uid: string) {
-        DeleteFromDB(uid);
+    async DeleteOtherUser(uid: string): Promise<boolean> {
+        return await Auth0_Database.DELETE(uid);
     }
 
-    Register_User(
+    async Register_User(
         email: string,
         password: string,
         permission: string,
-        classification: Classification
-    ): User | null {
-        // Programmatically put a new user in auth0, resulting in access to the new uid
-        const uid = ''; //placeholder
-        const user = new User(uid, email, permission, classification);
-
-        return user;
+        role: Role,
+        username?: string
+    ): Promise<User | undefined> {
+        const info: RegistrationInfo = {
+            email: email,
+            password: password,
+            permission: permission,
+            roleString: role.stringFormat,
+            connection: "",
+            username: username,
+        };
+        const uid = await Auth0_Database.INSERT(info);
+        return uid ? new User(uid, email, permission, role, username) : undefined;
     }
 
-    Register_Admin(email: string, password: string): Admin | null {
-        const permissions = '111';
-        const classification = Classification.Administrator;
-        // Programmatically put a new admin in auth0, resulting in access to the new uid
-        AddToDB(email, password, permissions, classification);
-        const uid = ''; //placeholder
-        return new Admin(uid, email);
+    async Register_Admin(email: string, password: string, username?: string): Promise<Admin | undefined> {
+        const info: RegistrationInfo = {
+            email: email,
+            password: password,
+            permission: "111",
+            roleString: ADMIN_ROLE.stringFormat,
+            connection: "", // Auth0 connection name, like 'Username-Password-Authentication'
+            username: username, // Optional: Only if needed
+        };
+
+        const uid = await Auth0_Database.INSERT(info);
+        return uid ? new Admin(uid, email, username) : undefined;
     }
 }
