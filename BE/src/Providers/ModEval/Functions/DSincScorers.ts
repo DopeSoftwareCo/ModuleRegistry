@@ -1,10 +1,6 @@
 import { Repository } from "../RepoComponents/Repository";
 import { CreatePRMergesField } from "../GQL_Queries/Fields/Fields";
 import { SendRequestToGQL } from "../GQL_Queries/Requests/GQLRequests";
-import {
-    TotalCommitsResponse,
-    PullRequestsResponse,
-} from "../GQL_Queries/Fields/Field_ResponseTypes/PR_ResponseTypes";
 import { ScoreBusFactor } from "./BusFactor_Scorer";
 import { ScoreCorrectness } from "./Correctness_Scorer";
 import { ScoreLicenseCompatibility } from "./LicenseCompatibility";
@@ -68,7 +64,6 @@ export async function MergeRestriction_Scorer(repo: Repository): Promise<number>
         };
     };
     if (!prData || !prData.data.repository || !prData.data.repository.pullRequests) {
-        console.error("Invalid PR data:", prData);
         throw new Error("Failed to fetch pull requests data");
     }
 
@@ -82,6 +77,10 @@ export async function MergeRestriction_Scorer(repo: Repository): Promise<number>
             reviewedLOC += additions;
         }
     });
+
+    if (totalLOC === 0) {
+        return 0;
+    }
 
     const prMergeControlScore = reviewedLOC / totalLOC;
     const roundedScore = parseFloat(prMergeControlScore.toFixed(2));

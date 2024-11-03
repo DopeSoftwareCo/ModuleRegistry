@@ -191,7 +191,7 @@ export function CreatePRMergesField(owner: string, repoName: string): string {
     return `
     {
         repository(owner: "${owner}", name: "${repoName}") {
-            pullRequests(first: 100, states: MERGED) {
+            pullRequests(first: 20, states: MERGED) {
                 nodes {
                     number
                     additions
