@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { beforeAll, beforeEach, describe, expect, it, jest } from "@jest/globals";
 import express, { Express, NextFunction, Request, Response } from "express";
 import {
     GetPackageRatingsViaIDController,
@@ -16,6 +16,7 @@ import { TestController } from "../src/Controllers/testController/testController
 import PackageModel from "../src/Schemas/Package";
 import { GetTracksController } from "../src/Controllers/TracksController";
 import { deleteUserController, updateUserController } from "../src/Controllers/UserControllers";
+import { setFakeToken } from "../src/Middleware/ManagementToken";
 
 // Mock the PackageModel
 jest.mock("../src/Schemas/Package");
@@ -141,6 +142,9 @@ const makeRequestViaString = async (app: Express, requestType: string, path: str
 };
 
 describe("Request tests", () => {
+    beforeAll(() => {
+        setFakeToken();
+    });
     let app: Express;
     beforeEach(() => {
         app = express();
