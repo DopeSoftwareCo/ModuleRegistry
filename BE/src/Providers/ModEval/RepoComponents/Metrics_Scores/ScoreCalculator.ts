@@ -1,6 +1,6 @@
 import * as DSincMath from "../../../../DSinc_Modules/DSinc_Math";
 import { Repository } from "../../RepoComponents/Repository";
-import { functionTimer } from "../../Old_Assets/Octavo/src/function-timer";
+import { functionTimer } from "../../Assets/ScoringFunctions/function-timer";
 import { Metric } from "./Metric";
 import { MetricName } from "./Metric.const";
 import { StandardScoringFunction, AsyncScoringFunction } from "./ScoreCalculator.interface";

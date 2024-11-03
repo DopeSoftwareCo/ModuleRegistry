@@ -16,7 +16,9 @@ import { TestController } from "../src/Controllers/testController/testController
 import PackageModel from "../src/Schemas/Package";
 import { GetTracksController } from "../src/Controllers/TracksController";
 import { deleteUserController, updateUserController } from "../src/Controllers/UserControllers";
+import { setFakeToken } from "../src/Middleware/ManagementToken";
 
+setFakeToken();
 // Mock the PackageModel
 jest.mock("../src/Schemas/Package");
 

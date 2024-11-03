@@ -108,7 +108,8 @@
         "tests/**/*.ts",
         "src/Providers/ModEval/GQL_Queries/Fields/Field_ResponseTypes",
         "src/Providers/ModEval/GQL_Queries/Reponse",
-        "src/Classes/Essential_Interfaces"
+        "src/Classes/Essential_Interfaces",
+        "dist/TestUtils/ModEvalSubscores.spec.ts"
     ],
     "exclude": ["node_modules"]
 }

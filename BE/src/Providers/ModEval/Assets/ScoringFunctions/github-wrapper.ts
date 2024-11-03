@@ -1,20 +1,8 @@
-import { functionTimer } from "./function-timer";
-import { calculateCorrectness } from "./find-correctness";
-import { calculateResponsiveMaintener } from "./find-responsive-maintainer";
-import { calculateBusFactor } from "./bus-factor";
-import { calculateRampUp } from "./ramp-up";
-import { calculateNetScore } from "../../_Old_Assets/Octavo/src/netscore";
-import { getGithubLink } from "../RepoConstruction/npmUtil";
-
-import * as Util from "../../_Old_Assets/Octavo/src/Util";
-import * as API from "../api-calls/github-adapter";
-
-//;
-
-import fs from "fs";
+import { Util } from "../Requests/Util";
+import { LogDebug } from "../../../Utils/Log";
 
 if (!Util.Constants.GITHUB_TOKEN) {
-    Util.Logger.logErrorAndExit("Error: GITHUB_TOKEN is not set in the environment.");
+    LogDebug("Error: GITHUB_TOKEN is not set in the environment.");
 }
 
 /**
@@ -29,73 +17,6 @@ export function parseGithubUrl(url: string): { owner: string; repo: string } | n
         return { owner: match[1], repo: match[2] };
     }
     return null;
-}
-
-/**
- * Calculate metrics for a given GitHub or npm package URL and return the result as a formatted string.
- *
- * @param url - The URL of the GitHub repository or npm package.
- * @returns A formatted string containing the calculated metrics or an error message.
- */
-export async function calculateMetricsForRepo(url: string): Promise<string> {
-    // Parse the owner and repo from the URL
-    const githubUrl = getGithubLink(url);
-    const repoInfo = parseGithubUrl(await githubUrl);
-
-    if (!repoInfo) {
-        return `Invalid URL: ${githubUrl}`;
-    }
-
-    const { owner, repo } = repoInfo;
-
-    try {
-        // Fetch contributors for Bus Factor calculation
-        const contributors = await API.fetchContributors(owner, repo);
-        // Calculate Bus Factor
-        const busFactor = await functionTimer(() => calculateBusFactor(contributors, 50));
-
-        // Calculate Ramp-Up score
-        const rampUpScore = await functionTimer(() => calculateRampUp(owner, repo));
-
-        // Fetch license information
-        const retrievedLicense = await functionTimer(() => fetchRepoLicense(owner, repo));
-
-        // Calculate correctness
-        const correctness = await functionTimer(() => calculateCorrectness(owner, repo));
-
-        // Calculate Responsiveness
-        const maintainResponsiveness = await functionTimer(() => calculateResponsiveMaintener(owner, repo));
-
-        // Calculate NetScore
-        const netScore = await functionTimer(() =>
-            calculateNetScore(
-                busFactor.output,
-                rampUpScore.output,
-                correctness.output,
-                maintainResponsiveness.output
-            )
-        );
-
-        const result = `{"URL": "${url}", "NetScore": "${Number(
-            netScore.output.toPrecision(5)
-        )}", "NetScore_Latency": ${Number(netScore.time.toPrecision(5))}, "RampUp": ${Number(
-            rampUpScore.output.toPrecision(5)
-        )}, "RampUp_Latency": ${Number(rampUpScore.time.toPrecision(5))}, "Correctness": ${Number(
-            correctness.output.toPrecision(5)
-        )}, "Correctness_Latency": ${Number(correctness.time.toPrecision(5))}, "BusFactor": ${Number(
-            busFactor.output.toPrecision(5)
-        )}, "BusFactor_Latency": ${Number(busFactor.time.toPrecision(5))}, "ResponsiveMaintainer": ${Number(
-            maintainResponsiveness.output.toPrecision(5)
-        )}, "ResponsiveMaintainer_Latency": ${Number(
-            maintainResponsiveness.time.toPrecision(5)
-        )}, "License": "${Number(retrievedLicense.output)}", "License_Latency": ${Number(
-            retrievedLicense.time.toPrecision(5)
-        )}}`;
-
-        return result;
-    } catch (error) {
-        return `Error calculating Metrics for ${owner}/${repo}: ${error}`;
-    }
 }
 
 /**
@@ -131,31 +52,5 @@ export async function fetchRepoLicense(owner: string, repo: string) {
     } catch (error) {
         console.error(`ERROR! Failed to retrieve license information for ${owner}/${repo}: ${error}`);
         throw error;
-    }
-}
-
-/**
- * Parse a file containing URLs and calculate metrics for each repository.
- *
- * @param filepath - The file path to the file containing GitHub or npm package URLs (one per line).
- */
-export async function parseUrlFile(filepath: string) {
-    // Read the file and split the content into an array of URLs
-    const urls = fs.readFileSync(filepath, "utf-8").split("\n").filter(Boolean); // Removes empty lines
-
-    // Create NDJSON file
-    fs.writeFile(`${filepath}.NDJSON`, "", (err) => {
-        if (err) {
-            console.error(err);
-        } else {
-            // File written successfully
-        }
-    });
-
-    // Loop through each URL and calculate the metrics
-    for (const githubUrl of urls) {
-        const result = await calculateMetricsForRepo(githubUrl);
-        console.log(result);
-        fs.appendFileSync(`${filepath}.NDJSON`, `${result}\n`);
     }
 }

@@ -1,4 +1,4 @@
-import * as Util from "../../_Old_Assets/Octavo/src/Util";
+import { Util } from "../Requests/Util";
 
 /**
  * Fetches a list of contributors for a GitHub repository.
@@ -142,17 +142,3 @@ export async function fetchRepoDetails(owner: string, repo: string) {
         throw error; // Rethrow the error for further handling
     }
 }
-
-// export async function repoDependenciesCheck(owner: string, repo: string) {
-//   try {
-//     const response = await axios.get(`${Util.Constants.GITHUB_API_BASE_URL}/repos/${owner}/${repo}/dependency-graph/snapshots`, {
-//       headers: {
-//         Authorization: `token ${Util.Constants.GITHUB_TOKEN}`,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error(`Error fetching repo dependecies: ${error}`);
-//     throw error;
-//   }
-// }

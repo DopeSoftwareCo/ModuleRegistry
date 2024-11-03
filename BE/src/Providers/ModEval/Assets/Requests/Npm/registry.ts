@@ -3,8 +3,15 @@
  * This module handles the request to the registry for npm
  * @author DSinc
  */
-import { NPMRegistryResponse } from "../../../_Old_Assets/Primero/MVP/src/Types/ResponseTypes";
-import { LogDebug } from "../../Utils/log";
+
+import { LogDebug } from "../../../../Utils/Log";
+
+export interface NPMRegistryResponse {
+    repository?: {
+        type?: string;
+        url?: string;
+    };
+}
 
 /**
  * @author John Leidy

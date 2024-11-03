@@ -32,6 +32,27 @@ export const RepoQueryBuilder = <T>(repos: Array<RepoID>, bonusFields: string[] 
     `;
 };
 
+/**
+ * @author John Leidy
+ * @description Builds a query that shows the fields available for repositories
+ * @returns a string to use for a query! {@type string}
+ */
+export const buildRepoSchemaQuery = (): string => {
+    return `
+       query {
+        __type(name: "Repository") {
+                name
+                kind
+                description
+                fields {
+                    name
+                }
+            }
+        }
+
+    `;
+};
+
 export const SendRequestToGQL = async <T>(query: string): Promise<GraphQLResponse<T> | undefined> => {
     if (!process.env.GITHUB_TOKEN) {
         throw new Error("TOKEN NOT SET");

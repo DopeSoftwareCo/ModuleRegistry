@@ -5,8 +5,8 @@
  */
 
 import chalk from "chalk";
-import { GraphQLResponse } from "../../../_Old_Assets/Primero/MVP/src/Types/ResponseTypes";
-import { LogDebug, LogInfo } from "../../Utils/log";
+import { GraphQLResponse } from "../../../GQL_Queries/Reponse/RepoQueryResult.types";
+import { LogDebug, LogInfo } from "../../../../Utils/Log";
 
 /**
  * @author John Leidy
