@@ -13,11 +13,34 @@ import {
 import { updateUserValidationRules } from "../Validation/UserValidationRules/userUpdate";
 import { userDeleteValidationRules } from "../Validation/UserValidationRules/userDeleteValidationRules";
 import { verifyToken } from "../Middleware/Auth";
+import { checkManagementToken } from "../Middleware/ManagementToken";
 
 export const UserRouter = Router();
 // /adduser
-UserRouter.post("/adduser", verifyToken, userAddValidationRules, validateRequest, addUserController);
+// verifyToken is the userToken, checkManagementToken is for the management api
+UserRouter.post(
+    "/adduser",
+    verifyToken,
+    checkManagementToken,
+    userAddValidationRules,
+    validateRequest,
+    addUserController
+);
 // /updateuser
-UserRouter.post("/updateuser", verifyToken, updateUserValidationRules, validateRequest, updateUserController);
+UserRouter.post(
+    "/updateuser",
+    verifyToken,
+    checkManagementToken,
+    updateUserValidationRules,
+    validateRequest,
+    updateUserController
+);
 // /deleteuser
-UserRouter.post("/deleteuser", verifyToken, userDeleteValidationRules, validateRequest, deleteUserController);
+UserRouter.post(
+    "/deleteuser",
+    verifyToken,
+    checkManagementToken,
+    userDeleteValidationRules,
+    validateRequest,
+    deleteUserController
+);

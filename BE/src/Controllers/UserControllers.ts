@@ -1,10 +1,7 @@
-//update
-//add
-//delete
-
 import { NextFunction, Response } from "express";
-import asyncHandler from "../Middleware/asyncHandler";
 import { AddUserRequest, DeleteUserRequest, UpdateUserRequest } from "RequestTypes";
+import { Auth0_Database, RegistrationInfo, RequestForUserChanges } from "../Providers/Auth0/Auth0_DB";
+import asyncHandler from "../Middleware/asyncHandler";
 import {
     AddUserResponseMessages,
     DeleteUserResponseMessages,
@@ -16,14 +13,24 @@ export const addUserController = asyncHandler(
         const userEmail = req.body.email;
         const userUsername = req.body.username;
         const userPassword = req.body.password;
-        //use those to create some user here
+        const permission = req.body.permission;
+        const role = req.body.role;
 
-        //create some variable 'failed' that represents a failure, must be named failed
+        const info: RegistrationInfo = {
+            email: userEmail,
+            password: userPassword,
+            permission: permission,
+            roleNum: role,
+            username: userUsername,
+        };
+
         let responseMessage: AddUserResponseMessages;
-        const failed = false;
+        const result = await Auth0_Database.INSERT(info);
+        const failed = result == undefined;
+
         if (!failed) {
             responseMessage = "User added.";
-            res.status(200).send(responseMessage);
+            res.status(201).send(responseMessage);
         } else {
             responseMessage = "Adding user failed.";
             res.status(500).send(responseMessage);
@@ -33,12 +40,23 @@ export const addUserController = asyncHandler(
 
 export const updateUserController = asyncHandler(
     async (req: UpdateUserRequest, res: Response, next: NextFunction) => {
-        const permissions = req.body.permissions;
-        //use perms to update perms
+        const id = req.body.id;
+        const username = req.body.username;
+        const password = req.body.password;
+        const permission = req.body.permission;
+        const role = req.body.role;
 
-        //create some variable 'failed' that represents a failure, must be named failed
+        const changeReq: RequestForUserChanges = {
+            username: username,
+            password: password,
+            permission: permission,
+            role: role,
+        };
+
         let responseMessage: UpdateUserResponseMessages;
-        const failed = false;
+        const result = await Auth0_Database.UPDATE(id, changeReq);
+        const failed = result == undefined;
+
         if (!failed) {
             responseMessage = "User permissions updated.";
             res.status(200).send(responseMessage);
@@ -52,13 +70,10 @@ export const updateUserController = asyncHandler(
 export const deleteUserController = asyncHandler(
     async (req: DeleteUserRequest, res: Response, next: NextFunction) => {
         const userID = req.body.id;
-        const userEmail = req.body.email;
-        const userUsername = req.body.username;
-        //use these to delete the user from auth0
 
-        //create some variable 'failed' that represents a failure, must be named failed
         let responseMessage: DeleteUserResponseMessages;
-        const failed = false;
+        const failed = await Auth0_Database.DELETE(userID);
+
         if (!failed) {
             responseMessage = "User deleted.";
             res.status(200).send(responseMessage);
