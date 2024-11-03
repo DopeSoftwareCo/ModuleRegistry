@@ -26,6 +26,7 @@ const lightTheme: DefaultTheme = {
         errorRed: errorRed,
     },
     fontSizes: {
+        xSmall: '0.5rem',
         small: '1rem',
         medium: '1.5rem',
         large: '2rem',
@@ -64,6 +65,7 @@ const darkTheme: DefaultTheme = {
         errorRed: errorRed,
     },
     fontSizes: {
+        xSmall: '0.5rem',
         small: '1rem',
         medium: '1.5rem',
         large: '2rem',
