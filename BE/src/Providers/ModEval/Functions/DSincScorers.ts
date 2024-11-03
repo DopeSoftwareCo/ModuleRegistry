@@ -64,7 +64,7 @@ export async function MergeRestriction_Scorer(repo: Repository): Promise<number>
         };
     };
     if (!prData || !prData.data.repository || !prData.data.repository.pullRequests) {
-        throw new Error("Failed to fetch pull requests data");
+        throw new Error("Failed to fetch PR data");
     }
 
     let totalLOC = 0;

@@ -99,6 +99,6 @@ describe("MergeRestriction_Scorer", () => {
             },
         });
 
-        await expect(MergeRestriction_Scorer(repo)).rejects.toThrow("Failed to fetch pull requests data");
+        await expect(MergeRestriction_Scorer(repo)).rejects.toThrow("Failed to fetch PR data");
     });
 });
