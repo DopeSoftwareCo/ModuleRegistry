@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { beforeAll, beforeEach, describe, expect, it, jest } from "@jest/globals";
 import express, { Express, NextFunction, Request, Response } from "express";
 import {
     GetPackageRatingsViaIDController,
@@ -143,6 +143,9 @@ const makeRequestViaString = async (app: Express, requestType: string, path: str
 };
 
 describe("Request tests", () => {
+    beforeAll(() => {
+        setFakeToken();
+    });
     let app: Express;
     beforeEach(() => {
         app = express();
