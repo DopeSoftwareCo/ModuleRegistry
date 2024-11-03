@@ -23,5 +23,5 @@ export const validateRequest = (req: Request, res: Response, next: NextFunction)
             return res.status(400).send(errsStrArr[0].msg);
         }
     }
-    next();
+    return next();
 };

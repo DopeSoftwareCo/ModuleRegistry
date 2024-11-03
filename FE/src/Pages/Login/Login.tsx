@@ -3,12 +3,13 @@ import { Form, LoginField, LoginLabel, PasswordField, SubmitButton, LoginCard } 
 import { authenticateUserRequest } from './LoginRequest';
 import { decodeAndSetToken } from './Token';
 import { useNavigate } from 'react-router-dom';
-import { ErrorDisplay } from '../../Components/ErrorDisplay/ErrorDisplay';
+import { StatusDisplay } from '../../Components/StatusDisplay/StatusDisplay';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [err, setErr] = useState<string | undefined>(undefined);
+    const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
     const navigate = useNavigate();
 
     const requestToken = async (username: string, password: string) => {
@@ -43,7 +44,12 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <SubmitButton type="submit">Login</SubmitButton>
-                <ErrorDisplay err={err} setErr={setErr} />
+                <StatusDisplay
+                    err={err}
+                    setErr={setErr}
+                    successMessage={successMessage}
+                    setSuccess={setSuccessMessage}
+                />
             </Form>
         </LoginCard>
     );

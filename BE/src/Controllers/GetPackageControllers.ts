@@ -53,7 +53,6 @@ export const GetPackagesFromRegistryController = asyncHandler(
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
-        const requestedPackageID = req.requestedId;
         console.log("original", req.originalUrl);
         //your code here using the id
 
@@ -77,6 +76,31 @@ export const GetPackageViaIDController = asyncHandler(
             responseMessage = "Package does not exist.";
             res.status(404).send(responseMessage);
         }
+        /*
+        const foundPackage = await PackageModel.findById(requestedPackageID);
+
+        if (foundPackage == null) {
+            let responseMessage: GetPackageViaIDInvalidResponseMessages;
+            responseMessage = "Package does not exist.";
+            res.status(404).send(responseMessage);
+        }
+        else {
+            const responseBody: GetPackageViaIDResponseBody = {
+                metadata: {
+                    Name: foundPackage?.metadata.Name,
+                    Version: foundPackage?.metadata.Version,
+                    ID: foundPackage.id,
+                },
+                //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
+                data: {
+                    Content: foundPackage.data.Content,
+                    URL: foundPackage.repoUrl,
+                    JSProgram: foundPackage.data.JSProgram,
+                },
+            };
+            res.status(200).json(responseBody);
+        } */
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^
     }
 );
 
@@ -85,31 +109,35 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
     async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
         const dependencyCostRequested = req.query.dependency;
+
+        // Request the package by ID.
         const pack = await PackageModel.findById(requestedPackageID);
-        //check if package exists
-        if (pack) {
+
+        // If the package does not exist, return not found code.
+        if (!pack) {
             const responseMessage: GetSizeCostForPackageInvalidResponses = "Package does not exist.";
             return res.status(404).send(responseMessage);
         }
-        let totalCost: number = 0;
-        let standaloneCost: number = 0;
-        let choked: boolean = false;
-        //your code with the package
 
+        // Get values from the database (scored already from upload). Ignore total cost
+        // for now because its value depends on whether deps were requested or not.
+        let totalCost: number;
+        let standaloneCost: number = pack.IndividualSizeCost.score_sizeCostStandalone;
+        let choked: boolean = false;
+
+        // Determine what totalCost will be. If we do not want dependencies, then total cost is the standalone cost.
+        // If we do, then total cost is REALLY the total cost.
         if (dependencyCostRequested) {
-            //do something to get this value and set standalone cost
+            totalCost = pack.TotalSizeCost.score_sizeCostTotal; // with deps
+        } else {
+            totalCost = standaloneCost; // no deps
         }
 
-        //if it chokes set choked to true
-
-        //^^^^^^^^^^^^^^^^^^^^^^^^^
-        //if dependency cost was requested...
-        //we have totalCost AND standaloneCost
-        //if it was not.. we only have totalcost
+        // If dependencies are requested, add the standaloneCost field via spread. We would have total cost be the cost with deps.
+        // otherwise, only show the totalCost field (which is really the standalone cost of the package without dependencies).
         const responseBody: GetSizeCostForPackageResponseBody = {
-            totalCost: totalCost,
-            //if dep req add the standaloneCost field via spread, otherwise spread empty leaving only totalCost field
             ...(dependencyCostRequested ? { standaloneCost } : {}),
+            totalCost: totalCost,
         };
 
         if (!choked) {

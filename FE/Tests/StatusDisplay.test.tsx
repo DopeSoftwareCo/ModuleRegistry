@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { customRender } from './TestUtils';
-import { ErrorDisplay } from '../src/Components/ErrorDisplay/ErrorDisplay';
 import { useState } from 'react';
+import { StatusDisplay } from '../src/Components/StatusDisplay/StatusDisplay';
 
 const Parent = () => {
     const [err, setErr] = useState<string | undefined>('error');
-    return <ErrorDisplay err={err} setErr={setErr} />;
+    const [s, ss] = useState<string | undefined>('');
+    return <StatusDisplay err={err} setErr={setErr} successMessage={s} setSuccess={ss} />;
 };
 
 describe('Error Display', () => {

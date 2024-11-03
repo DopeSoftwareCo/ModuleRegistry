@@ -14,6 +14,7 @@ import { AuthRouter } from "./Routes/AuthRoutes";
 import mongoose from "mongoose";
 import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
+import { UserRouter } from "./Routes/UserRoutes";
 dotenv.config();
 
 const envVarNames = [
@@ -53,6 +54,7 @@ const addRoutes = (app: Express) => {
     app.use("/reset", ResetRouter);
     app.use("/authenticate", AuthRouter);
     app.use("/tracks", TracksRouter);
+    app.use("/users", UserRouter);
 };
 
 const addMiddleWare = (app: Express) => {
@@ -63,7 +65,7 @@ const addMiddleWare = (app: Express) => {
             allowedHeaders: "*",
         })
     );
-    app.use(express.json());
+    app.use(express.json({ limit: "10mb" }));
     app.use(logRequest);
     app.use(responseLogger);
 };

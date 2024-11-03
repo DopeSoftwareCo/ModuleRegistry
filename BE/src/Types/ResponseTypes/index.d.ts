@@ -64,7 +64,7 @@ declare module "ResponseTypes" {
         | "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL ar both set)"
         | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Package exists already."
-        | "Pacakge is not uploaded due to disqualified rating.";
+        | "Package is not uploaded due to disqualified rating.";
 
     export type UploadInjestNewPackageResponseBody = {
         metadata: PackageMetadataResponse;
@@ -141,4 +141,16 @@ declare module "ResponseTypes" {
             plannedTracks: string[];
         };
     }
+
+    export type AddUserResponseMessages = "User added." | "Adding user failed." | "Invalid request body.";
+
+    export type UpdateUserResponseMessages =
+        | "User permissions updated."
+        | "User permissions update failed."
+        | "Invalid request body.";
+
+    export type DeleteUserResponseMessages =
+        | "User deleted."
+        | "Failed to delete user."
+        | "Invalid request body.";
 }
