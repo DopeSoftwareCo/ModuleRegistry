@@ -16,6 +16,7 @@ declare module 'styled-components' {
             errorRed: string;
         };
         fontSizes: {
+            xSmall: string;
             small: string;
             medium: string;
             large: string;
