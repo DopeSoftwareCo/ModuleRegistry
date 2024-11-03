@@ -5,13 +5,14 @@
  */
 import * as fs from "fs";
 import * as path from "path";
-import { NDJSONRow, Repository } from "../../_Old_Assets/Primero/MVP/src/Types/DataTypes";
+import { NDJSONRow } from "../../RepoComponents/NDJSON/NDJSONRow";
+import { Repository } from "../../RepoComponents/Repository";
 
 /**
  * Writes NDJSON formatted repository data to the CLI.
  * @param repos - Array of repositories containing NDJSON rows.
  */
-export const writeNDJSONToCLI = <T>(repos: Repository<T>[]) => {
+export const writeNDJSONToCLI = <T>(repos: Repository[]) => {
     repos.forEach((repo) => {
         console.log(convertNDJSONObjToStr(repo.NDJSONRow));
     });

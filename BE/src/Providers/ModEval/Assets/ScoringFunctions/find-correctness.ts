@@ -1,4 +1,4 @@
-import { commitHistory, repoIssues, repoPullRequests } from "../api-calls/github-adapter";
+import { commitHistory, repoIssues, repoPullRequests } from "../API-Calls/github-adapter";
 
 /**
  * Calculates the correctness score of a GitHub repository.

@@ -5,7 +5,8 @@
  */
 
 import { writeFile } from "fs/promises";
-import { NDJSONRow, Repository } from "../../_Old_Assets/Primero/MVP/src/Types/DataTypes";
+import { NDJSONRow } from "../../RepoComponents/NDJSON/NDJSONRow";
+import { Repository } from "../../RepoComponents/Repository";
 import { convertNDJSONObjToStr } from "./CLI";
 import { existsSync, mkdirSync } from "fs";
 
@@ -15,7 +16,7 @@ import { existsSync, mkdirSync } from "fs";
  * @param repos Repositories array of cleaned repositories {@type Repository<T>[]}
  * @returns a promise {@type Promise<void>}
  */
-export const writeToTXT = async <T>(repos: Repository<T>[], filePath?: string) =>
+export const writeToTXT = async <T>(repos: Repository[], filePath?: string) =>
     writeFile(
         filePath ? `${filePath}RESULTS.txt` : "./results/RESULTS.txt",
         repos.map((repo) => convertNDJSONObjToStr(repo.NDJSONRow)).join("\n")
@@ -28,7 +29,7 @@ export const writeToTXT = async <T>(repos: Repository<T>[], filePath?: string) =
  * @param repos Repositories array of cleaned repositories {@type Repository<T>[]}
  * @returns a promise {@type Promise<void>}
  */
-export const writeToJSONArr = async <T>(repos: Repository<T>[], filePath?: string) =>
+export const writeToJSONArr = async <T>(repos: Repository[], filePath?: string) =>
     writeFile(
         filePath ? `${filePath}RESULTSarr.json` : "./results/RESULTSarr.json",
         `[\n   ${repos.map((repo) => convertNDJSONObjToStr(repo.NDJSONRow)).join(",\n   ")}\n]`
@@ -42,12 +43,12 @@ export const writeToJSONArr = async <T>(repos: Repository<T>[], filePath?: strin
  * @param repos An array of cleaned repositories {@type Repository<T>[]}
  * @returns a promise {@type Promise<void>}
  */
-export const writeToJSONObjs = async <T>(repos: Repository<T>[], filePath?: string) =>
+export const writeToJSONObjs = async <T>(repos: Repository[], filePath?: string) =>
     writeFile(
         filePath ? `${filePath}RESULTSobjs.json` : "./results/RESULTSobjs.json",
         `${JSON.stringify(
             repos.reduce(
-                (acc, repo) => ({ ...acc, [repo.repoName]: { NDJSONRow: repo.NDJSONRow } }),
+                (acc, repo) => ({ ...acc, [repo.ID.Name]: { NDJSONRow: repo.NDJSONRow } }),
                 {} as Record<string, { NDJSONRow: NDJSONRow }>
             ),
             null,
@@ -67,7 +68,7 @@ export const ensureDirExists = (filePath?: string) => {
     }
 };
 
-export const writeNDJSONToFile = async <T>(repos: Repository<T>[], filePath?: string) => {
+export const writeNDJSONToFile = async <T>(repos: Repository[], filePath?: string) => {
     ensureDirExists();
     await writeToTXT(repos, filePath);
     await writeToJSONArr(repos, filePath);
