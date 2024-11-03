@@ -1,4 +1,4 @@
-import { NullableArray } from "../../../../classes/Essential_Interfaces/NullableArray";
+import { NullableArray } from "../../../../Classes/Essential_Interfaces/NullableArray";
 
 export interface PackageRepo_URL {
     providedURL: string;

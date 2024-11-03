@@ -1,10 +1,10 @@
-import { Repository } from './RepoComponents/Repository';
-import { Metric } from './RepoComponents/Metrics_Scores/Metric';
-import { MetricName } from './RepoComponents/Metrics_Scores/Metric.const';
-import { SubscoreCalculator } from './RepoComponents/Metrics_Scores/ScoreCalculator';
-import { WeightSpec, FindWeightSpecByReceiver } from './RepoComponents/Metrics_Scores/WeightSpec';
-import { EMPTY_WEIGHTSPEC, WeightSpecSet } from './RepoComponents/Metrics_Scores/Weightspec.const';
-import { AsyncLooper, TryIndexOrDefaultTo } from '../../DSinc_Modules/DSinc_LoopsMaps';
+import { Repository } from "./RepoComponents/Repository";
+import { Metric } from "./RepoComponents/Metrics_Scores/Metric";
+import { MetricName } from "./RepoComponents/Metrics_Scores/Metric.const";
+import { SubscoreCalculator } from "./RepoComponents/Metrics_Scores/ScoreCalculator";
+import { WeightSpec, FindWeightSpecByReceiver } from "./RepoComponents/Metrics_Scores/WeightSpec";
+import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./RepoComponents/Metrics_Scores/Weightspec.const";
+import { AsyncLoops, TryIndexOrDefaultTo } from "../../DSinc_Modules/DSinc_LoopsMaps";
 import {
     RampUp_Scorer,
     Correctness_Scorer,
@@ -13,7 +13,7 @@ import {
     LicenseCompatibility_Scorer,
     VersionDependence_Scorer,
     MergeRestriction_Scorer,
-} from './Functions/DSincScorers';
+} from "./Functions/DSincScorers";
 
 import {
     RAMPUP_WEIGHT_DEFAULT,
@@ -23,17 +23,16 @@ import {
     LICENSE_WEIGHT,
     VERSIONDEP_WEIGHT_DEFAULT,
     MERGERESTRICT_WEIGHT_DEFAULT,
-} from './RepoComponents/Metrics_Scores/Weightspec.const';
+} from "./RepoComponents/Metrics_Scores/Weightspec.const";
 import {
     BusFactor_WrappedScorer,
     Correctness_WrappedScorer,
     LicenseCompatibility_WrapperScorer,
     RampUp_WrappedScorer,
     Responsiveness_WrappedScorer,
-} from './Functions/OctavoScorers';
+} from "./Functions/OctavoScorers";
 
 export class ModuleEvaluator {
-    asyncLooper: AsyncLooper;
     rampUp: SubscoreCalculator;
     correctness: SubscoreCalculator;
     busFactor: SubscoreCalculator;
@@ -44,7 +43,6 @@ export class ModuleEvaluator {
     maxPoints: number;
 
     constructor(weightspecs: WeightSpecSet) {
-        this.asyncLooper = new AsyncLooper();
         const weights = this.ProcessWeightSpecSet(weightspecs);
 
         this.rampUp = new SubscoreCalculator(RampUp_WrappedScorer, MetricName.RampUpTime, weights[0]);
@@ -135,7 +133,7 @@ export class ModuleEvaluator {
     }
 
     public async MultiEval(repos: Array<Repository>): Promise<void> {
-        await this.asyncLooper.ForEach<Repository, number>(repos, this.Eval.bind(this));
+        await AsyncLoops.ForEach<Repository, number>(repos, this.Eval.bind(this));
     }
 
     public async Eval(repo: Repository): Promise<number> {

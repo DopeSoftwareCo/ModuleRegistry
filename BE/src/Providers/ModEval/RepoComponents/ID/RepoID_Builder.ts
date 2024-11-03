@@ -1,16 +1,13 @@
-import { RepoURL } from '../URL/URLProcessor.interface';
-import { URLProcessor } from '../URL/URLProcessor';
-import { AsyncBuilder } from '../../../../classes/Abstract/Abstract_Builders';
-import { IsType_RepoURL } from '../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards';
-import { AsyncLooper } from '../../../../DSinc_Modules/DSinc_LoopsMaps';
-import { RepoID } from './RepoID';
+import { RepoURL } from "../URL/URLProcessor.interface";
+import { URLProcessor } from "../URL/URLProcessor";
+import { AsyncBuilder } from "../../../../Classes/Abstract/Abstract_Builders";
+import { IsType_RepoURL } from "../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
+import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
+import { RepoID } from "./RepoID";
 
 export class RepoID_Builder extends AsyncBuilder<RepoID> {
-    asyncLooper: AsyncLooper;
-
     constructor(trackCreations: boolean = false) {
         super(trackCreations);
-        this.asyncLooper = new AsyncLooper();
     }
 
     async MultiBuild(repoURLs: Array<RepoURL>): Promise<Array<RepoID> | undefined> {
@@ -19,7 +16,7 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
         }
 
         let creations = Array<RepoID>();
-        await this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
+        await AsyncLoops.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
             repoURLs,
             creations,
             this.Build.bind(this),
@@ -38,7 +35,7 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
             return undefined;
         }
 
-        if (typeof source === 'string') {
+        if (typeof source === "string") {
             creation = await this.StartFrom_String(source);
         } else if (IsType_RepoURL(source)) {
             creation = await this.StartFrom_RepoURL(source);
@@ -64,8 +61,8 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
             if (!repoURL) {
                 return undefined;
             }
-            let nameofOwner = '';
-            let nameofRepo = '';
+            let nameofOwner = "";
+            let nameofRepo = "";
 
             if (repoURL.tokens.IsDefined) {
                 const content = repoURL.tokens.Content;
