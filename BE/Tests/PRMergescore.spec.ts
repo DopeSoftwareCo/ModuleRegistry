@@ -3,7 +3,7 @@ import { Repository } from "../src/Providers/ModEval/RepoComponents/Repository";
 import { SendRequestToGQL } from "../src/Providers/ModEval/GQL_Queries/Requests/GQLRequests";
 import { beforeEach, describe, it, expect, jest, afterEach } from "@jest/globals";
 import { RepoID } from "../src/Providers/ModEval/RepoComponents/ID/RepoID";
-// Mock RepoURL since it's an interface and cannot be instantiated
+import { RepoURL } from "../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
 jest.mock("../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface", () => ({
     RepoURL: jest.fn().mockImplementation(() => ({
         url: "https://github.com/owner/repo",
