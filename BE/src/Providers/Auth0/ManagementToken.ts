@@ -8,7 +8,7 @@ const audience = process.env.MANAGEMENT_API_TOKEN_REQUEST_AUDIENCE;
 
 export async function getManagementToken(): Promise<string | null> {
     try {
-        const response = await axios.post(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
+        const response = await axios.post(`https://${auth0Domain}/oauth/token`, {
             client_id: process.env.API_CLIENT_ID,
             client_secret: process.env.API_CLIENT_SECRET,
             audience: audience,

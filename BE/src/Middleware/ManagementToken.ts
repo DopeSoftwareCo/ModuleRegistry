@@ -26,3 +26,7 @@ export async function GenerateManagementToken() {
         }
     }
 }
+
+export const setFakeToken = () => {
+    token = "fakeToken";
+};
