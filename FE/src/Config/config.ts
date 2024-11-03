@@ -8,5 +8,6 @@ export const GeneralConfig = {
     COST_URL: '/cost',
     REMOVE_URL: '/remove',
     UPLOAD_URL: '/upload',
+    RESET_URL: '/reset',
     BACKEND_URL: 'http://localhost:3000/',
 };
