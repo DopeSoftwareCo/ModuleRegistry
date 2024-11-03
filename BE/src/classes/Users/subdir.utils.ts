@@ -1,4 +1,4 @@
-import { PERMISSIONS_UDS, UDS, UDS_CODES } from "./subdir.const";
+import { UDS_OBJECTS, UDS, UDS_CODES } from "./subdir.const";
 
 export function PermissionStringToUDS(permissionString: string): UDS {
     let decimalCode = 0;
@@ -8,7 +8,7 @@ export function PermissionStringToUDS(permissionString: string): UDS {
         decimalCode = location >= 0 ? location : 0;
     }
 
-    return PERMISSIONS_UDS[decimalCode];
+    return UDS_OBJECTS[decimalCode];
 }
 
 export function UDSToString(uds: UDS): number {

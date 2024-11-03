@@ -68,7 +68,7 @@ declare module "RequestTypes" {
         email: string;
         password: string;
         permission: string;
-        role?: string;
+        role: number;
     };
 
     export interface AddUserRequest extends Request {
@@ -77,8 +77,6 @@ declare module "RequestTypes" {
 
     export type DeleteUserRequestBody = {
         id: string;
-        username: string;
-        email: string;
     };
 
     export interface DeleteUserRequest extends Reequest {
@@ -87,7 +85,10 @@ declare module "RequestTypes" {
 
     export type UpdateUserRequestBody = {
         id: string;
-        permission: string;
+        username?: string;
+        password?: string;
+        permission?: string;
+        role?: number;
     };
 
     export interface UpdateUserRequest extends Request {

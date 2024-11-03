@@ -3,25 +3,36 @@ dotenv.config();
 
 import axios from "axios";
 import { LogDebug } from "../Utils/Log";
+import { User } from "../../Classes/Users/User";
+import { token } from "../../Middleware/ManagementToken";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
-const managementToken = process.env.AUTH0_MANAGEMENT_TOKEN;
 
 export interface RegistrationInfo {
     email: string;
     password: string;
     permission: string;
-    roleString: string | null;
-    connection: string; // Auth0 connection name, like 'Username-Password-Authentication'
-    username?: string; // Optional: Only if needed
+    roleNum: number; // Auth0 connection name, like 'Username-Password-Authentication'
+    username: string; // Optional: Only if needed
+}
+
+export interface RequestForUserChanges {
+    username?: string;
+    password?: string;
+    permission?: string;
+    role?: number;
 }
 
 interface Auth0User {
     user_id: string;
     name: string;
     email: string;
-    permissions: string;
-    username?: string;
+    username: string;
+    user_metadata: {
+        permission: string;
+        role: number;
+    };
+    //permissions: string[];
     created_at?: string;
     last_login?: string;
     logins_count?: number;
@@ -30,7 +41,7 @@ interface Auth0User {
 
 export namespace Auth0_Database {
     export async function INSERT(info: RegistrationInfo): Promise<string | undefined> {
-        if (!managementToken || !auth0Domain) {
+        if (!token || !auth0Domain) {
             console.error("Auth0 domain or token is missing in the environment variables.");
             return undefined;
         }
@@ -41,27 +52,32 @@ export namespace Auth0_Database {
                 {
                     email: info.email,
                     password: info.password,
-                    permissions: info.permission,
-                    role: info.roleString,
-                    connection: info.connection,
+                    connection: "Username-Password-Authentication",
+                    user_metadata: {
+                        permission: info.permission,
+                        role: info.roleNum,
+                    },
+                    //permissions: info.permission,
                     username: info.username, // Optional
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${managementToken}`,
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }
             );
+            console.log(response.data);
             return response.data.user_id;
         } catch (error) {
+            console.log(error);
             LogDebug("Failed to add user:");
             return undefined;
         }
     }
 
     export async function DELETE(uid: string): Promise<boolean> {
-        if (!managementToken || !auth0Domain) {
+        if (!token || !auth0Domain) {
             console.error("Auth0 domain or token is missing in the environment variables.");
             return false;
         }
@@ -69,7 +85,7 @@ export namespace Auth0_Database {
         try {
             await axios.delete(`https://${auth0Domain}/api/v2/users/${uid}`, {
                 headers: {
-                    Authorization: `Bearer ${managementToken}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
             return true;
@@ -79,48 +95,71 @@ export namespace Auth0_Database {
         }
     }
 
-    export async function UPDATE(uid: string, permissions: string[]): Promise<boolean> {
-        if (!managementToken || !auth0Domain) {
-            console.error("Auth0 domain or token is missing in the environment variables.");
-            return false;
+    export async function UPDATE(uid: string, changes: RequestForUserChanges): Promise<boolean> {
+        if (!token) {
+            throw new Error("Management token is not available");
         }
 
         try {
-            const permissionPayload = permissions.map((permission) => ({
-                permission_name: permission,
-                resource_server_identifier: process.env.AUTH0_AUDIENCE,
-            }));
+            const updateData: any = {};
+            let changeCount = 0;
+            // Only include properties that have been provided
+            if (changes.username) {
+                updateData.username = changes.username;
+                ++changeCount;
+            }
+            if (changes.password) {
+                updateData.password = changes.password;
+                ++changeCount;
+            }
+            if (changes.permission) {
+                updateData.permission = changes.permission;
+                ++changeCount;
+            }
+            if (changes.role) {
+                updateData.role = changes.role;
+                ++changeCount;
+            }
 
-            await axios.post(
-                `https://${auth0Domain}/api/v2/users/${uid}/permissions`,
-                { permissions: permissionPayload },
-                {
-                    headers: {
-                        Authorization: `Bearer ${managementToken}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+            if (changeCount > 1) {
+                return false;
+            }
 
+            await axios.patch(`https://${auth0Domain}/api/v2/users/${uid}`, updateData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
             return true;
         } catch (error) {
-            LogDebug("Failed to update permissions:");
+            LogDebug("Error updating user:");
+            console.log(error);
             return false;
         }
     }
 
-    export async function LOAD(uid: string): Promise<Auth0User | null> {
-        // e.g., 'your-domain.auth0.com'
-
+    export async function LOAD(uid: string): Promise<User | null> {
         try {
             const response = await axios.get<Auth0User>(`https://${auth0Domain}/api/v2/users/${uid}`, {
                 headers: {
-                    Authorization: `Bearer ${managementToken}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
-            return response.data;
+
+            const data = response.data;
+            console.log(data);
+            const user = new User(
+                data.user_id,
+                data.email,
+                data.user_metadata.permission,
+                data.user_metadata.role,
+                data.username
+            );
+            return user;
         } catch (error) {
             LogDebug("Error fetching user info from Auth0:");
+            console.log(error);
             return null;
         }
     }

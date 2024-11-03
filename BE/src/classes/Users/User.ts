@@ -1,12 +1,12 @@
 import { Auth0_Database } from "../../Providers/Auth0/Auth0_DB";
-import { UDS } from "./UDS_Permissions/subdir.const";
-import { PermissionStringToUDS } from "./UDS_Permissions/subdir.utils";
-import { Role, UNKNOWN_ROLE } from "./Roles/subdir.const";
+import { UDS } from "./subdir.const";
+import { PermissionStringToUDS } from "./subdir.utils";
+import { Role } from "./subdir.const";
 
 export class User {
     protected readonly uid: string;
     protected readonly email: string;
-    protected username?: string = undefined;
+    protected username: string;
     protected UDS: UDS;
     protected role: Role;
 
@@ -14,8 +14,8 @@ export class User {
         uid: string,
         email: string,
         permissions: string,
-        role: Role = UNKNOWN_ROLE,
-        username?: string
+        role: Role = Role.Unknown,
+        username: string
     ) {
         this.uid = uid;
         this.email = email;

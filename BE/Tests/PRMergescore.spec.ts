@@ -4,7 +4,7 @@ import { SendRequestToGQL } from "../src/Providers/ModEval/GQL_Queries/Requests/
 import { beforeEach, describe, it, expect, jest, afterEach } from "@jest/globals";
 import { RepoID } from "../src/Providers/ModEval/RepoComponents/ID/RepoID";
 import { RepoURL } from "../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
-import { NullableArray } from "../src/classes/Essential_Interfaces/NullableArray";
+import { NullableArray } from "../src/Classes/Essential_Interfaces/NullableArray";
 
 // jest.mock("../src/Providers/ModEval/GQL_Queries/Requests/GQLRequests");
 

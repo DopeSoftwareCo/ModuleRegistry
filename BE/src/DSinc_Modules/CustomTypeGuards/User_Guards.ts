@@ -1,7 +1,7 @@
-import { Admin } from "../../classes/Users/Admin";
-import { Role, RoleCategory } from "../../classes/Users/Roles/subdir.const";
-import { UDS } from "../../classes/Users/UDS_Permissions/subdir.const";
-import { User } from "../../classes/Users/User";
+import { Admin } from "../../Classes/Users/Admin";
+import { Role, RoleCategory } from "../../Classes/Users/UserRole";
+import { UDS } from "../../Classes/Users/subdir.const";
+import { User } from "../../Classes/Users/User";
 import { SkeletonIsType } from "./ModEval_Guards";
 
 export function IsType_User(value: any): value is User {

@@ -1,7 +1,7 @@
 import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
 import { RepoURL, I_URLProcessor } from "./URLProcessor.interface";
-import { NullableArray } from "../../../../classes/Essential_Interfaces/NullableArray";
+import { NullableArray } from "../../../../Classes/Essential_Interfaces/NullableArray";
 
 export class URLProcessor {
     private created?: Array<RepoURL>;

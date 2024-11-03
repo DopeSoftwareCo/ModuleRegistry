@@ -1,11 +1,10 @@
 import { User } from "./User";
 import { Auth0_Database, RegistrationInfo } from "../../Providers/Auth0/Auth0_DB";
-import { ADMIN_ROLE } from "./Roles/subdir.const";
-import { Role } from "./Roles/subdir.const";
+import { Role } from "./subdir.const";
 
 export class Admin extends User {
-    constructor(uid: string, email: string, username: string | undefined) {
-        super(uid, email, "111", ADMIN_ROLE, username);
+    constructor(uid: string, email: string, username: string) {
+        super(uid, email, "111", Role.Admin, username);
     }
 
     async DeleteOtherUser(uid: string): Promise<boolean> {
@@ -17,27 +16,25 @@ export class Admin extends User {
         password: string,
         permission: string,
         role: Role,
-        username?: string
+        username: string
     ): Promise<User | undefined> {
         const info: RegistrationInfo = {
             email: email,
             password: password,
             permission: permission,
-            roleString: role.stringFormat,
-            connection: "",
+            roleNum: role,
             username: username,
         };
         const uid = await Auth0_Database.INSERT(info);
         return uid ? new User(uid, email, permission, role, username) : undefined;
     }
 
-    async Register_Admin(email: string, password: string, username?: string): Promise<Admin | undefined> {
+    async Register_Admin(email: string, password: string, username: string): Promise<Admin | undefined> {
         const info: RegistrationInfo = {
             email: email,
             password: password,
             permission: "111",
-            roleString: ADMIN_ROLE.stringFormat,
-            connection: "", // Auth0 connection name, like 'Username-Password-Authentication'
+            roleNum: Role.Admin,
             username: username, // Optional: Only if needed
         };
 

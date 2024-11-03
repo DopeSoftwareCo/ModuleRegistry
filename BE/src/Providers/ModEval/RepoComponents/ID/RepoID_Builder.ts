@@ -1,6 +1,6 @@
 import { RepoURL } from "../URL/URLProcessor.interface";
 import { URLProcessor } from "../URL/URLProcessor";
-import { AsyncBuilder } from "../../../../classes/Abstract/Abstract_Builders";
+import { AsyncBuilder } from "../../../../Classes/Abstract/Abstract_Builders";
 import { IsType_RepoURL } from "../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
 import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { RepoID } from "./RepoID";
