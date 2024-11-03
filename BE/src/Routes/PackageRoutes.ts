@@ -22,6 +22,7 @@ import { verifyToken } from "../Middleware/Auth";
 import { appendMongoDBid } from "../Middleware/MongoDB";
 import { DeleteByIDRules } from "../Validation/PackageValidationRules/DeleteByIDRules";
 import { GetRatingByIdRules } from "../Validation/PackageValidationRules/GetRatingByIDRules";
+import { UpdatePackageRules } from "../Validation/PackageValidationRules/UpdateRules";
 
 export const PackageRouter = Router();
 
@@ -40,7 +41,7 @@ PackageRouter.get(
 PackageRouter.put(
     "/:id",
     verifyToken,
-    GeneralViaIDRuleset,
+    UpdatePackageRules,
     validateRequest,
     appendMongoDBid,
     UpdatePackageViaIDController

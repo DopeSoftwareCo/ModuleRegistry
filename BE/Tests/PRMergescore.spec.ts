@@ -9,7 +9,6 @@ jest.mock("../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface", 
         url: "https://github.com/owner/repo",
     })),
 }));
-import { RepoURL } from "../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
 
 jest.mock("../src/Providers/ModEval/GQL_Queries/Requests/GQLRequests");
 
