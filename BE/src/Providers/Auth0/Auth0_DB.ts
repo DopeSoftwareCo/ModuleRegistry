@@ -39,6 +39,18 @@ interface Auth0User {
     // Add any other fields you may need
 }
 
+interface UserBeingUpdated {
+    user_id?: string;
+    name?: string;
+    email?: string;
+    username?: string;
+    user_metadata: {
+        permission?: string;
+        role?: number;
+    };
+    password?: string;
+}
+
 export namespace Auth0_Database {
     export async function INSERT(info: RegistrationInfo): Promise<string | undefined> {
         if (!token || !auth0Domain) {
@@ -101,7 +113,7 @@ export namespace Auth0_Database {
         }
 
         try {
-            const updateData: any = {};
+            const updateData: UserBeingUpdated = { user_metadata: {} };
             let changeCount = 0;
             // Only include properties that have been provided
             if (changes.username) {
@@ -113,15 +125,18 @@ export namespace Auth0_Database {
                 ++changeCount;
             }
             if (changes.permission) {
-                updateData.permission = changes.permission;
+                updateData.user_metadata.permission = changes.permission;
                 ++changeCount;
             }
             if (changes.role) {
-                updateData.role = changes.role;
+                updateData.user_metadata.role = changes.role;
                 ++changeCount;
             }
 
-            if (changeCount > 1) {
+            // Im not wasting everyone's time to send your request to the API unless
+            // you have requested AT LEAST 1 change
+            if (changeCount < 1) {
+                LogDebug("No changes to make!");
                 return false;
             }
 
@@ -131,6 +146,7 @@ export namespace Auth0_Database {
                     "Content-Type": "application/json",
                 },
             });
+
             return true;
         } catch (error) {
             LogDebug("Error updating user:");
