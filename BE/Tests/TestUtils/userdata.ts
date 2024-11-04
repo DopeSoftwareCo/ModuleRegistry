@@ -39,3 +39,12 @@ const tim: RegistrationInfo = {
     username: "TCarp",
 };
 const info = [jorge, dorian, johnny];
+
+const DEFAULT_UID: string = "z";
+export const default_user: RegistrationInfo = {
+    email: "default@DSinc.com",
+    password: "correcthorsebatterystaple123(!__+@**(A;DROP TABLE packages",
+    permission: "111",
+    roleNum: Role.Admin,
+    username: "ece30861defaultadminuser",
+};
