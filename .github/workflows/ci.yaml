@@ -1,13 +1,13 @@
-name: CI Tests
+name: CI Workflow
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
   pull_request:
-    branches: [ dev ]
+    branches: [ main ]
 
 jobs:
-  test:
+  check-updates:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,16 +17,19 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '16'  # Specify your Node.js version here
 
-    - name: Install dependencies -- BE
-      run: npm ci
-      working-directory: ./BE
+    - name: Install dependencies
+      run: npm install --no-audit --prefer-offline
+      working-directory: ./BE  # Adjust path if necessary
 
-    - name: Install dependencies -- FE
-      run: npm ci
-      working-directory: ./FE
+    - name: Npm check updates
+      uses: Fzwael/ncu-action@v1.4.0
+      with:
+        ncu-options: --upgrade --semverLevel minor  # Adjust options as needed
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for ncu-action to create PRs
 
     - name: Run Jest tests
       run: npm test
-      working-directory: ./BE
+      working-directory: ./BE  # Adjust path if necessary
