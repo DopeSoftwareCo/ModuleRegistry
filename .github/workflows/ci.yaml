@@ -21,12 +21,12 @@ jobs:
 
     - name: Install dependencies on BE
       run: npm ci  # Using npm ci for faster, consistent installs
-      working-directory: ./ModuleRegistry/BE
+      working-directory: ./BE
 
     - name: Install dependencies on FE
       run: npm ci  # Using npm ci for faster, consistent installs
-      working-directory: ./ModuleRegistry/FE
+      working-directory: ./FE
     
     - name: Run Jest tests
       run: npm test
-      working-directory: ./ModuleRegistry/BE
+      working-directory: ./BE
