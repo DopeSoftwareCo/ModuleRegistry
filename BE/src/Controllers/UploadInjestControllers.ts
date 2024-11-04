@@ -34,6 +34,7 @@ export const UploadInjestController = asyncHandler(
         }
         else {
             fs.rmSync(tempDirectory, { recursive: true, force: true})
+            fs.mkdirSync(tempDirectory);
         }
 
         let responseMessage: UploadInjestResponseMessages;
