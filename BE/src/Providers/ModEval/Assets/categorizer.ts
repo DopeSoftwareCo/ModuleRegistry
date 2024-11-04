@@ -3,7 +3,7 @@
  * This module categorizes modules
  * @author DSinc
  */
-import { Repository } from "../_Old_Assets/Primero/MVP/src/Types/DataTypes";
+import { Repository } from "../RepoComponents/Repository";
 
 /**
  * @author Jorge Puga Hernandez
@@ -18,9 +18,9 @@ import { Repository } from "../_Old_Assets/Primero/MVP/src/Types/DataTypes";
  * @param repos - An array of repositories to categorize. {@type Repository<T>[]}
  *
  */
-export const CategorizeModules = <T>(repos: Repository<T>[]) => {
-    let compatibleModules: Repository<T>[] = [];
-    let incompatibleModules: Repository<T>[] = [];
+export const CategorizeModules = <T>(repos: Repository[]) => {
+    let compatibleModules: Repository[] = [];
+    let incompatibleModules: Repository[] = [];
 
     repos.forEach((repo) => {
         if (repo.NDJSONRow.NetScore != undefined && repo.NDJSONRow.NetScore > 0.6) {
@@ -46,7 +46,7 @@ export const CategorizeModules = <T>(repos: Repository<T>[]) => {
  * @template T - The type of data stored in each repository.
  * @param compatibleModules - An array of compatible repos. {@type Repository<T>[]}
  */
-const PrintCompatibleModules = <T>(compatibleModules: Repository<T>[]) => {
+const PrintCompatibleModules = <T>(compatibleModules: Repository[]) => {
     if (compatibleModules.length === 0) {
         console.log("\nNo compatible modules found!");
     } else {
@@ -65,7 +65,7 @@ const PrintCompatibleModules = <T>(compatibleModules: Repository<T>[]) => {
  * @template T - The type of data stored in each repository.
  * @param compatibleModules - An array of incompatible repos. {@type Repository<T>[]}
  */
-const PrintIncompatibleModules = <T>(incompatibleModules: Repository<T>[]) => {
+const PrintIncompatibleModules = <T>(incompatibleModules: Repository[]) => {
     if (incompatibleModules.length === 0) {
         console.log("\nNo incompatible modules found!");
     } else {

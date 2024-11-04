@@ -1,4 +1,4 @@
-import { fetchRepoDetails } from "../API-Calls/github-adapter";
+import { fetchRepoDetails } from "../api-calls/github-adapter";
 
 /**
  * Calculate Ramp-Up score for the repository based on several factors.

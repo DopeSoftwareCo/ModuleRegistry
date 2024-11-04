@@ -4,7 +4,7 @@ import { calculateBusFactor } from "../Assets/ScoringFunctions/bus-factor";
 import { calculateResponsiveMaintener } from "../Assets/ScoringFunctions/find-responsive-maintainer";
 import { fetchRepoLicense } from "../Assets/ScoringFunctions/github-wrapper";
 import { Repository } from "../RepoComponents/Repository";
-import { fetchContributors } from "../Assets/API-Calls/github-adapter";
+import { fetchContributors } from "../Assets/api-calls/github-adapter";
 
 const CONTRIBUTION_THRESHOLD = 50;
 

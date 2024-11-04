@@ -1,4 +1,4 @@
-import { commitHistory, repoIssues, repoPullRequests } from "../API-Calls/github-adapter";
+import { commitHistory, repoIssues, repoPullRequests } from "../api-calls/github-adapter";
 
 /**
  * Calculates the responsiveness score of a repository maintainer based on various factors like
