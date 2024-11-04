@@ -48,7 +48,7 @@ export const GetPackagesFromRegistryController = asyncHandler(
             responseMessage = "Too many packages returned.";
             res.status(413).send(responseMessage);
         }
-
+        /*
         requestedPackages.forEach((requestedPackage) => {
             // Checks if exists
             PackageModel.findOne({ metadata: {name: requestedPackage.Name}})
@@ -62,6 +62,12 @@ export const GetPackagesFromRegistryController = asyncHandler(
                     }
                 })
         });
+        */
+        const queryConditions = requestedPackages.map((requestedPackageInfo) => ({
+            "metadata.Name": requestedPackageInfo.Name,
+            "metadata.Version": requestedPackageInfo.Version,
+        }));
+        const results = await PackageModel.find({ $or: queryConditions });
         res.status(200).json(responseBody); // Correct Code
 });
 // /package/{id}
