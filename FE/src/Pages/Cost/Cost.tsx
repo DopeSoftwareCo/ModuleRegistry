@@ -56,19 +56,19 @@ const Cost = () => {
             />
             <StyledBaseKeyValuePairsContainer>
             {costData && (
-        <>
-            <StyledBaseKeyValueRow>
-                <CostLabel data-testid="standalone-cost">Standalone Cost</CostLabel>
-                <CostValue>{costData.standaloneCost} MB</CostValue>
-            </StyledBaseKeyValueRow>
-            {includeDependencies && (
-                <StyledBaseKeyValueRow>
-                    <CostLabel data-testid="total-cost">Total Cost</CostLabel>
-                    <CostValue>{costData.totalCost} MB</CostValue>
-                </StyledBaseKeyValueRow>
+                <>
+                    <StyledBaseKeyValueRow>
+                        <CostLabel data-testid="standalone-cost">Standalone Cost</CostLabel>
+                        <CostValue>{costData.standaloneCost} MB</CostValue>
+                    </StyledBaseKeyValueRow>
+                    {includeDependencies && (
+                        <StyledBaseKeyValueRow>
+                            <CostLabel data-testid="total-cost">Total Cost</CostLabel>
+                            <CostValue>{costData.totalCost} MB</CostValue>
+                        </StyledBaseKeyValueRow>
+                    )}
+                </>
             )}
-        </>
-    )}
             </StyledBaseKeyValuePairsContainer>
         </StyledBasePageContiner>
     );
