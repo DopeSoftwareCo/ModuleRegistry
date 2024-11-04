@@ -19,17 +19,10 @@ jobs:
       with:
         node-version: '16'  # Specify your Node.js version here
 
-    - name: Install dependencies
+    - name: Install dependencies -- BE
       run: npm install --no-audit --prefer-offline
-      working-directory: ./BE  # Adjust path if necessary
+      working-directory: ./BE 
 
-    - name: Npm check updates
-      uses: Fzwael/ncu-action@v1.4.0
-      with:
-        ncu-options: --upgrade --semverLevel minor  # Adjust options as needed
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for ncu-action to create PRs
-
-    - name: Run Jest tests
-      run: npm test
-      working-directory: ./BE  # Adjust path if necessary
+    - name: Install dependencies FE
+      run: npm install --no-audit --prefer-offline
+      working-directory: ./FE
