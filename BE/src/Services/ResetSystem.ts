@@ -2,7 +2,7 @@ import axios from "axios";
 import { LogDebug } from "../Providers/Utils/Log";
 import { GenerateManagementToken } from "../Middleware/ManagementToken";
 
-const DEFAULT_USER_UID = "abc";
+const DEFAULT_USER_UID = "abc"; // will replace with the default user's uid
 
 export async function GetAllUserIDs() {
     const token = await GenerateManagementToken();
