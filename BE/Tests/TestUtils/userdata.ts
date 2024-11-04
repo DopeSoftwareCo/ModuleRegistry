@@ -11,15 +11,17 @@ const jorge: RegistrationInfo = {
 };
 
 // on-db
+const bellaUID = "auth0|672666803cf3ee6ca06f0783";
 const dorian: RegistrationInfo = {
     email: "DBJ@DSinc.com",
     password: "abc123??",
-    permission: "101",
-    roleNum: Role.Internal,
+    permission: "111",
+    roleNum: Role.Admin,
     username: "PtrPrincess",
 };
 
 // on-db
+const johnnyUID = "auth0|67267770811352d1f3ee80c1";
 const johnny: RegistrationInfo = {
     email: "JLeidy@DSinc.com",
     password: "abc123??",
