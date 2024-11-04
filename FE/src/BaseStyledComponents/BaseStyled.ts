@@ -46,6 +46,7 @@ export const StyledBaseDiv = styled.div`
 
 export const StyledBaseA = styled.a`
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
         background: ${theme.colors.background};
         color: ${theme.colors.text};
     `}

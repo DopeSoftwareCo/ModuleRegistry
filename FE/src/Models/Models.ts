@@ -75,35 +75,77 @@ export type RegexPackagesFromAPI = RegexPackageFromAPI[];
 
 export interface DBPackageFromAPI {
     _id: string;
-    metaData: {
+    Title: string;
+    repoUrl: string;
+    metadata: {
         Name: string;
         Version: string;
+        License: {
+            name: string;
+            spxId: string;
+            url: string;
+        };
+        Uploader: string;
+        IsExternal: boolean;
+        Safety: 'unsafe' | 'unkown' | 'vetted';
+        IsSecret: boolean;
+        Visibility: 'secret' | 'internal' | 'public';
+        Availability: number;
+        PrivelegedGroup: number;
     };
     data: {
         Content: string;
         JSProgram: string;
     };
-    title: string;
-    repoUrl: string;
-    uploader: string;
-    visibility: 'secret' | 'internal' | 'public';
-    isExternal: boolean;
-    safety: 'unsafe' | 'unknown' | 'vetted';
-    secrecyEnabled: boolean;
-    license: string;
-    rampup_score: number;
-    score_correctness: number;
-    score_busFactor: number;
-    score_license: number;
-    score_versionDependence: number;
-    score_mergeRestriction: number;
-    score_pullrequest: number;
-    score_responsiveMaintainer: number;
-    score_goodPinningPractice: number;
-    score_sizeCostTotal: number;
-    score_sizeCostStandalone: number;
-    netscore: number;
-    updatedAt: string;
+    RampupTime: {
+        rampup_score: number;
+        rampup_score_latency: number;
+    };
+    Correctness: {
+        score_correctness: number;
+        score_correctness_latency: number;
+    };
+    BusFactor: {
+        score_busFactor: number;
+        score_busFactor_latency: number;
+    };
+    Responsiveness: {
+        score_responsiveMaintainer: number;
+        score_responsiveMaintainer_latency: number;
+    };
+    LicenseCompatibility: {
+        score_license: number;
+        score_license_latency: number;
+    };
+    VersionDependence: {
+        score_versionDependence: number;
+        score_versionDependence_latency: number;
+    };
+    MergeRestriction: {
+        score_mergeRestriction: number;
+        score_mergeRestriction_latency: number;
+    };
+    IndividualSizeCost: {
+        score_sizeCostStandalone: number;
+        score_sizeCostStandalone_latency: number;
+    };
+    TotalSizeCost: {
+        score_sizeCostTotal: number;
+        score_sizeCostTotal_latency: number;
+    };
+    GoodPinningPractice: {
+        score_goodPinningPractice: number;
+        score_goodPinningPracticeLatency: number;
+    };
+    PullRequest: {
+        score_pullRequest: number;
+        score_pullRequestLatency: number;
+    };
+    FinalRating: {
+        netscore: number;
+        netscore_latency: number;
+    };
+    updatedAt: Date;
 }
 
 export interface DBPackagesFromAPI {

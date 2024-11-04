@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError } from "../classes/CustomError";
+import { CustomError } from "../Classes/CustomError";
 
 /**
  * @author John Leidy

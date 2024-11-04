@@ -2,38 +2,36 @@ import { Repository } from "../Repository";
 import { RepoID } from "../ID/RepoID";
 import { RepoID_Builder } from "../ID/RepoID_Builder";
 import { RepoURL } from "../URL/URLProcessor.interface";
-import { AsyncBuilder } from "../../../../classes/Abstract/Abstract_Builders";
-import { AsyncLooper } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
+import { AsyncBuilder } from "../../../../Classes/Abstract/Abstract_Builders";
+import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { IsType_RepoID, IsType_RepoURL } from "../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
 import { RepoScoreset } from "../Metrics_Scores/RepoScoreset";
 import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Metrics_Scores/Weightspec.const";
 
 export class Repo_Builder extends AsyncBuilder<Repository> {
-    asyncLooper: AsyncLooper;
     idBuilder: RepoID_Builder;
     default_weights: WeightSpecSet;
 
     constructor(weights?: WeightSpecSet, trackCreations: boolean = false) {
         super(trackCreations);
-        this.asyncLooper = new AsyncLooper();
         this.idBuilder = new RepoID_Builder();
         this.default_weights = weights ? weights : DEFAULT_WEIGHTS;
     }
 
     async MultiBuild_ByURL(repoURLs: Array<RepoURL>): Promise<Array<Repository> | undefined> {
         let creations = new Array<Repository>();
-        await this.asyncLooper.DiscardUndefined_StoreForEach<RepoURL, Repository>(
+        await AsyncLoops.DiscardUndefined_StoreForEach<RepoURL, Repository>(
             repoURLs,
             creations,
             this.Build.bind(this),
-            true
+            false
         );
         return creations;
     }
 
     async MultiBuild_ByID(repoIDs: Array<RepoID>): Promise<Array<Repository> | undefined> {
         let creations = Array<Repository>();
-        await this.asyncLooper.DiscardUndefined_StoreForEach<RepoID, Repository>(
+        await AsyncLoops.DiscardUndefined_StoreForEach<RepoID, Repository>(
             repoIDs,
             creations,
             this.Build.bind(this),
@@ -76,8 +74,8 @@ export class Repo_Builder extends AsyncBuilder<Repository> {
         const scores = new RepoScoreset(weightsToUse);
         const creation = new Repository(id, scores);
 
-        await creation.RequestFromGQL();
-        creation.Refresh_NDJSON();
+        //await creation.RequestFromGQL();
+        //creation.Refresh_NDJSON();
         return creation;
     }
 }
