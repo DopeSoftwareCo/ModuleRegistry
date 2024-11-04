@@ -62,6 +62,8 @@ export const UploadInjestController = asyncHandler(
         }
 
         fs.promises.writeFile(tempFile, binaryContent);
+
+        // Unzip and get the packageJson
         const zipStream = unzipper.Parse();
         zipStream.on('entry', async (entry: Entry) => {
             const individualFilePath = path.join(tempUnzippedFileDirectory, entry.path);
@@ -70,6 +72,9 @@ export const UploadInjestController = asyncHandler(
         });
         const packageJsonFile = await fs.promises.readFile(path.join(tempUnzippedFileDirectory, 'package.json'), 'utf-8');
         const packageJson = JSON.parse(packageJsonFile);
+
+        let startingPointJS = packageJson.scripts.start;
+        
 
         if (getRepoURL) {
             repositoryUrl = packageJson.homepage as string;
