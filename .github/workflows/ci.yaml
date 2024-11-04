@@ -19,8 +19,14 @@ jobs:
       with:
         node-version: '16'
 
-    - name: Install dependencies
+    - name: Install dependencies on BE
       run: npm ci  # Using npm ci for faster, consistent installs
+      working-directory: ./ModuleRegistry/BE
 
+    - name: Install dependencies on FE
+      run: npm ci  # Using npm ci for faster, consistent installs
+      working-directory: ./ModuleRegistry/FE
+    
     - name: Run Jest tests
       run: npm test
+      working-directory: ./ModuleRegistry/BE
