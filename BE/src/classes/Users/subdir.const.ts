@@ -23,3 +23,14 @@ export enum Role {
     Internal = 2,
     Admin = 3,
 }
+
+export enum Permission {
+    _000 = 0,
+    _001 = 1,
+    _010 = 2,
+    _011 = 3,
+    _100 = 4,
+    _101 = 5,
+    _110 = 6,
+    _111 = 7,
+}
