@@ -8,18 +8,12 @@ export const ALL_PERMISSIONS = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export type RoleRestriction = [boolean, boolean, boolean, boolean];
 
-export class RestrictedOperation<Input, Output> {
-    op: (input: Input) => Output;
+export class RestrictedOperation {
     roleRestriction: RoleRestriction;
     permissionsAllowed: Permission[];
     limitedByRole: boolean = false;
 
-    constructor(
-        operation: (input: Input) => Output,
-        permissionRequirement: Permission[],
-        roleRestriction?: RoleRestriction
-    ) {
-        this.op = operation;
+    constructor(permissionRequirement: Permission[], roleRestriction?: RoleRestriction) {
         if (!roleRestriction) {
             this.roleRestriction = UNRESTRICTED_BY_ROLE;
         } else {
@@ -38,15 +32,12 @@ export class RestrictedOperation<Input, Output> {
         return this.limitedByRole ? this.roleRestriction[role] : true;
     }
 
-    Execute(input: Input, decodedToken: jsonwebtoken.TokenType): Output | undefined {
+    Execute(decodedToken: jsonwebtoken.TokenType): boolean | undefined {
         const permission = decodedToken.metadata.permission;
         const role = decodedToken.metadata.role;
 
         const proceed: boolean = this.VerifyPermission(permission) && this.VerifyRole(role);
 
-        if (proceed) {
-            return this.op(input);
-        }
-        return undefined;
+        return proceed;
     }
 }
