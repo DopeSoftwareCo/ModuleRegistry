@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { returnProperInvalidResponse } from "./Auth";
-import { RestrictedOperation, RoleRestriction } from "./PrivilegedOperations";
 import { Permission, Role } from "../Classes/Users/subdir.const";
+import { RestrictedOperation } from "../Classes/PrivilegedOperations";
 
 /**
  * @author John Leidy
@@ -9,10 +9,7 @@ import { Permission, Role } from "../Classes/Users/subdir.const";
  * @param requiredRoles
  * @returns the next function in the chain {@type NextFunction}
  */
-export const permRestrictionMiddleware = (
-    requiredPermissions: Permission[],
-    requiredRoles?: RoleRestriction
-) => {
+export const permRestrictionMiddleware = (requiredPermissions: Permission[], requiredRoles?: Role[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         if (process.env.NODE_ENV !== "dev") {
             if (!req.decodedToken) {

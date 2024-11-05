@@ -2,7 +2,6 @@ import { Response, Request, NextFunction } from "express";
 import * as jwt from "express-jwt";
 import JwksRsa from "jwks-rsa";
 import * as jsonwebtoken from "jsonwebtoken";
-import { RestrictedOperation } from "./PrivilegedOperations";
 
 /**
  * @author John Leidy
@@ -28,16 +27,6 @@ export const checkJwt = jwt.expressjwt({
  */
 export const returnProperInvalidResponse = (req: Request, res: Response) => {
     return res.status(403).send("Authentication failed due to invalid or missing AuthenticationToken.");
-};
-
-/**
- * @author John Leidy
- * @param req the request object from express {@type Request}
- */
-export const getPermsBasedOnPath = (req: Request) => {
-    if (req.method === "DELETE" && req.baseUrl.includes("reset")) {
-        RestrictedOperation;
-    }
 };
 
 /**
