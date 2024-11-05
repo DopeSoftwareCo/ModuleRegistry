@@ -33,10 +33,8 @@ export const ResetControllerDANGER = asyncHandler(
         if (unathorized) {
             responseMessage = "You do not have permission to reset the registry.";
             res.status(401).send(responseMessage);
-        } else if (invalidInput) {
-            responseMessage = "Invalid request.";
-            res.status(422).send(responseMessage);
         } else {
+            // This will send a success message EVEN IF bad input is given.
             responseMessage = "Registry is reset.";
             res.status(200).send(responseMessage);
         }

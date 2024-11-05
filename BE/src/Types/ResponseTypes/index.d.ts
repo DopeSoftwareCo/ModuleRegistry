@@ -23,8 +23,7 @@ declare module "ResponseTypes" {
     export type ResetRegistryResponseMessages =
         | "Registry is reset."
         | "Authentication failed due to invalid or missing AuthenticationToken."
-        | "You do not have permission to reset the registry."
-        | "Invalid request.";
+        | "You do not have permission to reset the registry.";
 
     export type ResetRegistryResponseBody = ResetRegistryResponseMessages;
 
