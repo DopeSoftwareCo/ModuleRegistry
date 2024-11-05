@@ -73,7 +73,7 @@ export class User {
         return this.uid;
     }
 
-    get Username(): string | undefined {
+    get Username(): string {
         return this.username;
     }
 }
