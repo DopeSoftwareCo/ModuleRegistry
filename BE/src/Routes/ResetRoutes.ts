@@ -6,8 +6,10 @@
 import { Router } from "express";
 import { ResetControllerDANGER } from "../Controllers/DeleteControllers";
 import { verifyToken } from "../Middleware/Auth";
+import { permRestrictionMiddleware } from "../Middleware/PermRestrictor";
+import { Role } from "../Classes/Users/subdir.const";
 
 export const ResetRouter = Router();
 //**DANGEROUS USE WITH CAUTION**
 // /reset
-ResetRouter.delete("/", verifyToken, ResetControllerDANGER);
+ResetRouter.delete("/", verifyToken, permRestrictionMiddleware([], [Role.Admin]), ResetControllerDANGER);

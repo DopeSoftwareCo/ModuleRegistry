@@ -4,8 +4,6 @@ export type UDS = {
     S: boolean;
 };
 
-export const UDS_CODES: Array<string> = ["000", "001", "010", "011", "100", "101", "110", "111"];
-
 export const UDS_OBJECTS: Array<UDS> = [
     { U: false, D: false, S: false },
     { U: false, D: false, S: true },
@@ -22,4 +20,15 @@ export enum Role {
     External = 1,
     Internal = 2,
     Admin = 3,
+}
+
+export enum Permission {
+    _000 = 0,
+    _001 = 1,
+    _010 = 2,
+    _011 = 3,
+    _100 = 4,
+    _101 = 5,
+    _110 = 6,
+    _111 = 7,
 }

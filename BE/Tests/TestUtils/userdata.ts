@@ -6,7 +6,7 @@ const jorge: RegistrationInfo = {
     email: "JorgePuga@DSinc.com",
     password: "abc123??",
     permission: "111",
-    roleNum: Role.Admin,
+    role: Role.Admin,
     username: "JP2024",
 };
 
@@ -16,7 +16,7 @@ const dorian: RegistrationInfo = {
     email: "DBJ@DSinc.com",
     password: "abc123??",
     permission: "111",
-    roleNum: Role.Admin,
+    role: Role.Admin,
     username: "PtrPrincess",
 };
 
@@ -26,7 +26,7 @@ const johnny: RegistrationInfo = {
     email: "JLeidy@DSinc.com",
     password: "abc123??",
     permission: "110",
-    roleNum: Role.External,
+    role: Role.External,
     username: "J-Leidy",
 };
 
@@ -35,7 +35,16 @@ const tim: RegistrationInfo = {
     email: "TimCarp@idk.com",
     password: "abc123??",
     permission: "111",
-    roleNum: Role.Admin,
+    role: Role.Admin,
     username: "TCarp",
 };
 const info = [jorge, dorian, johnny];
+
+const DEFAULT_UID: string = "z";
+export const default_user: RegistrationInfo = {
+    email: "default@DSinc.com",
+    password: "correcthorsebatterystaple123(!__+@**(A;DROP TABLE packages",
+    permission: "111",
+    role: Role.Admin,
+    username: "ece30861defaultadminuser",
+};

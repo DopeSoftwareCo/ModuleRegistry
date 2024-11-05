@@ -1,25 +1,25 @@
 import { Auth0_Database } from "../../Providers/Auth0/Auth0_DB";
-import { UDS } from "./subdir.const";
-import { PermissionStringToUDS } from "./subdir.utils";
+import { Permission, UDS } from "./subdir.const";
+import { ToUDS, ToPermissionNumber } from "./subdir.utils";
 import { Role } from "./subdir.const";
 
 export class User {
     protected readonly uid: string;
     protected readonly email: string;
     protected username: string;
-    protected UDS: UDS;
+    protected uds: UDS;
     protected role: Role;
 
     constructor(
         uid: string,
         email: string,
-        permissions: string,
-        role: Role = Role.Unknown,
+        permissions: Permission, // This is an enum value
+        role: Role = Role.Unknown, // This is also an enum value
         username: string
     ) {
         this.uid = uid;
         this.email = email;
-        this.UDS = PermissionStringToUDS(permissions);
+        this.uds = ToUDS(permissions);
         this.role = role;
         this.username = username;
     }
@@ -30,7 +30,7 @@ export class User {
 
     Upload(item: any): boolean {
         // Block operation if user lacks upload permission
-        if (!this.UDS.U) {
+        if (!this.uds.U) {
             return false;
         }
 
@@ -40,7 +40,7 @@ export class User {
 
     Downlod(packageID: string): boolean {
         // Block operation if user lacks upload permission
-        if (!this.UDS.D) {
+        if (!this.uds.D) {
             return false;
         }
 
@@ -50,7 +50,7 @@ export class User {
 
     Search(request: string): boolean {
         // Block operation if user lacks upload permission
-        if (!this.UDS.S) {
+        if (!this.uds.S) {
             return false;
         }
 
@@ -58,8 +58,12 @@ export class User {
         return true;
     }
 
-    get Permissions(): UDS {
-        return this.UDS;
+    get UDS(): UDS {
+        return this.uds;
+    }
+
+    get Numeric_Permission(): Permission {
+        return ToPermissionNumber(this.uds);
     }
 
     get Role(): Role {
@@ -73,7 +77,7 @@ export class User {
         return this.uid;
     }
 
-    get Username(): string | undefined {
+    get Username(): string {
         return this.username;
     }
 }

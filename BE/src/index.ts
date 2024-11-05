@@ -15,6 +15,11 @@ import mongoose from "mongoose";
 import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
+import { Permission, Role } from "./Classes/Users/subdir.const";
+import { RestrictedOp } from "./Classes/RestrictedOperations/RestrictedOp";
+import { Auth0_Database, RegistrationInfo } from "./Providers/Auth0/Auth0_DB";
+import { GenerateManagementToken } from "./Middleware/ManagementToken";
+import { Restricted_INSERT, Restricted_UPDATE } from "./Classes/RestrictedOperations/Ops";
 dotenv.config();
 
 const envVarNames = [
@@ -98,7 +103,33 @@ async function RunDemo_ModEval() {
 }
 
 async function Execute() {
+    GenerateManagementToken();
     await runServer();
+
+    //Testing
+    const tester: RegistrationInfo = {
+        email: "TestUser@test.com",
+        password: "abc123??",
+        permission: Permission._100,
+        role: Role.External,
+        username: "TestProfile",
+    };
+
+    const result = await Restricted_INSERT.Execute([tester], Permission._111, 3);
+    const uid = result.returnVal;
+
+    const updateResult = await Restricted_UPDATE.Execute(
+        [uid, { username: "Updated Name" }],
+        Permission._111,
+        Role.Admin
+    );
+
+    if (uid) {
+        console.log("I created your user, so I will now delete them.");
+        Auth0_Database.DELETE(uid);
+    } else {
+        console.log(result);
+    }
 }
 
 Execute();

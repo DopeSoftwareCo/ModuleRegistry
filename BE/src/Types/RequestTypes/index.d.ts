@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { AuthenticationRequestModel, PackageData, PackageMetaData } from "../Models";
+import { Permission, Role } from "../../Classes/Users/subdir.const";
 
 declare module "RequestTypes" {
     export type TestRequestBody = {
@@ -15,6 +16,15 @@ declare module "RequestTypes" {
     export interface GetPackagesRequest extends Request {
         body: GetPackagesData[];
     }
+
+    export interface SystemResetRequest extends Request {
+        body: SystemResetRequestBodyl;
+    }
+
+    export type SystemResetRequestBody = {
+        permission: number;
+        role: number;
+    };
 
     export interface ResetRegistryRequest extends Request {}
 
@@ -67,7 +77,7 @@ declare module "RequestTypes" {
         username: string;
         email: string;
         password: string;
-        permission: string;
+        permission: number;
         role: number;
     };
 
@@ -87,7 +97,7 @@ declare module "RequestTypes" {
         id: string;
         username?: string;
         password?: string;
-        permission?: string;
+        permission?: number;
         role?: number;
     };
 
