@@ -36,7 +36,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     Reset: {
         controller: ResetControllerDANGER,
-        responseCode: 200,
+        responseCode: 401,
         requestType: "POST",
     },
     GetPackageWithID: {

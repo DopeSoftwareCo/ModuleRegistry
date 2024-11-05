@@ -24,9 +24,7 @@ export const ResetControllerDANGER = asyncHandler(
         const role = req.body.role;
 
         const result = await Restricted_ResetSystem.Execute([], perm, role);
-
         const unathorized = result.failedToAuthorize;
-        const invalidInput = result.badInput;
 
         //this type is a union of our return strings
         let responseMessage: ResetRegistryResponseMessages;

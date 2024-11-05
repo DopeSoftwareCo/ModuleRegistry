@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { MongoClient } from "mongodb";
 import { GetAllUserIDs } from "../../Services/ResetSystem";
 import { Token } from "graphql";
@@ -7,13 +9,11 @@ import { RestrictedOp } from "./RestrictedOp";
 import { Permission, Role } from "../Users/subdir.const";
 
 const DEFAULT_UID = "abc";
-const URI =
-    "mongodb+srv://group1-db:SWEgroup1-db-123@clustertest.hddrrdh.mongodb.net/SWEdb?retryWrites=true&w=majority&appName=ClusterTest";
 const MAIN_DB = "SWEdb";
 const MAIN_COLLECTION = "Packages";
 
 // ==================== SYSRESET =====================
-async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirmFullDelete: boolean = false) {
+export async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirmFullDelete: boolean = false) {
     // Retrieve all user IDs
     const userIDs = await GetAllUserIDs();
 
@@ -37,7 +37,7 @@ async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirmFullDel
     }
 }
 
-async function ClearAllPackages(uri: string, databaseName: string, collectionName: string) {
+export async function ClearAllPackages(uri: string, databaseName: string, collectionName: string) {
     const client = new MongoClient(uri);
 
     try {
@@ -62,8 +62,16 @@ async function ClearAllPackages(uri: string, databaseName: string, collectionNam
 }
 
 async function RestrictWrapped_ResetSystem(args: any[]) {
-    await DeleteAllUsers();
-    await ClearAllPackages(URI, MAIN_DB, MAIN_COLLECTION);
+    if (!process.env.MONGODB_URL) {
+        throw new Error("Missing env variable MONGO_URL");
+    }
+
+    try {
+        await DeleteAllUsers();
+        await ClearAllPackages(process.env.MONGODB_URL, MAIN_DB, MAIN_COLLECTION);
+    } catch (error) {
+        throw error;
+    }
 }
 
 export const Restricted_ResetSystem = new RestrictedOp<void>(
