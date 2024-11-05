@@ -5,15 +5,7 @@ import { SubscoreCalculator } from "./RepoComponents/Metrics_Scores/ScoreCalcula
 import { WeightSpec, FindWeightSpecByReceiver } from "./RepoComponents/Metrics_Scores/WeightSpec";
 import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./RepoComponents/Metrics_Scores/Weightspec.const";
 import { AsyncLoops, TryIndexOrDefaultTo } from "../../DSinc_Modules/DSinc_LoopsMaps";
-import {
-    RampUp_Scorer,
-    Correctness_Scorer,
-    BusFactor_Scorer,
-    Responsiveness_Scorer,
-    LicenseCompatibility_Scorer,
-    VersionDependence_Scorer,
-    MergeRestriction_Scorer,
-} from "./Functions/DSincScorers";
+import { VersionDependence_Scorer, MergeRestriction_Scorer } from "./Functions/DSincScorers";
 
 import {
     RAMPUP_WEIGHT_DEFAULT,
