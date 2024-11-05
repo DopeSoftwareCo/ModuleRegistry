@@ -15,8 +15,10 @@ import mongoose from "mongoose";
 import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
-import { Mock_ResetSstemToDefaults } from "./Services/ResetSystem";
 import { Permission, Role } from "./Classes/Users/subdir.const";
+import { RestrictedOp } from "./Classes/RestrictedOp";
+import { Auth0_Database, RegistrationInfo } from "./Providers/Auth0/Auth0_DB";
+import { GenerateManagementToken } from "./Middleware/ManagementToken";
 dotenv.config();
 
 const envVarNames = [
@@ -99,9 +101,46 @@ async function RunDemo_ModEval() {
     await RunEvalSubsystemDemo(2);
 }
 
+const EMPTY_REGISTRATION: RegistrationInfo = {
+    email: "",
+    password: "",
+    permission: "",
+    roleNum: 0,
+    username: "",
+};
+
+export const InsertUser = new RestrictedOp<string | undefined>(
+    [EMPTY_REGISTRATION],
+    Restricted_UserInsert,
+    [Permission._111],
+    [Role.Admin]
+);
+
+async function Restricted_UserInsert(args: any[]): Promise<string | undefined> {
+    const info: RegistrationInfo = args[0];
+    return await Auth0_Database.INSERT(info);
+}
+
 async function Execute() {
+    GenerateManagementToken();
     await runServer();
-    //await Mock_ResetSstemToDefaults.Execute(undefined, Permission._000, Role.Internal);
+
+    //Testing
+    const tester: RegistrationInfo = {
+        email: "TestUser@test.com",
+        password: "abc123??",
+        permission: "100",
+        roleNum: Role.External,
+        username: "TestProfile",
+    };
+
+    const result = await InsertUser.Execute([tester], Permission._111, 3);
+    if (result.returnVal) {
+        console.log("I created your user, so I will now delete them.");
+        Auth0_Database.DELETE(result.returnVal);
+    } else {
+        console.log(result);
+    }
 }
 
 Execute();

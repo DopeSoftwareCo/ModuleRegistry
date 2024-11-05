@@ -55,14 +55,10 @@ async function ResetSystem() {
     await DeleteAllUsers();
 }
 
-export const ResetSystemToDefaults = new RestrictedOperation<undefined, void>(
-    ResetSystem,
-    [Permission._111],
-    [Role.Admin]
-);
+interface RestrictedOp_Input {
+    args: any[];
+}
 
-export const Mock_ResetSstemToDefaults = new Mock_RestrictedOperation<void, void>(
-    ResetSystem,
-    [Permission._111],
-    [Role.Admin]
-);
+interface RestrictedOp_Output<T> {
+    returnVal: T;
+}
