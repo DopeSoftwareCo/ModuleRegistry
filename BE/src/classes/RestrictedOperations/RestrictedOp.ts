@@ -1,9 +1,9 @@
 import { Permission, Role } from "../Users/subdir.const";
 
-const ALL_ROLES: Role[] = [0, 1, 2, 3];
+export const ALL_ROLES: Role[] = [0, 1, 2, 3];
 export const ALL_PERMISSIONS: Permission[] = [0, 1, 2, 3, 4, 5, 6, 7];
 
-interface Restricted_Return<T> {
+export interface Restricted_Return<T> {
     returnVal: T | undefined;
     failedToAuthorize: boolean;
     badInput: boolean;
@@ -56,13 +56,16 @@ export class RestrictedOp<Output> {
     }
 
     GuardInput(input: any[]): boolean {
-        let i = 0;
-        this.exampleInput.forEach((arg) => {
-            if (typeof arg !== typeof input[i]) {
-                return false;
+        const size = this.exampleInput.length;
+        let match = true;
+        for (let i = 0; i < size; i++) {
+            if (typeof this.exampleInput[i] !== typeof input[i]) {
+                match = false;
+                break;
             }
-        });
-        return true;
+        }
+        console.log(match);
+        return match;
     }
 
     async Execute(input: any[], permission: Permission, role: Role): Promise<Restricted_Return<Output>> {
