@@ -71,7 +71,7 @@
         // "allowSyntheticDefaultImports": true,             /* Allow 'import x from y' when a module doesn't have a default export. */
         "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
         // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
-        "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+        "forceConsistentCasingInFileNames": false /* Ensure that casing is correct in imports. */,
         /* Type Checking */
         "strict": true /* Enable all strict type-checking options. */,
         "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
@@ -108,7 +108,8 @@
         "tests/**/*.ts",
         "src/Providers/ModEval/GQL_Queries/Fields/Field_ResponseTypes",
         "src/Providers/ModEval/GQL_Queries/Reponse",
-        "src/Classes/Essential_Interfaces"
+        "src/Classes/Essential_Interfaces",
+        "dist/TestUtils/ModEvalSubscores.spec.ts"
     ],
     "exclude": ["node_modules"]
 }

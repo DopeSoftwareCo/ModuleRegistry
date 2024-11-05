@@ -1,4 +1,9 @@
-import { DeleteAllVersionsByNameRequest, DeletePackageByIDRequest, ResetRegistryRequest } from "RequestTypes";
+import {
+    DeleteAllVersionsByNameRequest,
+    DeletePackageByIDRequest,
+    ResetRegistryRequest,
+    SystemResetRequest,
+} from "RequestTypes";
 import asyncHandler from "../Middleware/asyncHandler";
 import {
     DeletePackageByNameResponse,
@@ -9,24 +14,27 @@ import {
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
+import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/ResetSystem";
+import { UnathorizedCall } from "../Classes/RestrictedOperations/RestrictedOp";
 // /reset
+
 export const ResetControllerDANGER = asyncHandler(
-    async (req: ResetRegistryRequest, res: ResetRegistryResponse, next: NextFunction) => {
-        //must verify the user can actually reset everything
-        //your code here
+    async (req: SystemResetRequest, res: ResetRegistryResponse, next: NextFunction) => {
+        const perm = req.body.permission;
+        const role = req.body.role;
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        const result = await Restricted_ResetSystem.Execute([], perm, role);
+        const unathorized = result.failedToAuthorize;
 
-        //will need something that signifies a user does not have permission
-        const noPerms = false;
         //this type is a union of our return strings
         let responseMessage: ResetRegistryResponseMessages;
-        if (!noPerms) {
-            responseMessage = "Registry is reset.";
-            res.status(200).send(responseMessage);
-        } else {
+        if (unathorized) {
             responseMessage = "You do not have permission to reset the registry.";
             res.status(401).send(responseMessage);
+        } else {
+            // This will send a success message EVEN IF bad input is given.
+            responseMessage = "Registry is reset.";
+            res.status(200).send(responseMessage);
         }
     }
 );

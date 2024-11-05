@@ -18,6 +18,7 @@ import { GetTracksController } from "../src/Controllers/TracksController";
 import { deleteUserController, updateUserController } from "../src/Controllers/UserControllers";
 import { setFakeToken } from "../src/Middleware/ManagementToken";
 
+setFakeToken();
 // Mock the PackageModel
 jest.mock("../src/Schemas/Package");
 
@@ -35,7 +36,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     Reset: {
         controller: ResetControllerDANGER,
-        responseCode: 200,
+        responseCode: 401,
         requestType: "POST",
     },
     GetPackageWithID: {
