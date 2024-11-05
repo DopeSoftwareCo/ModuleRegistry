@@ -32,10 +32,6 @@ export class RestrictedOperation {
     Execute(decodedToken: jsonwebtoken.TokenType): boolean | undefined {
         const permission = decodedToken.metadata.permission;
         const role = decodedToken.metadata.role;
-        console.log("ROLE", role);
-        console.log(typeof permission);
-        console.log(this.VerifyPermission(permission));
-        console.log(this.VerifyRole(role));
         const proceed: boolean = this.VerifyPermission(permission) && this.VerifyRole(role);
 
         return proceed;
