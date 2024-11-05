@@ -1,17 +1,24 @@
-import { Role, UDS } from "./Users/subdir.const";
-import * as jsonwebtoken from "jsonwebtoken";
-import { Permission } from "./Users/subdir.const";
+import { Permission, Role } from "../Users/subdir.const";
 
 const ALL_ROLES: Role[] = [0, 1, 2, 3];
 export const ALL_PERMISSIONS: Permission[] = [0, 1, 2, 3, 4, 5, 6, 7];
 
 interface Restricted_Return<T> {
     returnVal: T | undefined;
+    failedToAuthorize: boolean;
     badInput: boolean;
 }
 
-const BadCallToRestricted: Restricted_Return<any> = { returnVal: undefined, badInput: true };
-const UnathorizedCall: Restricted_Return<any> = { returnVal: undefined, badInput: false };
+export const BadCallToRestricted: Restricted_Return<any> = {
+    returnVal: undefined,
+    failedToAuthorize: false,
+    badInput: true,
+};
+export const UnathorizedCall: Restricted_Return<any> = {
+    returnVal: undefined,
+    failedToAuthorize: true,
+    badInput: false,
+};
 
 export class RestrictedOp<Output> {
     exampleInput: any[];
@@ -28,6 +35,7 @@ export class RestrictedOp<Output> {
         roleRestriction?: Role[]
     ) {
         this.exampleInput = exampleInput;
+        this.voidInput = exampleInput.length == 0;
         this.op = operation;
         if (!roleRestriction) {
             this.roleRestriction = ALL_ROLES;
@@ -63,7 +71,7 @@ export class RestrictedOp<Output> {
             return UnathorizedCall;
         }
 
-        const goodInput = this.GuardInput(input);
+        const goodInput = this.voidInput ? true : this.GuardInput(input);
         if (!goodInput) {
             return BadCallToRestricted;
         }
@@ -71,7 +79,7 @@ export class RestrictedOp<Output> {
         // Now we have authorization and valid input!
         try {
             const returnVal = await this.op(input);
-            return { returnVal: returnVal, badInput: false };
+            return { returnVal: returnVal, failedToAuthorize: false, badInput: false };
         } catch (error) {
             return BadCallToRestricted;
         }

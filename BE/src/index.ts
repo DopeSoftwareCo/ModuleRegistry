@@ -16,9 +16,10 @@ import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { Permission, Role } from "./Classes/Users/subdir.const";
-import { RestrictedOp } from "./Classes/RestrictedOp";
+import { RestrictedOp } from "./Classes/RestrictedOperations/RestrictedOp";
 import { Auth0_Database, RegistrationInfo } from "./Providers/Auth0/Auth0_DB";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
+import { Restricted_INSERT, Restricted_UPDATE } from "./Classes/RestrictedOperations/Ops";
 dotenv.config();
 
 const envVarNames = [
@@ -101,26 +102,6 @@ async function RunDemo_ModEval() {
     await RunEvalSubsystemDemo(2);
 }
 
-const EMPTY_REGISTRATION: RegistrationInfo = {
-    email: "",
-    password: "",
-    permission: "",
-    roleNum: 0,
-    username: "",
-};
-
-export const InsertUser = new RestrictedOp<string | undefined>(
-    [EMPTY_REGISTRATION],
-    Restricted_UserInsert,
-    [Permission._111],
-    [Role.Admin]
-);
-
-async function Restricted_UserInsert(args: any[]): Promise<string | undefined> {
-    const info: RegistrationInfo = args[0];
-    return await Auth0_Database.INSERT(info);
-}
-
 async function Execute() {
     GenerateManagementToken();
     await runServer();
@@ -129,15 +110,23 @@ async function Execute() {
     const tester: RegistrationInfo = {
         email: "TestUser@test.com",
         password: "abc123??",
-        permission: "100",
-        roleNum: Role.External,
+        permission: Permission._100,
+        role: Role.External,
         username: "TestProfile",
     };
 
-    const result = await InsertUser.Execute([tester], Permission._111, 3);
-    if (result.returnVal) {
+    const result = await Restricted_INSERT.Execute([tester], Permission._111, 3);
+    const uid = result.returnVal;
+
+    const updateResult = await Restricted_UPDATE.Execute(
+        [uid, { username: "Updated Name" }],
+        Permission._111,
+        Role.Admin
+    );
+
+    if (uid) {
         console.log("I created your user, so I will now delete them.");
-        Auth0_Database.DELETE(result.returnVal);
+        Auth0_Database.DELETE(uid);
     } else {
         console.log(result);
     }

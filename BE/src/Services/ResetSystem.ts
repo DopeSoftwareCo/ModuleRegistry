@@ -54,11 +54,3 @@ async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirmFullDel
 async function ResetSystem() {
     await DeleteAllUsers();
 }
-
-interface RestrictedOp_Input {
-    args: any[];
-}
-
-interface RestrictedOp_Output<T> {
-    returnVal: T;
-}

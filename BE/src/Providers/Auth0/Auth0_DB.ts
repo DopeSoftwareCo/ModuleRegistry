@@ -4,22 +4,24 @@ dotenv.config();
 import axios from "axios";
 import { LogDebug } from "../Utils/Log";
 import { User } from "../../Classes/Users/User";
+import { Admin } from "../../Classes/Users/Admin";
 import { token } from "../../Middleware/ManagementToken";
+import { Permission, Role } from "../../Classes/Users/subdir.const";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 
 export interface RegistrationInfo {
     email: string;
     password: string;
-    permission: string;
-    roleNum: number; // Auth0 connection name, like 'Username-Password-Authentication'
-    username: string; // Optional: Only if needed
+    permission: Permission;
+    role: Role;
+    username: string;
 }
 
 export interface RequestForUserChanges {
     username?: string;
     password?: string;
-    permission?: string;
+    permission?: number;
     role?: number;
 }
 
@@ -29,23 +31,21 @@ interface Auth0User {
     email: string;
     username: string;
     user_metadata: {
-        permission: string;
+        permission: number;
         role: number;
     };
-    //permissions: string[];
     created_at?: string;
     last_login?: string;
     logins_count?: number;
-    // Add any other fields you may need
 }
 
-interface UserBeingUpdated {
+interface UpdateUserRequest {
     user_id?: string;
     name?: string;
     email?: string;
     username?: string;
     user_metadata: {
-        permission?: string;
+        permission?: number;
         role?: number;
     };
     password?: string;
@@ -67,7 +67,7 @@ export namespace Auth0_Database {
                     connection: "Username-Password-Authentication",
                     user_metadata: {
                         permission: info.permission,
-                        role: info.roleNum,
+                        role: info.role,
                     },
                     //permissions: info.permission,
                     username: info.username, // Optional
@@ -113,7 +113,7 @@ export namespace Auth0_Database {
         }
 
         try {
-            const updateData: UserBeingUpdated = { user_metadata: {} };
+            const updateData: UpdateUserRequest = { user_metadata: {} };
             let changeCount = 0;
             // Only include properties that have been provided
             if (changes.username) {
