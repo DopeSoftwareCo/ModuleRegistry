@@ -14,7 +14,7 @@ import {
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/Ops";
+import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/ResetSystem";
 import { UnathorizedCall } from "../Classes/RestrictedOperations/RestrictedOp";
 // /reset
 
