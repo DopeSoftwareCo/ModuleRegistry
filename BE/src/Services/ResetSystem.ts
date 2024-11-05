@@ -1,6 +1,9 @@
 import axios from "axios";
 import { LogDebug } from "../Providers/Utils/Log";
 import { GenerateManagementToken } from "../Middleware/ManagementToken";
+import { Mock_RestrictedOperation, RestrictedOperation } from "../Classes/PrivilegedOperations";
+import { Permission, Role } from "../Classes/Users/subdir.const";
+import { Admin } from "../Classes/Users/Admin";
 
 const DEFAULT_USER_UID = "abc"; // will replace with the default user's uid
 
@@ -48,6 +51,18 @@ async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirmFullDel
     }
 }
 
-export async function ResetSystem() {
+async function ResetSystem() {
     await DeleteAllUsers();
 }
+
+export const ResetSystemToDefaults = new RestrictedOperation<undefined, void>(
+    ResetSystem,
+    [Permission._111],
+    [Role.Admin]
+);
+
+export const Mock_ResetSstemToDefaults = new Mock_RestrictedOperation<void, void>(
+    ResetSystem,
+    [Permission._111],
+    [Role.Admin]
+);

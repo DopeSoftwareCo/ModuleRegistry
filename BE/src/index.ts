@@ -15,6 +15,8 @@ import mongoose from "mongoose";
 import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
+import { Mock_ResetSstemToDefaults } from "./Services/ResetSystem";
+import { Permission, Role } from "./Classes/Users/subdir.const";
 dotenv.config();
 
 const envVarNames = [
@@ -99,6 +101,7 @@ async function RunDemo_ModEval() {
 
 async function Execute() {
     await runServer();
+    //await Mock_ResetSstemToDefaults.Execute(undefined, Permission._000, Role.Internal);
 }
 
 Execute();
