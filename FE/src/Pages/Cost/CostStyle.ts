@@ -22,6 +22,11 @@ export const CostLabel = styled(StyledBaseDiv)``;
 
 export const CostValue = styled(StyledBaseDiv)``;
 
+export const StyledBaseKeyValuePairsContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+`;
+
 export const ErrorMessage = styled(StyledBaseDiv)`
     ${({ theme }) => css`
         color: ${theme.colors.errorRed};
