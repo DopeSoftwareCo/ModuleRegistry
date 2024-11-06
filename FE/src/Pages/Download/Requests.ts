@@ -4,6 +4,7 @@ import { PackageFromAPIDownload } from '../../Models/Models';
 const createBlobUrl = (
     base64Content: string | undefined,
     name: string,
+    version: string,
     errorSetter: (error: string) => void,
     blobUrlSetter: (blobUrl: string) => void,
     fileNameSetter: (name: string) => void
@@ -33,7 +34,7 @@ const createBlobUrl = (
         const blobUrl = URL.createObjectURL(blob);
         console.log(`${name}.${fileExtension}`);
         blobUrlSetter(blobUrl);
-        fileNameSetter(`${name}.${fileExtension}`);
+        fileNameSetter(`${name}-${version}.${fileExtension}`);
     } catch (err) {
         if (err instanceof Error) {
             errorSetter(err.message);
@@ -68,6 +69,9 @@ export const getPackageByIDRequest = async (
             downloadablePackageFromAPI?.metadata?.Name
                 ? downloadablePackageFromAPI.metadata.Name
                 : 'NoNamePackage',
+            downloadablePackageFromAPI?.metadata?.Version
+                ? downloadablePackageFromAPI.metadata.Version
+                : '0.0.0',
             errorSetter,
             blobUrlSetter,
             fileNameSetter

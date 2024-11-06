@@ -62,7 +62,7 @@ const Download = () => {
                     href={blobUrl}
                     target="blank"
                     download={fileName}
-                >{`Click here to download: ${fileName}`}</DownloadLink>
+                >{`Download: ${fileName}`}</DownloadLink>
             )}
         </StyledBasePageContiner>
     );
