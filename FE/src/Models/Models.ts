@@ -12,7 +12,7 @@ export type PackageDataFromAPI = {
     JSProgram?: string;
 };
 
-export interface PackageFromAPI {
+export interface PackageFromAPIDownload {
     metadata: PackageMetaDataFromAPI;
     data: PackageDataFromAPI;
 }
