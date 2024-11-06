@@ -28,7 +28,7 @@ export const UploadInjestController = asyncHandler(
 
         const disqualifiedStandaloneSizeInGB = 750 // Approximately 1GB
         const disqualifiedTotalSizeInGB = 1000 // Approximately 1GB
-        const packagesDirectory = process.cwd() + "/Data/Packages";
+        const packagesDirectory = path.join(process.cwd(), "Data/Packages");
         const tempDirectory = packagesDirectory + "/.Temp"
         const tempIDCeiling = 1000;
         const tempID = (Math.floor((Math.random() * tempIDCeiling) + 1)).toString();
