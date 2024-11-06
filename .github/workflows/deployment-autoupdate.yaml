@@ -13,37 +13,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout repository
+      # Checkout the dev branch
+      - name: Checkout dev branch
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Fetch all branches to ensure 'deployment' exists
+          ref: dev # This checks out the dev branch
 
       # Create Pull Request from dev to deployment
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          branch: deployment
+          base: deployment # Set the target branch for the PR
           title: "Automated Merge from Dev to Deployment"
           body: "Scheduled merge from dev branch."
           commit-message: "Merge dev branch into deployment"
-          base: deployment
-          head: dev
+          delete-branch: false # Keep the dev branch
 
       # Auto-approve the pull request
       - name: Approve Pull Request
         uses: hmarr/auto-approve-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.ACTIONS_TOKEN }}
 
       # Merge the pull request
       - name: Merge Pull Request
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.ACTIONS_TOKEN }}
           script: |
-            const pullRequest = context.payload.pull_requests[0];
-            if (pullRequest) {
+            const pr = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: 'dev', // Filter to the PR from dev branch
+              base: 'deployment'
+            });
+
+            if (pr.data.length > 0) {
+              const pullRequest = pr.data[0];
               await github.pulls.merge({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
