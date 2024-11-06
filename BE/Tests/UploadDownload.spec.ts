@@ -1,7 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { UploadInjestController } from "../src/Controllers/UploadInjestControllers.ts"
-import { UploadInjestPackageRequest } from "../src/Types/RequestTypes/index.d";
-import { UploadInjestNewPackageResponse } from "../src/Types/ResponseTypes/index.d";
+//import { UploadInjestPackageRequest } from "../src/Types/RequestTypes";
+//import { UploadInjestNewPackageResponse } from "../src/Types/ResponseTypes";
 import { NextFunction } from "express";
 
 const urls_A = [
@@ -13,10 +13,15 @@ const urls_A = [
 
 describe("Version Dependence", () => {
     test("Download Our Repo", async () => {
-        const request: Partial<UploadI> = {
-            body: 
+        const request: Partial<UploadInjectPackageRequest> = {
         };
-        UploadInjestController(Partial<>) 
+        const response: Partial<UploadInjectNewPackageResponse> = {
+
+        };
+        const next: Partial<NextFunction> = {
+
+        } as NextFunction;
+        UploadInjestController(request,response, next);
         expect(test).toBe(1);
     });
 });
