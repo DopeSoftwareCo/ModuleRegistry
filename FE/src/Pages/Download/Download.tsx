@@ -49,9 +49,9 @@ const Download = () => {
             {downloadablePackage && (
                 <StyledBaseKeyValuePairsContainer>
                     {downloadablePackage.metadata &&
-                        Object.entries(downloadablePackage.metadata).map(([key, value]) => (
-                            <StyledBaseKeyValueRow>
-                                <StyledBaseDiv>{key}</StyledBaseDiv>
+                        Object.entries(downloadablePackage.metadata).map(([key, value], idx) => (
+                            <StyledBaseKeyValueRow key={idx}>
+                                <StyledBaseDiv data-testid={key}>{key}</StyledBaseDiv>
                                 <StyledBaseDiv>{value}</StyledBaseDiv>
                             </StyledBaseKeyValueRow>
                         ))}
