@@ -170,7 +170,7 @@ export const UploadInjestController = asyncHandler(
             GoodPinningPractice: {
                 score_goodPinningPractice: 0,
                 score_goodPinningPracticeLatency: 0,
-            }
+            },
             PullRequest: {
                 score_pullRequest: 0,
                 score_pullRequestLatency: 0,
@@ -207,5 +207,6 @@ export const UploadInjestController = asyncHandler(
             data: {},
         }
         fs.rmSync(tempDirectory, { recursive: true, force: true})
+        res.status(200).json(returnBody);
     }
 );
