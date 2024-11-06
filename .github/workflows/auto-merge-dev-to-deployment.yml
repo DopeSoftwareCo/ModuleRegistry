@@ -1,0 +1,37 @@
+name: Auto Merge Dev to Deployment
+
+on:
+    schedule:
+        - cron: "20 2 * * *" # Adjust cron to run at 10:12 PM UTC
+    workflow_dispatch: # Allow manual triggering as well
+
+jobs:
+    merge:
+        environment: staging
+        permissions: write-all
+        runs-on: ubuntu-latest
+
+        steps:
+            # Checkout the repository
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0 # Fetch all branches to ensure 'deployment' exists
+
+            # Merge dev branch into deployment
+            - name: Merge dev into deployment
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+                  # Fetch the remote branches
+                  git fetch origin
+
+                  # Checkout the deployment branch
+                  git checkout deployment
+
+                  # Merge the dev branch into deployment
+                  git merge dev --no-ff
+
+                  # Push the result to the remote deployment branch
+                  git push origin deployment

@@ -13,8 +13,10 @@ declare module 'styled-components' {
             white: string;
             black: string;
             skyBlue: string;
+            errorRed: string;
         };
         fontSizes: {
+            xSmall: string;
             small: string;
             medium: string;
             large: string;

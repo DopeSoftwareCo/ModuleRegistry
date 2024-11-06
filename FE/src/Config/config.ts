@@ -1,3 +1,13 @@
 export const GeneralConfig = {
-    HOME_URL: "/",
+    HOME_URL: '/home',
+    AUTH_URL: '/auth',
+    REGEX_URL: '/regex',
+    DOWNLOAD_URL: '/download',
+    UPDATE_URL: '/update',
+    RATING_URL: '/rating',
+    COST_URL: '/cost',
+    REMOVE_URL: '/remove',
+    UPLOAD_URL: '/upload',
+    RESET_URL: '/reset',
+    BACKEND_URL: 'http://localhost:3000/',
 };

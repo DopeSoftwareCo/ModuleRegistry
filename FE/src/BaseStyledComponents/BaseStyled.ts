@@ -1,15 +1,33 @@
 import { darken, lighten } from 'polished';
 import styled, { css } from 'styled-components';
 
-export const StyledBaseButton = styled.button`
+export const StyledHiddenButton = styled.button`
     border: none;
     font-family: inherit;
     background: inherit;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ${({ theme }) => css`
+        color: ${theme.colors.text};
+    `}
+`;
+
+export const StyledBaseButton = styled.button`
+    border: none;
+    font-family: inherit;
     padding: 0.2rem 0.4rem;
     font-size: inherit;
+    text-transform: uppercase;
+    font-weight: 600;
+    min-width: 90px;
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
+        color: ${theme.colors.background};
         border-radius: ${theme.borderRadius.small};
-        background: ${theme.colors.skyBlue};
+        background: ${theme.colors.text};
         padding: 0.2rem ${theme.padding.small};
         &:hover {
             cursor: pointer;
@@ -20,6 +38,7 @@ export const StyledBaseButton = styled.button`
 
 export const StyledBaseDiv = styled.div`
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
         background: ${theme.colors.background};
         color: ${theme.colors.text};
     `}
@@ -27,6 +46,7 @@ export const StyledBaseDiv = styled.div`
 
 export const StyledBaseA = styled.a`
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
         background: ${theme.colors.background};
         color: ${theme.colors.text};
     `}
@@ -35,15 +55,56 @@ export const StyledBaseA = styled.a`
 export const StyledBaseTextInput = styled.input.attrs({ type: 'text' })`
     font-family: inherit;
     ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
         border-radius: ${theme.borderRadius.small};
         border: 1px solid ${theme.colors.text};
-        outline: none
         background: ${theme.colors.background};
         color: ${theme.colors.text};
+        padding: ${theme.padding.small};
         &:focus {
             border: 1px solid ${theme.colors.skyBlue};
-        outline: none;
+            outline: none;
             box-shadow: 0px 0px 10px -5px ${darken(0.05, theme.colors.skyBlue)};
         }
     `}
+`;
+
+export const StyledBaseCard = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    ${({ theme }) => css`
+        box-shadow: 0px 0px 10px -2px ${darken(0.05, theme.colors.skyBlue)};
+        border: 1px solid ${theme.colors.skyBlue};
+        border-radius: ${theme.borderRadius.medium};
+        padding: ${theme.padding.large};
+        transition: ${theme.animationTime.short} background ease;
+        @media screen and (max-width: ${theme.breakpoint}) {
+        }
+    `}
+`;
+
+export const StyledBasePageContiner = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+`;
+
+export const StyledBaseKeyValueRow = styled(StyledBaseDiv)`
+    display: flex;
+    justify-content: space-between;
+    ${({ theme }) => css`
+        min-width: 400px;
+        @media screen and (max-width: ${theme.breakpoint}) {
+            min-width: 80vw;
+        }
+    `}
+`;
+
+export const StyledBaseKeyValuePairsContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 `;

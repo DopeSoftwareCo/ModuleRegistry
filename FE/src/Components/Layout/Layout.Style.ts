@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const PageContainer = styled.div`
     display: flex;
@@ -7,6 +7,7 @@ export const PageContainer = styled.div`
     min-height: 100vh;
     max-width: 100%;
     ${({ theme }) => css`
+        font-size: ${theme.fontSizes.small};
         color: ${theme.colors.text};
         background: ${theme.colors.background};
         transition: 0.3s all ease;
@@ -22,6 +23,7 @@ export const MainSection = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     padding-top: 120px;
 `;
 export const FooterSection = styled.div``;

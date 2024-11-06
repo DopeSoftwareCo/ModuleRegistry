@@ -28,7 +28,7 @@ const handleRouteMethod = (method: string) => {
 const getReadableParentPath = (newParentPath: string) => {
     newParentPath = newParentPath.replace("/", "");
     if (newParentPath.length === 0) return "Router: BASE";
-    else return `${chalk.blueBright("Router:")} ${chalk.greenBright.bold(newParentPath.toUpperCase())}`;
+    else return `${chalk.blueBright("Router:")} ${chalk.whiteBright.bold(newParentPath.toUpperCase())}`;
 };
 
 const listRoutes = (app: Application) => {

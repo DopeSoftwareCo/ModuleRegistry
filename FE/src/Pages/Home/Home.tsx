@@ -1,16 +1,12 @@
-import { StyledBaseTextInput } from '../../BaseStyledComponents/BaseStyled';
-import useToggle from '../../Hooks/Example/example';
-import { Example, HomeButton } from './Home.style';
+import { StyledBasePageContiner } from '../../BaseStyledComponents/BaseStyled';
+import { PackagesComponent } from '../../Components/PackagesComponent/PackagesComponent';
 
 const Home = () => {
-    const [isVisible, toggleVisibility] = useToggle(false);
+    //should probably have all packages here since the IDs are used in other requests... users can use the IDs from here to use on other pages
     return (
-        <>
-            <>home</>
-            <HomeButton onClick={toggleVisibility}>Click me</HomeButton>
-            {isVisible && <Example>hi</Example>}
-            <StyledBaseTextInput />
-        </>
+        <StyledBasePageContiner>
+            <PackagesComponent />
+        </StyledBasePageContiner>
     );
 };
 

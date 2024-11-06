@@ -112,3 +112,15 @@ const MyExpampleComponent = ({someOptionalProp=DefaultProps.someOptionalProp}:My
     );
 };
 ```
+
+### 🌟 Schema endpoint locations
+
+POST /packages -> Home
+POST /package/byRegEx -> Regex
+GET /package/{id} -> Download
+PUT /package/{id} -> Update
+GET /package/{id}/rate -> Rating
+GET /package/{id}/cost -> Cost
+DELETE /pacakge/{id} -> Remove
+DELETE /reset -> Remove
+POST /package -> Upload
