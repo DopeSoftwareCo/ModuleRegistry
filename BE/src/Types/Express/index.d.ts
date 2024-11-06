@@ -9,6 +9,7 @@ declare global {
             permissions?: string[];
             requestedId?: string;
             userID?: string;
+            decodedToken?: jsonwebtoken.TokenType;
         }
     }
 }
