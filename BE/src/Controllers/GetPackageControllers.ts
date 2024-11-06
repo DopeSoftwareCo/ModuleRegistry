@@ -54,6 +54,8 @@ export const GetPackagesFromRegistryController = asyncHandler(
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         console.log("original", req.originalUrl);
+        console.log("packageid requested", req.params.id);
+        const p = await PackageModel.findById(req.params.id);
         //your code here using the id
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -67,7 +69,7 @@ export const GetPackageViaIDController = asyncHandler(
                 ID: "id",
             },
             //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-            data: {},
+            data: { Content: p?.data.Content },
         };
         let responseMessage: GetPackageViaIDInvalidResponseMessages;
         if (!DNE) {
