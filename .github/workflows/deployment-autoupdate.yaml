@@ -19,24 +19,34 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all branches to ensure 'deployment' exists
 
-      # Merge dev branch into deployment
-      - name: Merge dev into deployment
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      # Create Pull Request from dev to deployment
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          branch: deployment
+          title: "Automated Merge from Dev to Deployment"
+          body: "Scheduled merge from dev branch."
+          commit-message: "Merge dev branch into deployment"
+          base: deployment
+          head: dev
 
-          # Fetch the remote branches
-          git fetch origin
+      # Auto-approve the pull request
+      - name: Approve Pull Request
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-          # Checkout the deployment branch
-          git checkout deployment
-
-          # Merge the dev branch into deployment
-          git merge dev --no-ff
-
-      # Push the result to the remote deployment branch using PAT
-      - name: Push to deployment branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
-        run: |
-          git push origin deployment
+      # Merge the pull request
+      - name: Merge Pull Request
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pullRequest = context.payload.pull_requests[0];
+            if (pullRequest) {
+              await github.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pullRequest.number,
+              });
+            }
