@@ -40,8 +40,8 @@ export const UploadInjestController = asyncHandler(
             fs.mkdirSync(tempDirectory);
         }
         else {
-            //fs.rmSync(tempDirectory, { recursive: true, force: true})
-            //fs.mkdirSync(tempDirectory);
+            fs.rmSync(tempDirectory, { recursive: true, force: true})
+            fs.mkdirSync(tempDirectory);
         }
 
         let responseMessage: UploadInjestResponseMessages;
@@ -206,5 +206,6 @@ export const UploadInjestController = asyncHandler(
             //all fields are optional in data
             data: {},
         }
+        fs.rmSync(tempDirectory, { recursive: true, force: true})
     }
 );
