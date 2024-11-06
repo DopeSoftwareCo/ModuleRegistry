@@ -13,61 +13,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the dev branch
-      - name: Checkout dev branch
+      # Checkout the repository
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: dev # This checks out the dev branch
+          fetch-depth: 0 # Fetch all branches to ensure 'deployment' exists
 
-      # Create Pull Request from dev to deployment
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          base: deployment # Set the target branch for the PR
-          title: "Automated Merge from Dev to Deployment"
-          body: "Scheduled merge from dev branch."
-          commit-message: "Merge dev branch into deployment"
-          delete-branch: false # Keep the dev branch
+      # Merge dev branch into deployment
+      - name: Merge dev into deployment
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Find and approve the pull request
-      - name: Find and Approve Pull Request
-        id: approve-pr
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.ACTIONS_TOKEN }}
-          script: |
-            const pr = await github.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              head: 'dev',
-              base: 'deployment'
-            });
-            
-            if (pr.data.length > 0) {
-              const pullRequest = pr.data[0];
-              await github.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pullRequest.number,
-                event: 'APPROVE'
-              });
-              return pullRequest.number;
-            } else {
-              throw new Error("No open PR found from dev to deployment");
-            }
+          # Fetch the remote branches
+          git fetch origin
 
-      # Merge the approved pull request
-      - name: Merge Pull Request
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.ACTIONS_TOKEN }}
-          script: |
-            const pull_number = core.getInput('approve-pr', { required: true });
-            if (pull_number) {
-              await github.pulls.merge({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pull_number
-              });
-            }
+          # Checkout the deployment branch
+          git checkout deployment
+
+          # Merge the dev branch into deployment
+          git merge dev --no-ff
+
+      # Push the result to the remote deployment branch using PAT
+      - name: Push to deployment branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+        run: |
+          git push origin deployment
