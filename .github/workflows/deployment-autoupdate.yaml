@@ -29,14 +29,9 @@ jobs:
           commit-message: "Merge dev branch into deployment"
           delete-branch: false # Keep the dev branch
 
-      # Auto-approve the pull request
-      - name: Approve Pull Request
-        uses: hmarr/auto-approve-action@v3
-        with:
-          github-token: ${{ secrets.ACTIONS_TOKEN }}
-
-      # Merge the pull request
-      - name: Merge Pull Request
+      # Find and approve the pull request
+      - name: Find and Approve Pull Request
+        id: approve-pr
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.ACTIONS_TOKEN }}
@@ -45,15 +40,34 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              head: 'dev', // Filter to the PR from dev branch
+              head: 'dev',
               base: 'deployment'
             });
-
+            
             if (pr.data.length > 0) {
               const pullRequest = pr.data[0];
-              await github.pulls.merge({
+              await github.pulls.createReview({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: pullRequest.number,
+                event: 'APPROVE'
+              });
+              return pullRequest.number;
+            } else {
+              throw new Error("No open PR found from dev to deployment");
+            }
+
+      # Merge the approved pull request
+      - name: Merge Pull Request
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.ACTIONS_TOKEN }}
+          script: |
+            const pull_number = core.getInput('approve-pr', { required: true });
+            if (pull_number) {
+              await github.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pull_number
               });
             }
