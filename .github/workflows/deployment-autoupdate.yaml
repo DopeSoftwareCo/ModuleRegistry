@@ -34,5 +34,9 @@ jobs:
           # Merge the dev branch into deployment
           git merge dev --no-ff
 
-          # Push the result to the remote deployment branch
+      # Push the result to the remote deployment branch using PAT
+      - name: Push to deployment branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+        run: |
           git push origin deployment
