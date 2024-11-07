@@ -1,12 +1,12 @@
 import PackageModel, { Package } from "../Schemas/Package";
 
-export const createRandomPackage = async () => {
+export const createRandomPackage = async (version: string) => {
     const newPackage: Package = new PackageModel({
         Title: "Example Package",
         repoUrl: "https://github.com/example/package",
         metadata: {
             Name: "Example Package Name",
-            Version: "1.0.0",
+            Version: version,
             License: {
                 name: "MIT",
                 spxId: "MIT",
