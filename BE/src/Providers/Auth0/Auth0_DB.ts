@@ -4,22 +4,24 @@ dotenv.config();
 import axios from "axios";
 import { LogDebug } from "../Utils/Log";
 import { User } from "../../Classes/Users/User";
+import { Admin } from "../../Classes/Users/Admin";
 import { token } from "../../Middleware/ManagementToken";
+import { Permission, Role } from "../../Classes/Users/subdir.const";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 
 export interface RegistrationInfo {
     email: string;
     password: string;
-    permission: string;
-    roleNum: number; // Auth0 connection name, like 'Username-Password-Authentication'
-    username: string; // Optional: Only if needed
+    permission: Permission;
+    role: Role;
+    username: string;
 }
 
 export interface RequestForUserChanges {
     username?: string;
     password?: string;
-    permission?: string;
+    permission?: number;
     role?: number;
 }
 
@@ -29,14 +31,24 @@ interface Auth0User {
     email: string;
     username: string;
     user_metadata: {
-        permission: string;
+        permission: number;
         role: number;
     };
-    //permissions: string[];
     created_at?: string;
     last_login?: string;
     logins_count?: number;
-    // Add any other fields you may need
+}
+
+interface UpdateUserRequest {
+    user_id?: string;
+    name?: string;
+    email?: string;
+    username?: string;
+    user_metadata: {
+        permission?: number;
+        role?: number;
+    };
+    password?: string;
 }
 
 export namespace Auth0_Database {
@@ -55,7 +67,7 @@ export namespace Auth0_Database {
                     connection: "Username-Password-Authentication",
                     user_metadata: {
                         permission: info.permission,
-                        role: info.roleNum,
+                        role: info.role,
                     },
                     //permissions: info.permission,
                     username: info.username, // Optional
@@ -101,7 +113,7 @@ export namespace Auth0_Database {
         }
 
         try {
-            const updateData: any = {};
+            const updateData: UpdateUserRequest = { user_metadata: {} };
             let changeCount = 0;
             // Only include properties that have been provided
             if (changes.username) {
@@ -113,15 +125,18 @@ export namespace Auth0_Database {
                 ++changeCount;
             }
             if (changes.permission) {
-                updateData.permission = changes.permission;
+                updateData.user_metadata.permission = changes.permission;
                 ++changeCount;
             }
             if (changes.role) {
-                updateData.role = changes.role;
+                updateData.user_metadata.role = changes.role;
                 ++changeCount;
             }
 
-            if (changeCount > 1) {
+            // Im not wasting everyone's time to send your request to the API unless
+            // you have requested AT LEAST 1 change
+            if (changeCount < 1) {
+                LogDebug("No changes to make!");
                 return false;
             }
 
@@ -131,6 +146,7 @@ export namespace Auth0_Database {
                     "Content-Type": "application/json",
                 },
             });
+
             return true;
         } catch (error) {
             LogDebug("Error updating user:");

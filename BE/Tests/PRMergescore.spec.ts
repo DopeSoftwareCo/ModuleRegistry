@@ -4,133 +4,106 @@ import { SendRequestToGQL } from "../src/Providers/ModEval/GQL_Queries/Requests/
 import { beforeEach, describe, it, expect, jest, afterEach } from "@jest/globals";
 import { RepoID } from "../src/Providers/ModEval/RepoComponents/ID/RepoID";
 import { RepoURL } from "../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
-import { NullableArray } from "../src/Classes/Essential_Interfaces/NullableArray";
+import { SuperRepoBuilder } from "../src/Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
+jest.mock("../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface", () => ({
+    RepoURL: jest.fn().mockImplementation(() => ({
+        url: "https://github.com/owner/repo",
+    })),
+}));
 
-// jest.mock("../src/Providers/ModEval/GQL_Queries/Requests/GQLRequests");
+jest.mock("../src/Providers/ModEval/GQL_Queries/Requests/GQLRequests");
 
-// describe("MergeRestriction_Scorer error checking", () => {
-//     let repo: Repository;
-
-//     beforeEach(() => {
-//         repo = new Repository({ owner: "testOwner", repoName: "testRepo" });
-//     });
-
-//     it("should return 0 when there are no pull requests", async () => {
-//         (SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
-//             data: {
-//                 repository: {
-//                     pullRequests: {
-//                         nodes: [] as any[],
-//                         pageInfo: {
-//                             hasNextPage: false,
-//                             endCursor: null,
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-//         (SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
-//             data: {
-//                 repository: {
-//                     object: {
-//                         history: {
-//                             totalCount: 100,
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-//         const score = await MergeRestriction_Scorer(repo);
-//         expect(score).toBe(0);
-//     });
-
-//     it("should return 0 when there are pull requests but no merge commits", async () => {
-//         (SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
-//             data: {
-//                 repository: {
-//                     pullRequests: {
-//                         nodes: [{ mergeCommit: null }] as any[],
-//                         pageInfo: {
-//                             hasNextPage: false,
-//                             endCursor: null,
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-//         (SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
-//             data: {
-//                 repository: {
-//                     object: {
-//                         history: {
-//                             totalCount: 100,
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-//         const score = await MergeRestriction_Scorer(repo);
-//         expect(score).toBe(0);
-//     });
-
-//     it("should return 0 when there are pull requests but no merge commits with multiple parents", async () => {
-//         (SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
-//             data: {
-//                 repository: {
-//                     pullRequests: {
-//                         nodes: [{ mergeCommit: { parents: { totalCount: 1 } } }] as any[],
-//                         pageInfo: {
-//                             hasNextPage: false,
-//                             endCursor: null,
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-//         (SendRequestToGQL as jest.Mock).mockResolvedValueOnce({
-//             data: {
-//                 repository: {
-//                     object: {
-//                         history: {
-//                             totalCount: 100,
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-//         const score = await MergeRestriction_Scorer(repo);
-//         expect(score).toBe(0);
-//     });
-// });
-
-describe("MergeRestriction_Scorer with real repository", () => {
+describe("MergeRestriction_Scorer", () => {
     let repo: Repository;
 
-    it("should return the correct score for a real repository", async () => {
-        const url = "https://github.com/cloudinary/cloudinary_npm";
-        const tokens = new NullableArray<string>(["cloudinary", "cloudinary_npm"]);
+    beforeEach(async () => {
+        const superRepoBuilder = new SuperRepoBuilder();
+        const myRepo = await superRepoBuilder.SuperBuild("https://github.com/owner/repo");
+        if (myRepo) {
+            repo = myRepo;
+        }
+    });
 
-        const repoURL: RepoURL = {
-            providedURL: url,
-            domain: "github.com",
-            tokens: tokens,
-            gitURL: "https://github.com/cloudinary/cloudinary_npm.git",
-        };
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
-        const owner = "cloudinary";
-        const repoName = "cloudinary_npm";
-        const repoID = new RepoID(owner, repoName, repoURL);
-        const repository = new Repository(repoID);
+    it("should return a score of 1 when all PRs are reviewed", async () => {
+        (SendRequestToGQL as jest.Mock).mockResolvedValue({
+            data: {
+                repository: {
+                    pullRequests: {
+                        nodes: [
+                            { additions: 100, reviews: { totalCount: 1 } },
+                            { additions: 200, reviews: { totalCount: 1 } },
+                        ],
+                    },
+                },
+            },
+        } as unknown as never);
 
-        //the response you get wherever you query for this should be mocked, if the repo changes, the test expected value changes and fails.
-        const score = await MergeRestriction_Scorer(repository);
-        //console.log(`Merge Restriction Score for cloudinary/cloudinary_npm: ${score}`);
-        expect(score).toBe(0); // Adjust this expectation based on real data
+        const score = await MergeRestriction_Scorer(repo);
+        expect(score).toBe(1);
+    });
+
+    it("should return a score of 0 when no PRs are reviewed", async () => {
+        (SendRequestToGQL as jest.Mock).mockResolvedValue({
+            data: {
+                repository: {
+                    pullRequests: {
+                        nodes: [
+                            { additions: 100, reviews: { totalCount: 0 } },
+                            { additions: 200, reviews: { totalCount: 0 } },
+                        ],
+                    },
+                },
+            },
+        } as unknown as never);
+
+        const score = await MergeRestriction_Scorer(repo);
+        expect(score).toBe(0);
+    });
+
+    it("should return a correct score when some PRs are reviewed", async () => {
+        (SendRequestToGQL as jest.Mock).mockResolvedValue({
+            data: {
+                repository: {
+                    pullRequests: {
+                        nodes: [
+                            { additions: 100, reviews: { totalCount: 1 } },
+                            { additions: 200, reviews: { totalCount: 0 } },
+                        ],
+                    },
+                },
+            },
+        } as unknown as never);
+
+        const score = await MergeRestriction_Scorer(repo);
+        expect(score).toBe(0.33);
+    });
+
+    it("should handle empty pull request data gracefully", async () => {
+        (SendRequestToGQL as jest.Mock).mockResolvedValue({
+            data: {
+                repository: {
+                    pullRequests: {
+                        nodes: [],
+                    },
+                },
+            },
+        } as unknown as never);
+
+        const score = await MergeRestriction_Scorer(repo);
+        expect(score).toBe(0);
+    });
+
+    it("should throw an error when the data is invalid", async () => {
+        (SendRequestToGQL as jest.Mock).mockResolvedValue({
+            data: {
+                repository: null,
+            },
+        } as unknown as never);
+
+        await expect(MergeRestriction_Scorer(repo)).rejects.toThrow("Failed to fetch PR data");
     });
 });

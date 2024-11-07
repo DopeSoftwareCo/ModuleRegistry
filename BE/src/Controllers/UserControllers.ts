@@ -20,7 +20,7 @@ export const addUserController = asyncHandler(
             email: userEmail,
             password: userPassword,
             permission: permission,
-            roleNum: role,
+            role: role,
             username: userUsername,
         };
 

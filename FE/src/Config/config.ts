@@ -1,3 +1,5 @@
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const GeneralConfig = {
     HOME_URL: '/home',
     AUTH_URL: '/auth',
@@ -8,5 +10,6 @@ export const GeneralConfig = {
     COST_URL: '/cost',
     REMOVE_URL: '/remove',
     UPLOAD_URL: '/upload',
-    BACKEND_URL: 'http://localhost:3000/',
+    RESET_URL: '/reset',
+    BACKEND_URL: apiUrl,
 };

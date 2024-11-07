@@ -8,6 +8,8 @@ import Update from '../Pages/Update/Update';
 import Rating from '../Pages/Rating/Rating';
 import Cost from '../Pages/Cost/Cost';
 import Upload from '../Pages/Upload/Upload';
+import Reset from '../Pages/Reset/Reset';
+import Packages from '../Pages/Packages/Packages';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Home = React.lazy(() => import('../Pages/Home/Home'));
@@ -87,6 +89,24 @@ const routes = [
             </ProtectedRoute>
         ),
         label: 'upload',
+    },
+    {
+        path: GeneralConfig.RESET_URL,
+        element: (
+            <ProtectedRoute>
+                <Reset />
+            </ProtectedRoute>
+        ),
+        label: 'reset',
+    },
+    {
+        path: GeneralConfig.PACKAGES_URL,
+        element: (
+            <ProtectedRoute>
+                <Packages />
+            </ProtectedRoute>
+        ),
+        label: 'packages',
     },
     { path: GeneralConfig.AUTH_URL, element: <Login /> },
 ];

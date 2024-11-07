@@ -1,12 +1,10 @@
-import { calculateRampUp } from '../Assets/Octavo/src/ramp-up';
-import { calculateCorrectness } from '../Assets/Octavo/src/find-correctness';
-import { calculateBusFactor } from '../Assets/Octavo/src/bus-factor';
-import { calculateResponsiveMaintener } from '../Assets/Octavo/src/find-responsive-maintainer';
-import { calculateMetricsForRepo } from '../Assets/Octavo/src/github-wrapper';
-import { fetchRepoLicense } from '../Assets/Octavo/src/github-wrapper';
-import { Repository } from '../RepoComponents/Repository';
-import { FetchUniqueAuthors } from '../GQL_Queries/Requests/GQLRequests';
-import { fetchContributors } from '../Assets/Octavo/src/api-calls/github-adapter';
+import { calculateRampUp } from "../Assets/ScoringFunctions/ramp-up";
+import { calculateCorrectness } from "../Assets/ScoringFunctions/find-correctness";
+import { calculateBusFactor } from "../Assets/ScoringFunctions/bus-factor";
+import { calculateResponsiveMaintener } from "../Assets/ScoringFunctions/find-responsive-maintainer";
+import { fetchRepoLicense } from "../Assets/ScoringFunctions/github-wrapper";
+import { Repository } from "../RepoComponents/Repository";
+import { fetchContributors } from "../Assets/api-calls/github-adapter";
 
 const CONTRIBUTION_THRESHOLD = 50;
 
@@ -38,9 +36,4 @@ export async function Responsiveness_WrappedScorer(repo: Repository): Promise<nu
 export async function LicenseCompatibility_WrapperScorer(repo: Repository): Promise<number> {
     let info = repo.ID;
     return await fetchRepoLicense(info.Owner, info.Name);
-}
-
-export async function CalculateMetrics_(repo: Repository): Promise<string> {
-    let info = repo.ID;
-    return await calculateMetricsForRepo(info.GitHubAddress);
 }
