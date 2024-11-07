@@ -1,5 +1,5 @@
 import { Admin } from "../../Classes/Users/Admin";
-import { Role, RoleCategory } from "../../Classes/Users/UserRole";
+import { Role } from "../../Classes/Users/subdir.const";
 import { UDS } from "../../Classes/Users/subdir.const";
 import { User } from "../../Classes/Users/User";
 import { SkeletonIsType } from "./ModEval_Guards";
@@ -21,7 +21,7 @@ export function IsType_User(value: any): value is User {
 
 export function IsType_Admin(value: any): value is Admin {
     const runChecks = (value: any) => {
-        return IsType_User(value) && value.Role.category == RoleCategory.Admin ? 0 : 1;
+        return IsType_User(value) && value.Role == Role.Admin ? 0 : 1;
     };
 
     return SkeletonIsType<Admin>(value, runChecks);
