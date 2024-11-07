@@ -15,7 +15,7 @@ import mongoose from "mongoose";
 import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
-import { Permission, Role } from "./classes/Users/subdir.const";
+import { Permission, Role } from "./Classes/Users/subdir.const";
 import { Auth0_Database, RegistrationInfo } from "./Providers/Auth0/Auth0_DB";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
 
