@@ -4,6 +4,7 @@ import { SendRequestToGQL } from "../src/Providers/ModEval/GQL_Queries/Requests/
 import { beforeEach, describe, it, expect, jest, afterEach } from "@jest/globals";
 import { RepoID } from "../src/Providers/ModEval/RepoComponents/ID/RepoID";
 import { RepoURL } from "../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
+import { SuperRepoBuilder } from "../src/Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
 jest.mock("../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface", () => ({
     RepoURL: jest.fn().mockImplementation(() => ({
         url: "https://github.com/owner/repo",
@@ -15,8 +16,12 @@ jest.mock("../src/Providers/ModEval/GQL_Queries/Requests/GQLRequests");
 describe("MergeRestriction_Scorer", () => {
     let repo: Repository;
 
-    beforeEach(() => {
-        repo = new Repository(new RepoID("owner", "repo"), new RepoURL("https://github.com/owner/repo"));
+    beforeEach(async () => {
+        const superRepoBuilder = new SuperRepoBuilder();
+        const myRepo = await superRepoBuilder.SuperBuild("https://github.com/owner/repo");
+        if (myRepo) {
+            repo = myRepo;
+        }
     });
 
     afterEach(() => {
@@ -35,7 +40,7 @@ describe("MergeRestriction_Scorer", () => {
                     },
                 },
             },
-        });
+        } as unknown as never);
 
         const score = await MergeRestriction_Scorer(repo);
         expect(score).toBe(1);
@@ -53,7 +58,7 @@ describe("MergeRestriction_Scorer", () => {
                     },
                 },
             },
-        });
+        } as unknown as never);
 
         const score = await MergeRestriction_Scorer(repo);
         expect(score).toBe(0);
@@ -71,7 +76,7 @@ describe("MergeRestriction_Scorer", () => {
                     },
                 },
             },
-        });
+        } as unknown as never);
 
         const score = await MergeRestriction_Scorer(repo);
         expect(score).toBe(0.33);
@@ -86,7 +91,7 @@ describe("MergeRestriction_Scorer", () => {
                     },
                 },
             },
-        });
+        } as unknown as never);
 
         const score = await MergeRestriction_Scorer(repo);
         expect(score).toBe(0);
@@ -97,7 +102,7 @@ describe("MergeRestriction_Scorer", () => {
             data: {
                 repository: null,
             },
-        });
+        } as unknown as never);
 
         await expect(MergeRestriction_Scorer(repo)).rejects.toThrow("Failed to fetch PR data");
     });
