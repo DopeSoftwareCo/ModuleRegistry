@@ -4,7 +4,15 @@ import {
     StyledBaseKeyValuePairsContainer,
     StyledBaseKeyValueRow,
 } from '../../BaseStyledComponents/BaseStyled';
-import { Inputs, IDContainer, CostIDInput, CostRequestButton, CostLabel, CostValue, CheckboxContainer } from './CostStyle';
+import {
+    Inputs,
+    IDContainer,
+    CostIDInput,
+    CostRequestButton,
+    CostLabel,
+    CostValue,
+    CheckboxContainer,
+} from './CostStyle';
 import { PackageCost } from '../../../../BE/src/Types/Models';
 import { costRequest } from './Requests';
 import { StatusDisplay } from '../../Components/StatusDisplay/StatusDisplay';

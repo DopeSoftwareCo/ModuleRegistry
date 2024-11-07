@@ -9,5 +9,6 @@ export const GeneralConfig = {
     REMOVE_URL: '/remove',
     UPLOAD_URL: '/upload',
     RESET_URL: '/reset',
+    PACKAGES_URL: '/packages',
     BACKEND_URL: 'http://localhost:3000/',
 };
