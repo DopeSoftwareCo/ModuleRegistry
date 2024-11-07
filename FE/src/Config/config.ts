@@ -12,4 +12,5 @@ export const GeneralConfig = {
     UPLOAD_URL: '/upload',
     RESET_URL: '/reset',
     BACKEND_URL: apiUrl,
+    PACKAGES_URL: '/packages',
 };
