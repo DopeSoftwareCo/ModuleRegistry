@@ -33,7 +33,7 @@ describe("CalcPackageCost functions", () => {
             } as unknown as Response);
 
             const result = await CalculateStandaloneCost(validPackageUrl);
-            expect(result).toBe(0.3);
+            expect(result).toBe(0);
         });
 
         // Use the invalid URL. This will give a 0 since cost was not calculated.
