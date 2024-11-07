@@ -1,30 +1,46 @@
 name: CI Workflow
 
 on:
-  push:
-    branches: [ dev ]
-  pull_request:
-    branches: [ dev ]
-  merge_group:
-    branches: [ dev ]
- 
+    push:
+        branches: [dev]
+    pull_request:
+        branches: [dev]
+    merge_group:
+        branches: [dev]
+
 jobs:
-  check-updates:
-    runs-on: ubuntu-latest
+    check-updates:
+        runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'  # Specify your Node.js version here
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16" # Specify your Node.js version here
 
-    - name: Install dependencies -- BE
-      run: npm install --no-audit --prefer-offline
-      working-directory: ./BE 
+            - name: Install dependencies -- BE
+              run: npm install --no-audit --prefer-offline
+              working-directory: ./BE
 
-    - name: Install dependencies FE
-      run: npm install --no-audit --prefer-offline
-      working-directory: ./FE
+            - name: Install dependencies FE
+              run: npm install --no-audit --prefer-offline
+              working-directory: ./FE
+
+            - name: Tests FE
+              run: npm run test
+              working-directory: ./FE
+
+            - name: Tests BE
+              run: npm run test
+              working-directory: ./BE
+
+            - name: Build Frontend
+              run: npm run build
+              working-directory: ./FE
+
+            - name: Build Backend
+              run: npm run build
+              working-directory: ./BE
