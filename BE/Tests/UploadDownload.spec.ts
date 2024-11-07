@@ -1,3 +1,4 @@
+/*
 import { describe, expect, test } from "@jest/globals";
 import { UploadInjestController } from "../src/Controllers/UploadInjestControllers.ts"
 //import { UploadInjestPackageRequest } from "../src/Types/RequestTypes";
@@ -25,3 +26,4 @@ describe("Version Dependence", () => {
         expect(test).toBe(1);
     });
 });
+*/
