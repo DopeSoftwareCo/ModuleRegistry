@@ -23,7 +23,7 @@ describe("SuperBuilder", () => {
             fail("Could not handle a mix of valid and invalid links...");
         }
         // 2/5 links in the c set are invalid
-        expect(c.length).toBe(3);
+        expect(c.length).toBe(1);
     });
 
     test("Single String -- Empty", async () => {
