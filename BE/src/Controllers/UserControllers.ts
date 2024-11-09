@@ -1,12 +1,15 @@
 import { NextFunction, Response } from "express";
 import { AddUserRequest, DeleteUserRequest, UpdateUserRequest } from "RequestTypes";
-import { Auth0_Database, RegistrationInfo, RequestForUserChanges } from "../Providers/Auth0/Auth0_DB";
+import { Auth0_Database } from "../Providers/Auth0/Auth0_DB";
+import { RequestForUserChanges, RegistrationInfo } from "../Providers/Auth0/Auth0_DB.types";
 import asyncHandler from "../Middleware/asyncHandler";
 import {
     AddUserResponseMessages,
     DeleteUserResponseMessages,
     UpdateUserResponseMessages,
 } from "ResponseTypes";
+import { PermRestrictionMiddleware } from "../Middleware/PermRestrictor";
+import { User } from "../Classes/Users/User";
 
 export const addUserController = asyncHandler(
     async (req: AddUserRequest, res: Response, next: NextFunction) => {
@@ -23,6 +26,7 @@ export const addUserController = asyncHandler(
             role: role,
             username: userUsername,
         };
+        PermRestrictionMiddleware(User.RegisterUser, info);
 
         let responseMessage: AddUserResponseMessages;
         const result = await Auth0_Database.INSERT(info);
@@ -47,14 +51,16 @@ export const updateUserController = asyncHandler(
         const role = req.body.role;
 
         const changeReq: RequestForUserChanges = {
+            uid: id,
             username: username,
             password: password,
             permission: permission,
             role: role,
         };
 
+        PermRestrictionMiddleware(User.UpdateProfile, changeReq);
         let responseMessage: UpdateUserResponseMessages;
-        const result = await Auth0_Database.UPDATE(id, changeReq);
+        const result = await Auth0_Database.UPDATE(changeReq);
         const failed = result == undefined;
 
         if (!failed) {

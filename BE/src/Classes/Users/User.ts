@@ -54,7 +54,7 @@ namespace ExInput {
 
 // ========================= Profile Operations =========================
 export namespace User {
-    export const RegisterProfile = new OpUnderRestriction<string | undefined>(
+    export const RegisterUser = new OpUnderRestriction<string | undefined>(
         Auth0_Database.INSERT,
         ALL_PERMISSIONS,
         [Role.Admin],

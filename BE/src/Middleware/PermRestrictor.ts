@@ -3,6 +3,7 @@ import { returnProperInvalidResponse } from "./Auth";
 import { Permission, Role } from "../Classes/Users/subdir.const";
 import { RestrictedOperation } from "../Classes/PrivilegedOperations";
 import { OpUnderRestriction } from "../Classes/Ops-Under-Restriction/OpUnderRestriction";
+import { Restricted_Return } from "../Classes/Ops-Under-Restriction/subdir.types";
 
 /**
  * @author John Leidy
@@ -30,17 +31,17 @@ export const permRestrictionMiddleware = (requiredPermissions: Permission[], req
     };
 };
 
-export function PermRestrictionMiddleware(op: OpUnderRestriction<any>, input?: any[]): any {
-    return (req: Request, res: Response, next: NextFunction) => {
+export function PermRestrictionMiddleware(op: OpUnderRestriction<any>, input?: any | any[]): any {
+    return async (req: Request, res: Response, next: NextFunction) => {
         if (process.env.NODE_ENV !== "dev") {
             if (!req.decodedToken) {
                 return returnProperInvalidResponse(req, res);
             }
 
             const user = req.decodedToken;
-            const result = op.Execute(user.permission, user.role, input);
+            const result = await op.Execute(user.permission, user.role, input);
 
-            if (!result) {
+            if (result === undefined) {
                 return returnProperInvalidResponse(req, res);
             }
             return next();
