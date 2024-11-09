@@ -11,16 +11,21 @@ import {
     ALL_PERMISSIONS,
     ALL_ROLES,
     ALLOW_D,
+    ALLOW_S,
     ALLOW_U,
     DEFAULT_UID,
     EditablePackageFields,
     Permission,
+    RegistrySearchResult,
     Role,
+    SearchQuery_ByCarat,
+    SearchQuery_ByRange,
+    SearchQuery_ByRegex,
+    SearchQuery_ByTilde,
     UpdatePackageRequest,
 } from "./subdir.const";
-import { token } from "../../Middleware/ManagementToken";
-import { MongoClient, Filter, ObjectId, Document } from "mongodb";
-import { Package } from "../../Types/Models";
+import { MongoClient, Filter, ObjectId, Document, FindCursor } from "mongodb";
+import { Package, PackageMetaData } from "../../Types/Models";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 
@@ -49,6 +54,23 @@ namespace ExInput {
         permission: 0,
         role: 0,
         username: "",
+    };
+
+    export const search_range: SearchQuery_ByRange = {
+        earliest: "0.1.0",
+        latest: "2.8.5",
+    };
+
+    export const search_regex: SearchQuery_ByRegex = {
+        // Anthony's work goes here
+    };
+
+    export const search_carat: SearchQuery_ByCarat = {
+        // Jorge's work here
+    };
+
+    export const search_tilde: SearchQuery_ByTilde = {
+        // Jorge's work here
     };
 }
 
@@ -188,6 +210,66 @@ export namespace User {
         return Array.isArray(requests) ? UpdateMany_Unrestricted(requests) : UpdateOne_Unrestricted(requests);
     }
 
+    async function UnrestrictedSearchBy_Exact(criteria: string): Promise<RegistrySearchResult | undefined> {
+        const client = new MongoClient(URI);
+        try {
+            client.connect();
+            const database = client.db(MAIN_DB);
+            const collection = database.collection(PACKAGE_COLLECTION_NAME);
+
+            const cursor = collection.find({ version: criteria });
+            const matches: FindCursor<PackageMetaData> = cursor.project({
+                metadata: 1,
+            });
+            return await matches.toArray();
+        } catch (error) {
+            LogDebug("A write to the package database failed.");
+            return undefined;
+        } finally {
+            client.close();
+        }
+    }
+
+    async function UnrestrictedSearchBy_SimpleRange(
+        criteria: SearchQuery_ByRange
+    ): Promise<RegistrySearchResult | undefined> {
+        const client = new MongoClient(URI);
+        try {
+            client.connect();
+            const database = client.db(MAIN_DB);
+            const collection = database.collection(PACKAGE_COLLECTION_NAME);
+
+            const cursor = collection.find({ version: { $gte: criteria.earliest, $lte: criteria.latest } });
+            const matches: FindCursor<PackageMetaData> = cursor.project({
+                metadata: 1,
+            });
+            return await matches.toArray();
+        } catch (error) {
+            LogDebug("A write to the package database failed.");
+            return undefined;
+        } finally {
+            client.close();
+        }
+    }
+
+    async function UnrestrictedSearchBy_Regex(
+        criteria: SearchQuery_ByRegex
+    ): Promise<RegistrySearchResult | undefined> {
+        return undefined;
+    }
+
+    async function UnrestrictedSearchBy_Tilde(
+        criteria: SearchQuery_ByTilde
+    ): Promise<RegistrySearchResult | undefined> {
+        return undefined;
+    }
+
+    async function UnrestrictedSearchBy_Carat(
+        criteria: SearchQuery_ByCarat
+    ): Promise<RegistrySearchResult | undefined> {
+        return undefined;
+    }
+
     // ========================= Private Helpers Above + Exported Functions Below =========================
 
     export const UploadPackage = new OpUnderRestriction<boolean>(
@@ -217,6 +299,41 @@ export namespace User {
         ALL_ROLES,
         ExInput.packageDownload
     );
+
+    export const SearchBy_Exact = new OpUnderRestriction<RegistrySearchResult | undefined>(
+        UnrestrictedSearchBy_Exact,
+        ALLOW_S,
+        ALL_ROLES,
+        "7.7.7"
+    );
+
+    export const SearchBy_Range = new OpUnderRestriction<RegistrySearchResult | undefined>(
+        UnrestrictedSearchBy_SimpleRange,
+        ALLOW_S,
+        ALL_ROLES,
+        ExInput.search_range
+    );
+
+    export const SearchBy_Regex = new OpUnderRestriction<RegistrySearchResult | undefined>(
+        UnrestrictedSearchBy_Regex,
+        ALLOW_S,
+        ALL_ROLES,
+        ExInput.search_regex
+    );
+
+    export const SearchBy_Carat = new OpUnderRestriction<RegistrySearchResult | undefined>(
+        UnrestrictedSearchBy_Carat,
+        ALLOW_S,
+        ALL_ROLES,
+        ExInput.search_carat
+    );
+
+    export const SearchBy_Tilde = new OpUnderRestriction<RegistrySearchResult | undefined>(
+        UnrestrictedSearchBy_Tilde,
+        ALLOW_S,
+        ALL_ROLES,
+        ExInput.search_tilde
+    );
 }
 
 // ========================= System-Reset Related Operations =========================
@@ -224,6 +341,9 @@ export namespace User {
     async function DeleteAllUsers(): Promise<boolean> {
         // Retrieve all user IDs
         const userIDs = await Auth0_Database.SELECT_UID();
+        if (!userIDs) {
+            return false;
+        }
         let failures = 0;
 
         // Delete each user individually

@@ -15,9 +15,9 @@ import mongoose from "mongoose";
 import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
-import { Permission, Role } from "./Classes/Users/subdir.const";
-import { Auth0_Database, RegistrationInfo } from "./Providers/Auth0/Auth0_DB";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
+import { Test_Auth0 } from "../Tests/ManualTests/DatabaseCommunications";
+import { Auth0_Database } from "./Providers/Auth0/Auth0_DB";
 
 dotenv.config();
 
@@ -102,8 +102,10 @@ async function RunDemo_ModEval() {
 }
 
 async function Execute() {
-    GenerateManagementToken();
-    await runServer();
+    await GenerateManagementToken();
+    await Test_Auth0();
+    //console.log(await Auth0_Database.SELECT_UID());
+    //await runServer();
 }
 
 Execute();

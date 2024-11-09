@@ -1,8 +1,9 @@
-import { UpdatePackageContentRequest } from "RequestTypes";
+import { UpdatePackageContentRequest, VersionPackageRequest } from "RequestTypes";
 import asyncHandler from "../Middleware/asyncHandler";
 import { UpdatePackageViaIDResponse, UpdatePackageViaIDResponseMessages } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
+import { User } from "../Classes/Users/User";
 
 // /package/{id}
 export const UpdatePackageViaIDController = asyncHandler(
@@ -29,6 +30,27 @@ export const UpdatePackageViaIDController = asyncHandler(
         }
 
         //something to signify the package didnt exist
+        let responseMesasge: UpdatePackageViaIDResponseMessages;
+
+        if (!DNE) {
+            responseMesasge = "Version is updated.";
+            res.status(200).send(responseMesasge);
+        } else {
+            responseMesasge = "Package does not exist.";
+            res.status(404).send(responseMesasge);
+        }
+    }
+);
+
+export const UpdatePackageController = asyncHandler(
+    async (req: VersionPackageRequest, res: UpdatePackageViaIDResponse, next: NextFunction) => {
+        //the id requested
+        const permission = req.body.permission;
+        const role = req.body.role;
+        const updateReqs = req.body.updateReqs;
+
+        const result = await User.VersionPackage.Execute(permission, role, updateReqs);
+        const DNE = result.returnVal == undefined;
         let responseMesasge: UpdatePackageViaIDResponseMessages;
 
         if (!DNE) {

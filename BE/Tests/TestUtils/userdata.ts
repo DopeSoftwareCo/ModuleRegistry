@@ -1,4 +1,4 @@
-import { RegistrationInfo } from "../../src/Providers/Auth0/Auth0_DB";
+import { RegistrationInfo } from "../../src/Providers/Auth0/Auth0_DB.types";
 import { Permission, Role } from "../../src/Classes/Users/subdir.const";
 // on-db
 const jorgeUID = "auth0|6726bfa8ba7c0c3e1bddb02f";

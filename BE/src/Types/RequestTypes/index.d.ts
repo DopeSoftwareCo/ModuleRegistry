@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { AuthenticationRequestModel, PackageData, PackageMetaData } from "../Models";
-import { Permission, Role } from "../../Classes/Users/subdir.const";
+import { Permission, Role, UpdatePackageRequest } from "../../Classes/Users/subdir.const";
+import { RequestForUserChanges } from "../../Providers/Auth0/Auth0_DB.types";
 
 declare module "RequestTypes" {
     export type TestRequestBody = {
@@ -37,6 +38,16 @@ declare module "RequestTypes" {
 
     export interface UpdatePackageContentRequest extends Request {
         body: UpdatePackageContentRequestBody;
+    }
+
+    export type UpdatePackageContentRequestBody = {
+        permission: number;
+        role: number;
+        changeRequests: UpdatePackageRequest | UpdatePackageRequest[];
+    };
+
+    export interface VersionPackageRequest extends Request {
+        body: VersionPackageRequestBody;
     }
 
     export interface DeletePackageByIDRequest extends Request {}
@@ -86,7 +97,9 @@ declare module "RequestTypes" {
     }
 
     export type DeleteUserRequestBody = {
-        id: string;
+        targetID: string;
+        permission: number;
+        role: number;
     };
 
     export interface DeleteUserRequest extends Reequest {
@@ -94,11 +107,9 @@ declare module "RequestTypes" {
     }
 
     export type UpdateUserRequestBody = {
-        id: string;
-        username?: string;
-        password?: string;
-        permission?: number;
-        role?: number;
+        permission: number;
+        role: number;
+        changeReq: RequestForUserChanges;
     };
 
     export interface UpdateUserRequest extends Request {

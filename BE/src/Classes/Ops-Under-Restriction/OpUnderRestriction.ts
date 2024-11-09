@@ -69,7 +69,7 @@ export class OpUnderRestriction<Output> {
         return match;
     }
 
-    async Execute(permission: Permission, role: Role, input?: any[]): Promise<Restricted_Return<Output>> {
+    async Execute(permission: Permission, role: Role, input?: any): Promise<Restricted_Return<Output>> {
         const proceed: boolean = this.VerifyPermission(permission) && this.VerifyRole(role);
         if (!proceed) {
             return UnathorizedCall;

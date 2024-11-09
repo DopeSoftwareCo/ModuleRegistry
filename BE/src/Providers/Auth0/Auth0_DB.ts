@@ -36,7 +36,6 @@ export namespace Auth0_Database {
                     },
                 }
             );
-            console.log(response.data);
             return response.data.user_id;
         } catch (error) {
             console.log(error);
@@ -127,8 +126,8 @@ export namespace Auth0_Database {
             return null;
         }
     }
-    export async function SELECT_UID() {
-        const response = await axios.get(`https://${auth0Domain}/api/v2/users`, {
+    export async function SELECT_UID(): Promise<string[] | undefined> {
+        const response = await axios.get<{ user_id: string }[]>(`https://${auth0Domain}/api/v2/users`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -139,7 +138,13 @@ export namespace Auth0_Database {
             },
         });
 
-        const userIDs = response.data.map((user: { user_id: string }) => user.user_id);
-        return userIDs;
+        if (!response) {
+            return undefined;
+        }
+        const data = response.data;
+        const all_ids = data.map<string>((entry: { user_id: string }, index: number) => {
+            return entry.user_id;
+        });
+        return all_ids;
     }
 }

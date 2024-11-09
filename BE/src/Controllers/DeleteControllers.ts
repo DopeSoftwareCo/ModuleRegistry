@@ -14,8 +14,8 @@ import {
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-import { Restricted_ResetSystem } from "../Classes/Ops-Under-Restriction/RestrictedOps/ResetSystem";
-import { UnathorizedCall } from "../Classes/Ops-Under-Restriction/OpUnderRestriction";
+import { User } from "../Classes/Users/User";
+import { Permission, Role } from "../Classes/Users/subdir.const";
 // /reset
 
 export const ResetControllerDANGER = asyncHandler(
@@ -23,7 +23,7 @@ export const ResetControllerDANGER = asyncHandler(
         const perm = req.body.permission;
         const role = req.body.role;
 
-        const result = await Restricted_ResetSystem.Execute([], perm, role);
+        const result = await User.ClearRegistry.Execute(perm, role);
         const unathorized = result.failedToAuthorize;
 
         //this type is a union of our return strings
@@ -42,12 +42,10 @@ export const ResetControllerDANGER = asyncHandler(
 export const DeletePackageByIDController = asyncHandler(
     async (req: DeletePackageByIDRequest, res: DeletePackageViaIDResponse, next: NextFunction) => {
         const packageID = req.params.id;
-        //use id to delete
-        //your code here
+        const perm = Permission._000;
+        const role = Role.Unknown;
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //something that signifies it does not exist
-        const DNE = false;
+        const DNE = await User.RemoveFromRegistry.Execute(perm, role, packageID);
         let responseMessage: DeletePackageViaIDResponseMessages;
         if (!DNE) {
             responseMessage = "Package is deleted.";

@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoDb";
+import { PackageMetaData } from "../../Types/Models";
 
 export enum Role {
     Unknown = 0,
@@ -46,3 +47,24 @@ export enum UpdateType {
     Minor = 1,
     Patch = 2,
 }
+
+export enum SearchType {
+    Exact = 0,
+    SimpleRange = 1,
+    Regex = 2,
+    Tilde = 3,
+    Carat = 4,
+}
+
+export type SearchQuery_ByRange = {
+    latest: string;
+    earliest: string;
+};
+
+export type SearchQuery_ByRegex = {};
+
+export type SearchQuery_ByTilde = {};
+
+export type SearchQuery_ByCarat = {};
+
+export type RegistrySearchResult = Array<PackageMetaData>;

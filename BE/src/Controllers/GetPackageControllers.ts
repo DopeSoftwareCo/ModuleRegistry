@@ -25,7 +25,10 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
+import { ObjectId } from "mongoDb";
+import { User } from "../Classes/Users/User";
 
+const example_PackageID = new ObjectId(0);
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
@@ -35,9 +38,11 @@ export const GetPackagesFromRegistryController = asyncHandler(
 
         //^^^^^^^^^^^^^^^^
         //should return back to here a typed arr like this, this is metadata ab the package
+
+        // Tim's Work
         const responseBody: GetPackagesResponseBody = [
-            { Version: "Some version", Name: "Some name", ID: "Some ID" },
-            { Version: "Some version", Name: "Some name", ID: "Some ID" },
+            { Version: "Some version", Name: "Some name", ID: example_PackageID },
+            { Version: "Some version", Name: "Some name", ID: example_PackageID },
         ];
         //something to signify too many packages were returned
         const tooManyreturned = false;
