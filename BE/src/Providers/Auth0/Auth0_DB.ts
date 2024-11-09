@@ -3,53 +3,10 @@ dotenv.config();
 
 import axios from "axios";
 import { LogDebug } from "../Utils/Log";
-import { User } from "../../Classes/Users/User";
-import { Admin } from "../../Classes/Users/Admin";
 import { token } from "../../Middleware/ManagementToken";
-import { Permission, Role } from "../../Classes/Users/subdir.const";
+import { Auth0User, RegistrationInfo, RequestForUserChanges, UpdateUserRequest } from "./Auth0_DB.types";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
-
-export interface RegistrationInfo {
-    email: string;
-    password: string;
-    permission: Permission;
-    role: Role;
-    username: string;
-}
-
-export interface RequestForUserChanges {
-    username?: string;
-    password?: string;
-    permission?: number;
-    role?: number;
-}
-
-interface Auth0User {
-    user_id: string;
-    name: string;
-    email: string;
-    username: string;
-    user_metadata: {
-        permission: number;
-        role: number;
-    };
-    created_at?: string;
-    last_login?: string;
-    logins_count?: number;
-}
-
-interface UpdateUserRequest {
-    user_id?: string;
-    name?: string;
-    email?: string;
-    username?: string;
-    user_metadata: {
-        permission?: number;
-        role?: number;
-    };
-    password?: string;
-}
 
 export namespace Auth0_Database {
     export async function INSERT(info: RegistrationInfo): Promise<string | undefined> {
@@ -107,7 +64,7 @@ export namespace Auth0_Database {
         }
     }
 
-    export async function UPDATE(uid: string, changes: RequestForUserChanges): Promise<boolean> {
+    export async function UPDATE(request: RequestForUserChanges): Promise<boolean> {
         if (!token) {
             throw new Error("Management token is not available");
         }
@@ -116,20 +73,20 @@ export namespace Auth0_Database {
             const updateData: UpdateUserRequest = { user_metadata: {} };
             let changeCount = 0;
             // Only include properties that have been provided
-            if (changes.username) {
-                updateData.username = changes.username;
+            if (request.username) {
+                updateData.username = request.username;
                 ++changeCount;
             }
-            if (changes.password) {
-                updateData.password = changes.password;
+            if (request.password) {
+                updateData.password = request.password;
                 ++changeCount;
             }
-            if (changes.permission) {
-                updateData.user_metadata.permission = changes.permission;
+            if (request.permission) {
+                updateData.user_metadata.permission = request.permission;
                 ++changeCount;
             }
-            if (changes.role) {
-                updateData.user_metadata.role = changes.role;
+            if (request.role) {
+                updateData.user_metadata.role = request.role;
                 ++changeCount;
             }
 
@@ -140,7 +97,7 @@ export namespace Auth0_Database {
                 return false;
             }
 
-            await axios.patch(`https://${auth0Domain}/api/v2/users/${uid}`, updateData, {
+            await axios.patch(`https://${auth0Domain}/api/v2/users/${request.uid}`, updateData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -155,7 +112,7 @@ export namespace Auth0_Database {
         }
     }
 
-    export async function LOAD(uid: string): Promise<User | null> {
+    export async function LOAD(uid: string): Promise<Auth0User | null> {
         try {
             const response = await axios.get<Auth0User>(`https://${auth0Domain}/api/v2/users/${uid}`, {
                 headers: {
@@ -163,16 +120,7 @@ export namespace Auth0_Database {
                 },
             });
 
-            const data = response.data;
-            console.log(data);
-            const user = new User(
-                data.user_id,
-                data.email,
-                data.user_metadata.permission,
-                data.user_metadata.role,
-                data.username
-            );
-            return user;
+            return response.data;
         } catch (error) {
             LogDebug("Error fetching user info from Auth0:");
             console.log(error);

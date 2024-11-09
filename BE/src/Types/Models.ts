@@ -18,7 +18,7 @@ export interface Package {
     data: PackageData;
 }
 
-export interface User {
+export interface UserType {
     name: string;
     isAdmin: boolean;
 }
@@ -55,14 +55,14 @@ export interface PackageCost {
 export type HistoryActions = "CREATE" | "UPDATE" | "DOWNLOAD" | "RATE";
 
 export interface PackageHistoryEntry {
-    User: User;
+    User: UserType;
     Date: Date;
     PackageMetaData: PackageMetaData;
     Action: HistoryActions;
 }
 
 export interface AuthenticationRequestModel {
-    User: User;
+    User: UserType;
     Secret: UserAuthenticationInfo;
 }
 

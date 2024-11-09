@@ -5,7 +5,7 @@ import {
     PackageHistoryEntry,
     PackageMetaData,
     PackageRating,
-    User,
+    UserType,
 } from "../Models";
 
 declare module "ResponseTypes" {

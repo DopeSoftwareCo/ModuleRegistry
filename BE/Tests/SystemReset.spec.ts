@@ -1,6 +1,6 @@
 import { jest, beforeEach, describe, expect, it, beforeAll } from "@jest/globals";
 import { Permission, Role } from "../src/Classes/Users/subdir.const";
-import { UnathorizedCall, RestrictedOp } from "../src/Classes/RestrictedOperations/RestrictedOp";
+import { UnathorizedCall, OpUnderRestriction } from "../src/Classes/Ops-Under-Restriction/OpUnderRestriction";
 import { setFakeToken } from "../src/Middleware/ManagementToken";
 
 // Mocking everything by hand, because Jest and GPT are useless
@@ -22,7 +22,7 @@ const mocked_Op_SystemReset = async (args: any[]): Promise<string> => {
     return "Completed mock call";
 };
 
-const mocked_SystemReset = new RestrictedOp<string>(
+const mocked_SystemReset = new OpUnderRestriction<string>(
     ["string", "string", "string", false],
     mocked_Op_SystemReset,
     [Permission._111],

@@ -14,8 +14,8 @@ import {
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/ResetSystem";
-import { UnathorizedCall } from "../Classes/RestrictedOperations/RestrictedOp";
+import { Restricted_ResetSystem } from "../Classes/Ops-Under-Restriction/RestrictedOps/ResetSystem";
+import { UnathorizedCall } from "../Classes/Ops-Under-Restriction/OpUnderRestriction";
 // /reset
 
 export const ResetControllerDANGER = asyncHandler(
