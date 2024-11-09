@@ -1,7 +1,6 @@
 import { Auth0_Database } from "../../Providers/Auth0/Auth0_DB";
-import { Permission, UDS } from "./subdir.const";
+import { Permission, UDS, Role } from "./subdir.const";
 import { ToUDS, ToPermissionNumber } from "./subdir.utils";
-import { Role } from "./subdir.const";
 
 export class User {
     protected readonly uid: string;

@@ -3,12 +3,11 @@
     "version": "1.0.0",
     "main": "src/index.ts",
     "scripts": {
-        "build": "npx tsc",
+        "build": "npm install typescript && npx tsc",
         "start": "node dist/index.js",
         "dev": "npx kill-port 3000 && nodemon --delay 1000ms",
         "test": "npm install && npm run test:jest:verbose",
-        "test:jest:verbose": "jest --verbose --config jest.config.verbose.js",
-        "posttest": "node dist/TestUtils/posttest.js"
+        "test:jest:verbose": "jest --verbose --config jest.config.verbose.js"
     },
     "keywords": [],
     "author": "",
@@ -51,7 +50,7 @@
         "john-leidy-prettier-config": "^1.0.0",
         "ts-jest": "^29.2.5",
         "ts-node": "^10.9.2",
-        "typescript": "^5.5.4"
+        "typescript": "^5.6.3"
     },
     "prettier": "john-leidy-prettier-config"
 }
