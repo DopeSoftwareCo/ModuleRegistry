@@ -127,4 +127,19 @@ export namespace Auth0_Database {
             return null;
         }
     }
+    export async function SELECT_UID() {
+        const response = await axios.get(`https://${auth0Domain}/api/v2/users`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            params: {
+                fields: "user_id",
+                include_fields: true,
+                per_page: 100, // Adjust this to fetch more or less per request
+            },
+        });
+
+        const userIDs = response.data.map((user: { user_id: string }) => user.user_id);
+        return userIDs;
+    }
 }

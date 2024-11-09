@@ -1,4 +1,4 @@
-import { Version } from "../Classes/Users/User_PackageOps";
+import { Version } from "./Version";
 import { Package } from "../Types/Models";
 
 enum SearchType {
@@ -22,53 +22,22 @@ type SearchByTilde = {};
 
 type SearchByCarat = {};
 
-async function FilterVersions(
-    searchBy: SearchType,
-    criteria: RegistrySearch
-): Promise<Package[] | undefined> {
-    try {
-        // Tim's content here
-        let result;
-        switch (searchBy) {
-            case SearchType.Exact:
-                result = SearchBy_Exact(critera);
-                break;
-            case SearchType.Exact:
-                result = SearchBy_SimpleRange(critera);
-                break;
-            case SearchType.Exact:
-                result = SearchBy_Regex(critera);
-                break;
-            case SearchType.Exact:
-                result = SearchBy_Tilde(critera);
-                break;
-            case SearchType.Exact:
-                result = SearchBy_Carat(critera);
-                break;
-            default:
-                return undefined;
-        }
-    } catch (error) {
-        return undefined;
-    }
-}
-
-async function SearchBy_Exact(critera: Version): Promise<Package | undefined> {
+async function SearchBy_Exact(critera: string): Promise<Package | undefined> {
     return undefined;
 }
 
-async function SearchBy_SimpleRange(critera: Version): Promise<Package[] | undefined> {
+async function SearchBy_SimpleRange(critera: SearchByRange): Promise<Package[] | undefined> {
     return undefined;
 }
 
-async function SearchBy_Regex(critera: Version): Promise<Package[] | undefined> {
+async function SearchBy_Regex(critera: SearchByRegex): Promise<Package[] | undefined> {
     return undefined;
 }
 
-async function SearchBy_Tilde(critera: Version): Promise<Package[] | undefined> {
+async function SearchBy_Tilde(critera: SearchByTilde): Promise<Package[] | undefined> {
     return undefined;
 }
 
-async function SearchBy_Carat(critera: Version): Promise<Package[] | undefined> {
+async function SearchBy_Carat(critera: SearchByCarat): Promise<Package[] | undefined> {
     return undefined;
 }

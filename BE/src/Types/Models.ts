@@ -1,8 +1,10 @@
+import { ObjectId } from "mongoDb";
+
 export type PackageMetaData = {
     //only typical keyboard characters, * is reserved
     Name: string;
     Version: string;
-    ID: string;
+    ID: ObjectId;
 };
 
 export type PackageData = {

@@ -1,5 +1,4 @@
-import { ObjectId } from "mongoose";
-import { RegistrationInfo, RequestForUserChanges } from "../../Providers/Auth0/Auth0_DB.types";
+import { ObjectId } from "mongoDb";
 
 export enum Role {
     Unknown = 0,
@@ -26,16 +25,7 @@ export const ALLOW_U: Permission[] = [Permission._111, Permission._110, Permissi
 export const ALLOW_D: Permission[] = [Permission._111, Permission._110, Permission._011, Permission._010];
 export const ALLOW_S: Permission[] = [Permission._111, Permission._101, Permission._011, Permission._001];
 
-const roles_upload = [Role.Admin, Role.Internal, Role.External];
-const exInput_upload = "package";
-const exInput_download = "uid";
-const exInput_search = "search criteria";
-
-const URI = "uri";
-const PACKAGE_COLLECTION_NAME = "Packages";
-const DEFAULT_UID = "abc";
-const MAIN_DB = "SWEdb";
-const MAIN_COLLECTION = "Packages";
+export const DEFAULT_UID = "someLongString";
 
 export interface UpdatePackageRequest extends EditablePackageFields {
     ID: ObjectId;
@@ -50,22 +40,6 @@ export interface EditablePackageFields {
         debloat?: boolean;
     };
 }
-
-const EMPTY_CHANGEREQ: RequestForUserChanges = {
-    uid: "uid",
-    username: undefined,
-    password: undefined,
-    role: 0,
-    permission: 0,
-};
-
-const EMPTY_REGISTRATION: RegistrationInfo = {
-    email: "",
-    password: "",
-    permission: 0,
-    role: 0,
-    username: "",
-};
 
 export enum UpdateType {
     Major = 0,

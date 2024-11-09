@@ -1,4 +1,3 @@
-import { User } from "../Classes/Users/User._ResetSystem";
 import { UserType } from "../Types/Models";
 
 export interface Version {

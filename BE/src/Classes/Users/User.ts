@@ -9,60 +9,33 @@ import axios from "axios";
 import { LogDebug } from "../../Providers/Utils/Log";
 import {
     ALL_PERMISSIONS,
+    ALL_ROLES,
+    ALLOW_D,
+    ALLOW_U,
+    DEFAULT_UID,
     EditablePackageFields,
     Permission,
     Role,
     UpdatePackageRequest,
 } from "./subdir.const";
 import { token } from "../../Middleware/ManagementToken";
-import {
-    MongoClient,
-    Filter,
-    ObjectId,
-    Document,
-    UpdateFilter,
-    MatchKeysAndValues,
-    UpdateResult,
-} from "mongodb";
-import { AsyncLoops } from "../../DSinc_Modules/DSinc_LoopsMaps";
+import { MongoClient, Filter, ObjectId, Document } from "mongodb";
+import { Package } from "../../Types/Models";
 
-namespace LocalConst {
-    export const roles_upload = [Role.Admin, Role.Internal, Role.External];
-    export const exInput_upload = "package";
+const auth0Domain = process.env.AUTH0_DOMAIN;
 
-    // Role: unrestricted
-    export const roles_download = undefined;
-    export const exInput_download = "uid";
+export const URI = "uri";
+export const MAIN_DB = "SWEdb";
+export const PACKAGE_COLLECTION_NAME = "Packages";
 
-    // Role: unrestricted
-    export const roles_search = undefined;
-    export const exInput_search = "search criteria";
+namespace ExInput {
+    export const packageDownload = "uid";
+    export const packageSearch = "search criteria";
+    export const packageUpload: EditablePackageFields | EditablePackageFields[] = [];
+    export const packageVersioning: UpdatePackageRequest | UpdatePackageRequest[] = [];
+    export const packageRemoval: ObjectId | ObjectId[] = [];
 
-    export const URI = "uri";
-    export const MAIN_DB = "SWEdb";
-    export const PACKAGE_COLLECTION_NAME = "Packages";
-
-    export enum UpdateType {
-        Major = 0,
-        Minor = 1,
-        Patch = 2,
-    }
-
-    export interface UpdatePackageRequest extends EditablePackageFields {
-        ID: ObjectId;
-    }
-
-    export interface EditablePackageFields {
-        fields: {
-            Name?: string;
-            Content?: string;
-            URL?: string;
-            JSProgram?: string;
-            debloat?: boolean;
-        };
-    }
-
-    export const EMPTY_CHANGEREQ: RequestForUserChanges = {
+    export const empty_changeReq: RequestForUserChanges = {
         uid: "uid",
         username: undefined,
         password: undefined,
@@ -70,7 +43,7 @@ namespace LocalConst {
         permission: 0,
     };
 
-    export const EMPTY_REGISTRATION: RegistrationInfo = {
+    export const empty_registration: RegistrationInfo = {
         email: "",
         password: "",
         permission: 0,
@@ -81,12 +54,11 @@ namespace LocalConst {
 
 // ========================= Profile Operations =========================
 export namespace User {
-    // ========================= Profile-Related Operations =========================
     export const RegisterProfile = new OpUnderRestriction<string | undefined>(
         Auth0_Database.INSERT,
         ALL_PERMISSIONS,
         [Role.Admin],
-        LocalConst.EMPTY_REGISTRATION
+        ExInput.empty_registration
     );
 
     export const DeleteProfile = new OpUnderRestriction<boolean>(
@@ -100,23 +72,22 @@ export namespace User {
         Auth0_Database.UPDATE,
         ALL_PERMISSIONS,
         [Role.Admin],
-        LocalConst.EMPTY_CHANGEREQ
+        ExInput.empty_changeReq
     );
 }
 
 // ========================= Package-Related Operations =========================
 export namespace User {
-    // ========================= Unexported, Unrestricted] Package-Related Operations =========================
     async function Upload_Unrestricted(
         submission: EditablePackageFields | EditablePackageFields[]
     ): Promise<boolean> {
-        const client = new MongoClient(LocalConst.URI);
+        const client = new MongoClient(URI);
         const multiUpload = Array.isArray(submission);
 
         try {
             client.connect();
-            const database = client.db(LocalConst.MAIN_DB);
-            const collection = database.collection(LocalConst.PACKAGE_COLLECTION_NAME);
+            const database = client.db(MAIN_DB);
+            const collection = database.collection(PACKAGE_COLLECTION_NAME);
 
             const result = multiUpload
                 ? await collection.insertMany(submission)
@@ -132,12 +103,12 @@ export namespace User {
     }
 
     async function UpdateMany_Unrestricted(requests: UpdatePackageRequest[]): Promise<boolean> {
-        const client = new MongoClient(LocalConst.URI);
+        const client = new MongoClient(URI);
 
         try {
             client.connect();
-            const database = client.db(LocalConst.MAIN_DB);
-            const collection = database.collection(LocalConst.PACKAGE_COLLECTION_NAME);
+            const database = client.db(MAIN_DB);
+            const collection = database.collection(PACKAGE_COLLECTION_NAME);
             let result;
             let acknowledgedCount = 0;
 
@@ -160,12 +131,12 @@ export namespace User {
     }
 
     async function UpdateOne_Unrestricted(request: UpdatePackageRequest): Promise<boolean> {
-        const client = new MongoClient(LocalConst.URI);
+        const client = new MongoClient(URI);
 
         try {
             client.connect();
-            const database = client.db(LocalConst.MAIN_DB);
-            const collection = database.collection(LocalConst.PACKAGE_COLLECTION_NAME);
+            const database = client.db(MAIN_DB);
+            const collection = database.collection(PACKAGE_COLLECTION_NAME);
 
             const result = await collection.updateOne(
                 { _id: request.ID },
@@ -183,7 +154,7 @@ export namespace User {
     }
 
     async function RemovePackages(targets: ObjectId | ObjectId[]): Promise<boolean> {
-        const client = new MongoClient(LocalConst.URI);
+        const client = new MongoClient(URI);
         const multiDelete = Array.isArray(targets);
         const filter: Filter<Document> = {
             _id: targets,
@@ -191,8 +162,8 @@ export namespace User {
 
         try {
             client.connect();
-            const database = client.db(LocalConst.MAIN_DB);
-            const collection = database.collection(LocalConst.PACKAGE_COLLECTION_NAME);
+            const database = client.db(MAIN_DB);
+            const collection = database.collection(PACKAGE_COLLECTION_NAME);
             let result;
 
             result = multiDelete ? await collection.deleteMany(filter) : await collection.deleteOne(filter);
@@ -205,56 +176,54 @@ export namespace User {
         }
     }
 
-    async function Downlod_Unrestricted(packageID: string[]): Promise<EditablePackageFields | undefined> {
+    async function Download_Unrestricted(packageID: string[]): Promise<Package | undefined> {
         try {
             // Ben's content here
         } catch (error) {
             return undefined;
         }
     }
+
+    function UpdatePackageVersions(requests: UpdatePackageRequest | UpdatePackageRequest[]) {
+        return Array.isArray(requests) ? UpdateMany_Unrestricted(requests) : UpdateOne_Unrestricted(requests);
+    }
+
+    // ========================= Private Helpers Above + Exported Functions Below =========================
+
+    export const UploadPackage = new OpUnderRestriction<boolean>(
+        Upload_Unrestricted,
+        ALLOW_U,
+        [Role.External, Role.Internal, Role.Admin],
+        ExInput.packageUpload
+    );
+
+    export const VersionPackage = new OpUnderRestriction<boolean>(
+        UpdatePackageVersions,
+        ALLOW_U,
+        ALL_ROLES,
+        ExInput.packageVersioning
+    );
+
+    export const RemoveFromRegistry = new OpUnderRestriction<boolean>(
+        RemovePackages,
+        [Permission._111],
+        [Role.Admin],
+        ExInput.packageRemoval
+    );
+
+    export const DownloadPackage = new OpUnderRestriction<Package | undefined>(
+        Download_Unrestricted,
+        ALLOW_D,
+        ALL_ROLES,
+        ExInput.packageDownload
+    );
 }
 
 // ========================= System-Reset Related Operations =========================
 export namespace User {
-    // ========================= [Unexported, Unrestricted] Reset Ops =========================
-    async function ResetSystem_Unrestricted(args: any[]): Promise<boolean> {
-        if (!process.env.MONGODB_URL) {
-            throw new Error("Missing env variable MONGO_URL");
-        }
-
-        try {
-            const deletedAll = await DeleteAllUsers();
-            await ClearAllPackages(
-                process.env.MONGODB_URL,
-                LocalConst.MAIN_DB,
-                LocalConst.PACKAGE_COLLECTION_NAME
-            );
-            return deletedAll;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    // ========================= System Resert Operations =========================
-    export async function GetAllUserIDs() {
-        const response = await axios.get(`https://YOUR_AUTH0_DOMAIN/api/v2/users`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            params: {
-                fields: "user_id",
-                include_fields: true,
-                per_page: 100, // Adjust this to fetch more or less per request
-            },
-        });
-
-        const userIDs = response.data.map((user: { user_id: string }) => user.user_id);
-        return userIDs;
-    }
-
-    export async function DeleteAllUsers(): Promise<boolean> {
+    async function DeleteAllUsers(): Promise<boolean> {
         // Retrieve all user IDs
-        const userIDs = await GetAllUserIDs();
+        const userIDs = await Auth0_Database.SELECT_UID();
         let failures = 0;
 
         // Delete each user individually
@@ -263,7 +232,7 @@ export namespace User {
                 continue;
             }
             try {
-                await axios.delete(`https://YOUR_AUTH0_DOMAIN/api/v2/users/${uid}`, {
+                await axios.delete(`https://${auth0Domain}/api/v2/users/${uid}`, {
                     headers: {
                         Authorization: `Bearer ${Token}}`,
                     },
@@ -277,17 +246,13 @@ export namespace User {
         return failures == 0;
     }
 
-    export async function ClearAllPackages(
-        uri: string,
-        databaseName: string,
-        collectionName: string
-    ): Promise<void> {
-        const client = new MongoClient(uri);
+    async function ClearAllPackages(): Promise<void> {
+        const client = new MongoClient(URI);
 
         try {
             await client.connect();
-            const database = client.db(databaseName);
-            const collection = database.collection(collectionName);
+            const database = client.db(MAIN_DB);
+            const collection = database.collection(PACKAGE_COLLECTION_NAME);
             // Retrieve all package IDs
             const packages = await collection.find({}, { projection: { packageID: 1, _id: 0 } }).toArray();
             const packageIDs = packages.map((pkg) => pkg.packageID);
@@ -303,8 +268,36 @@ export namespace User {
         }
     }
 
+    async function ResetSystem_Unrestricted(args: any[]): Promise<boolean> {
+        if (!process.env.MONGODB_URL) {
+            throw new Error("Missing env variable MONGO_URL");
+        }
+
+        try {
+            const deletedAll = await DeleteAllUsers();
+            await ClearAllPackages();
+            return deletedAll;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    // ========================= Private Helpers Above + Exported Functions Below =========================
+
     export const ResetSystem = new OpUnderRestriction<boolean>(
         ResetSystem_Unrestricted,
+        [Permission._111],
+        [Role.Admin]
+    );
+
+    export const ClearRegistry = new OpUnderRestriction<void>(
+        ClearAllPackages,
+        [Permission._111],
+        [Role.Admin]
+    );
+
+    export const EmptyUserDatabase = new OpUnderRestriction<boolean>(
+        DeleteAllUsers,
         [Permission._111],
         [Role.Admin]
     );
