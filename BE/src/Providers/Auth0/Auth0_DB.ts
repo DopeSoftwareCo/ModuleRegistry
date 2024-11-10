@@ -127,24 +127,30 @@ export namespace Auth0_Database {
         }
     }
     export async function SELECT_UID(): Promise<string[] | undefined> {
-        const response = await axios.get<{ user_id: string }[]>(`https://${auth0Domain}/api/v2/users`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            params: {
-                fields: "user_id",
-                include_fields: true,
-                per_page: 100, // Adjust this to fetch more or less per request
-            },
-        });
+        try {
+            const response = await axios.get<Auth0User[]>(`https://${auth0Domain}/api/v2/users`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                params: {
+                    //fields: "user_id",
+                    include_fields: true,
+                    per_page: 100, // Adjust this to fetch more or less per request,
+                },
+            });
 
-        if (!response) {
-            return undefined;
+            if (!response) {
+                return undefined;
+            }
+            const data = response.data;
+            console.log(data);
+
+            const all_ids = data.map<string>((user: Auth0User, index: number) => {
+                return user.user_id;
+            });
+            return all_ids;
+        } catch (error) {
+            console.error(error);
         }
-        const data = response.data;
-        const all_ids = data.map<string>((entry: { user_id: string }, index: number) => {
-            return entry.user_id;
-        });
-        return all_ids;
     }
 }

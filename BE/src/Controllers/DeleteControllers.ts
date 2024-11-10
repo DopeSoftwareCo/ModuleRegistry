@@ -16,6 +16,7 @@ import {
 import { NextFunction } from "express";
 import { User } from "../Classes/Users/User";
 import { Permission, Role } from "../Classes/Users/subdir.const";
+import { returnProperInvalidResponse } from "../Middleware/Auth";
 // /reset
 
 export const ResetControllerDANGER = asyncHandler(
@@ -45,8 +46,14 @@ export const DeletePackageByIDController = asyncHandler(
         const perm = Permission._000;
         const role = Role.Unknown;
 
-        const DNE = await User.RemoveFromRegistry.Execute(perm, role, packageID);
+        const result = await User.RemoveFromRegistry.Execute(perm, role, packageID);
+        if (result.failedToAuthorize) {
+            return returnProperInvalidResponse;
+        }
+
         let responseMessage: DeletePackageViaIDResponseMessages;
+        const DNE = result.returnVal;
+
         if (!DNE) {
             responseMessage = "Package is deleted.";
             res.status(200).send(responseMessage);

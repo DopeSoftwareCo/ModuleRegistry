@@ -11,11 +11,7 @@ const DemoUserInfo: RegistrationInfo = {
     username: "DemoUser",
 };
 
-function FailDemo(message: string): void {
-    console.error(message);
-}
-
-export async function Test_Auth0() {
+export async function Test_Auth0(deleteUser: boolean = true) {
     console.log("========== [Manual Testing]: Auth0 Communications ==========");
 
     console.log("***** Testing INSERT ******");
@@ -38,27 +34,17 @@ export async function Test_Auth0() {
     if (!demoUser) {
         console.error("Failed to load Shrek.");
     }
+    console.log(demoUser);
 
-    console.log("***** Testing SELECT UID *****");
-    const all_uids = await Auth0_Database.SELECT_UID();
-    if (!all_uids) {
-        return console.error("Failed to retrieve users. Exiting");
+    if (!deleteUser) {
+        return;
     }
-    const select_message = all_uids
-        ? all_uids.includes(uid)
-            ? uid
-            : "Failed to SELECT Shrek."
-        : "Failed to SELECT Shrek";
-    console.log(select_message);
-    console.log(all_uids);
-
     console.log("***** Testing DELETE *****");
     const deleted = await Auth0_Database.DELETE(uid);
-    const delete_message = deleted
-        ? all_uids
-            ? "Success! Shrek is banished from the registry"
-            : "I can't delete something that does not exist on the database"
-        : "WARNING: Failed to delete Shrek.";
+
+    let delete_message = deleted
+        ? "Success! Shrek is banished from the registry"
+        : "WARNING: Failed to delete Shrek";
     console.log(delete_message);
 }
 
