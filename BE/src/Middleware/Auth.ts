@@ -43,7 +43,8 @@ const processToken = (req: Request, res: Response, next: NextFunction) => {
         const decodedToken: jsonwebtoken.TokenType = jsonwebtoken.decode(token) as jsonwebtoken.TokenType;
         if (decodedToken && decodedToken?.permissions && decodedToken?.username) {
             req.username = decodedToken.username;
-            req.permissions = decodedToken.permissions;
+            req.userPermission = decodedToken.metadata.permission;
+            req.userRole = decodedToken.metadata.role;
             req.userID = decodedToken.id;
             req.decodedToken = decodedToken;
             return next();

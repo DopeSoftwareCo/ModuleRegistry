@@ -6,7 +6,8 @@ declare global {
         export interface Request {
             startTime?: Date;
             username?: string;
-            permissions?: string[];
+            userPermission?: number;
+            userRole?: number;
             requestedId?: string;
             userID?: string;
             decodedToken?: jsonwebtoken.TokenType;
