@@ -12,7 +12,8 @@ export const ALLOW_S: Permission[] = [Permission._111, Permission._101, Permissi
 interface InterpreterSpec<Type> {
     as: boolean;
     comparisonType: Comparison;
-    benchmark: Type;
+    benchmark: Type | number;
+    nestedCompare?: Comparison;
 }
 
 export class OpUnderRestriction<Output> {
@@ -82,7 +83,7 @@ export class OpUnderRestriction<Output> {
     }
 
     protected Interpret(ThisResult: Output, That: InterpreterSpec<Output>): boolean {
-        return this.interpreter(ThisResult, That.as, That.comparisonType, That.benchmark);
+        return this.interpreter(ThisResult, That.as, That.comparisonType, That.benchmark, That.nestedCompare);
     }
 
     get InterpreterSpec(): InterpreterSpec<Output> | undefined {
@@ -104,9 +105,12 @@ export class OpUnderRestriction<Output> {
             // And now we have "valid" input
             const returnVal = await this.op(input);
 
+            // Interpret the returnVal
             const interpretation = this.interpreterSpec
                 ? this.Interpret(returnVal, this.interpreterSpec)
                 : undefined;
+
+            // Return Restricted_Return
             return {
                 returnVal: returnVal,
                 interpretation: interpretation,

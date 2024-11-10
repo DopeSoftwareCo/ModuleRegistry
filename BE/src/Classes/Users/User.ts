@@ -26,6 +26,7 @@ import {
 } from "./subdir.const";
 import { MongoClient, Filter, ObjectId, Document, FindCursor } from "mongodb";
 import { Package, PackageMetaData } from "../../Types/Models";
+import { Comparison } from "../Ops-Under-Restriction/Interpretation";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 
@@ -80,21 +81,24 @@ export namespace User {
         Auth0_Database.INSERT,
         ALL_PERMISSIONS,
         [Role.Admin],
-        ExInput.empty_registration
+        ExInput.empty_registration,
+        { as: true, comparisonType: Comparison.Defined, benchmark: undefined }
     );
 
     export const DeleteProfile = new OpUnderRestriction<boolean>(
         Auth0_Database.DELETE,
         ALL_PERMISSIONS,
         [Role.Admin],
-        "some uid"
+        "some uid",
+        { as: true, comparisonType: Comparison.Equals, benchmark: true }
     );
 
     export const UpdateProfile = new OpUnderRestriction<boolean>(
         Auth0_Database.UPDATE,
         ALL_PERMISSIONS,
         [Role.Admin],
-        ExInput.empty_changeReq
+        ExInput.empty_changeReq,
+        { as: true, comparisonType: Comparison.Equals, benchmark: true }
     );
 }
 
@@ -274,63 +278,72 @@ export namespace User {
         Upload_Unrestricted,
         ALLOW_U,
         [Role.External, Role.Internal, Role.Admin],
-        ExInput.packageUpload
+        ExInput.packageUpload,
+        { as: true, comparisonType: Comparison.Equals, benchmark: true }
     );
 
     export const VersionPackage = new OpUnderRestriction<boolean>(
         UpdatePackageVersions,
         ALLOW_U,
         ALL_ROLES,
-        ExInput.packageVersioning
+        ExInput.packageVersioning,
+        { as: true, comparisonType: Comparison.Equals, benchmark: true }
     );
 
     export const RemoveFromRegistry = new OpUnderRestriction<boolean>(
         RemovePackages,
         [Permission._111],
         [Role.Admin],
-        ExInput.packageRemoval
+        ExInput.packageRemoval,
+        { as: true, comparisonType: Comparison.Equals, benchmark: true }
     );
 
     export const DownloadPackage = new OpUnderRestriction<Package | undefined>(
         Download_Unrestricted,
         ALLOW_D,
         ALL_ROLES,
-        ExInput.packageDownload
+        ExInput.packageDownload,
+        { as: true, comparisonType: Comparison.Defined, benchmark: undefined }
     );
 
     export const SearchBy_Exact = new OpUnderRestriction<RegistrySearchResult | undefined>(
         UnrestrictedSearchBy_Exact,
         ALLOW_S,
         ALL_ROLES,
-        "7.7.7"
+        "7.7.7",
+        { as: true, comparisonType: Comparison.Defined, benchmark: undefined }
     );
 
     export const SearchBy_Range = new OpUnderRestriction<RegistrySearchResult | undefined>(
         UnrestrictedSearchBy_SimpleRange,
         ALLOW_S,
         ALL_ROLES,
-        ExInput.search_range
+        ExInput.search_range,
+        { as: true, comparisonType: Comparison.Satisfies_ArrayNotEmpty, benchmark: undefined }
     );
 
     export const SearchBy_Regex = new OpUnderRestriction<RegistrySearchResult | undefined>(
         UnrestrictedSearchBy_Regex,
         ALLOW_S,
         ALL_ROLES,
-        ExInput.search_regex
+        ExInput.search_regex,
+        { as: true, comparisonType: Comparison.Satisfies_ArrayNotEmpty, benchmark: undefined }
     );
 
     export const SearchBy_Carat = new OpUnderRestriction<RegistrySearchResult | undefined>(
         UnrestrictedSearchBy_Carat,
         ALLOW_S,
         ALL_ROLES,
-        ExInput.search_carat
+        ExInput.search_carat,
+        { as: true, comparisonType: Comparison.Satisfies_ArrayNotEmpty, benchmark: undefined }
     );
 
     export const SearchBy_Tilde = new OpUnderRestriction<RegistrySearchResult | undefined>(
         UnrestrictedSearchBy_Tilde,
         ALLOW_S,
         ALL_ROLES,
-        ExInput.search_tilde
+        ExInput.search_tilde,
+        { as: true, comparisonType: Comparison.Satisfies_ArrayNotEmpty, benchmark: undefined }
     );
 }
 
@@ -405,7 +418,8 @@ export namespace User {
     export const ResetSystem = new OpUnderRestriction<boolean>(
         ResetSystem_Unrestricted,
         [Permission._111],
-        [Role.Admin]
+        [Role.Admin],
+        { as: true, comparisonType: Comparison.Equals, benchmark: undefined }
     );
 
     export const ClearRegistry = new OpUnderRestriction<void>(
@@ -417,6 +431,7 @@ export namespace User {
     export const EmptyUserDatabase = new OpUnderRestriction<boolean>(
         DeleteAllUsers,
         [Permission._111],
-        [Role.Admin]
+        [Role.Admin],
+        { as: true, comparisonType: Comparison.Equals, benchmark: undefined }
     );
 }
