@@ -10,6 +10,7 @@ export const ALLOW_D: Permission[] = [Permission._111, Permission._110, Permissi
 export const ALLOW_S: Permission[] = [Permission._111, Permission._101, Permission._011, Permission._001];
 
 interface InterpreterSpec<Type> {
+    as: boolean;
     comparisonType: Comparison;
     benchmark: Type;
 }
@@ -81,7 +82,7 @@ export class OpUnderRestriction<Output> {
     }
 
     protected Interpret(ThisResult: Output, That: InterpreterSpec<Output>): boolean {
-        return this.interpreter(ThisResult, That.comparisonType, That.benchmark);
+        return this.interpreter(ThisResult, That.as, That.comparisonType, That.benchmark);
     }
 
     get InterpreterSpec(): InterpreterSpec<Output> | undefined {
