@@ -1,7 +1,6 @@
 import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
-import { RepoURL, I_URLProcessor } from "./URLProcessor.interface";
-import { NullableArray } from "../../../../Classes/Essential_Interfaces/NullableArray";
+import { RepoURL } from "./URLProcessor.interface";
 
 export class URLProcessor {
     private created?: Array<RepoURL>;
@@ -49,7 +48,7 @@ export class URLProcessor {
                 const repo: RepoURL = {
                     providedURL: raw,
                     domain: "github.com",
-                    tokens: new NullableArray<string>(repoDetails.tokens),
+                    tokens: repoDetails.tokens,
                     gitURL: repoDetails.repoURL,
                 };
                 return repo;

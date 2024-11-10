@@ -21,13 +21,12 @@ import { returnProperInvalidResponse } from "../Middleware/Auth";
 
 export const ResetControllerDANGER = asyncHandler(
     async (req: SystemResetRequest, res: ResetRegistryResponse, next: NextFunction) => {
-        const perm = req.body.permission;
-        const role = req.body.role;
+        const role = req.userRole ? req.userRole : 0;
+        const perm = req.userPermission ? req.userPermission : 0;
 
         const result = await User.ClearRegistry.Execute(perm, role);
         const unathorized = result.failedToAuthorize;
 
-        //this type is a union of our return strings
         let responseMessage: ResetRegistryResponseMessages;
         if (unathorized) {
             responseMessage = "You do not have permission to reset the registry.";
@@ -43,17 +42,16 @@ export const ResetControllerDANGER = asyncHandler(
 export const DeletePackageByIDController = asyncHandler(
     async (req: DeletePackageByIDRequest, res: DeletePackageViaIDResponse, next: NextFunction) => {
         const packageID = req.params.id;
-        const perm = Permission._000;
-        const role = Role.Unknown;
+        const role = req.userRole ? req.userRole : 0;
+        const perm = req.userPermission ? req.userPermission : 0;
 
         const result = await User.RemoveFromRegistry.Execute(perm, role, packageID);
         if (result.failedToAuthorize) {
             return returnProperInvalidResponse;
         }
-
-        let responseMessage: DeletePackageViaIDResponseMessages;
         const DNE = result.returnVal;
 
+        let responseMessage: DeletePackageViaIDResponseMessages;
         if (!DNE) {
             responseMessage = "Package is deleted.";
             res.status(200).send(responseMessage);

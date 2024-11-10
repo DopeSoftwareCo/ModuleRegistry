@@ -27,6 +27,7 @@ import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import { ObjectId } from "mongoDb";
 import { User } from "../Classes/Users/User";
+import { returnProperInvalidResponse } from "../Middleware/Auth";
 
 const example_PackageID = new ObjectId(0);
 // /packages
@@ -60,9 +61,13 @@ export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         console.log("original", req.originalUrl);
         console.log("packageid requested", req.params.id);
+        const packID = req.params.id;
         //your code here using the id
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^
+        const role = req.userRole ? req.userRole : 0;
+        const perm = req.userPermission ? req.userPermission : 0;
+        const response = User.DownloadPackage.Execute(role, perm, packID);
+
         //return back something that signifies it was not found if that is the case;
         const DNE = false;
         //should return back here something typed as follows
@@ -208,8 +213,17 @@ export const GetPackageRatingsViaIDController = asyncHandler(
 // /package/byRegEx
 export const GetPackagesViaRegexController = asyncHandler(
     async (req: GetPackagesViaRegexRequest, res: GetPackageViaRegexResponse, next: NextFunction) => {
-        const regexStr = req.body.RegEx;
-        //your code here using the regex str
+        const regexString = req.body.RegEx;
+        const role = req.userRole ? req.userRole : 0;
+        const perm = req.userPermission ? req.userPermission : 0;
+
+        const result = await User.SearchBy_Regex.Execute(perm, role, regexString);
+        if (result.failedToAuthorize) {
+            return returnProperInvalidResponse(req, res);
+        }
+
+        let responseMessage: GetPackageViaRegexInvalidResponseMessages;
+        const DNE = result.returnVal && result.returnVal.length > 0;
 
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         //some return of this type as our response body
@@ -217,9 +231,7 @@ export const GetPackagesViaRegexController = asyncHandler(
             { Version: "some version", Name: "some name" },
             { Version: "some version", Name: "some name" },
         ];
-        //some return that states the package wasnt found via regex
-        const DNE = false;
-        let responseMessage: GetPackageViaRegexInvalidResponseMessages;
+
         if (!DNE) {
             res.status(200).json(responseBody);
         } else {

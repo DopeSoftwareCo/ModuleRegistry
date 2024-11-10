@@ -1,4 +1,5 @@
 import { Permission, Role } from "../Users/subdir.const";
+import { Comparison, Interpret } from "./Interpretation";
 import { BadCallToRestricted, Restrictable_Op, Restricted_Return, UnathorizedCall } from "./subdir.types";
 
 export const ALL_ROLES: Role[] = [0, 1, 2, 3];
@@ -8,7 +9,13 @@ export const ALLOW_U: Permission[] = [Permission._111, Permission._110, Permissi
 export const ALLOW_D: Permission[] = [Permission._111, Permission._110, Permission._011, Permission._010];
 export const ALLOW_S: Permission[] = [Permission._111, Permission._101, Permission._011, Permission._001];
 
+interface InterpreterSpec<Type> {
+    comparisonType: Comparison;
+    benchmark: Type;
+}
+
 export class OpUnderRestriction<Output> {
+    protected interpreter: Function = Interpret<any>;
     protected exampleInput: any;
     protected op: Restrictable_Op<Output>;
     protected rolesAllowed: Role[];
@@ -16,12 +23,14 @@ export class OpUnderRestriction<Output> {
     protected limitedByRole;
     protected expectVoid;
     protected expectArray;
+    protected interpreterSpec;
 
     constructor(
         operation: Restrictable_Op<Output>,
         permissionRequirement: Permission[],
         roleRestriction?: Role[],
-        exampleInput: any = undefined
+        exampleInput: any = undefined,
+        interpreterSpec?: InterpreterSpec<Output>
     ) {
         this.exampleInput = exampleInput;
         this.expectVoid = exampleInput == undefined;
@@ -31,6 +40,8 @@ export class OpUnderRestriction<Output> {
         this.limitedByRole = roleRestriction == undefined;
         this.rolesAllowed = this.ValidateRestriction(ALL_ROLES, roleRestriction);
         this.permissionsAllowed = this.ValidateRestriction(ALL_PERMISSIONS, permissionRequirement);
+
+        this.interpreterSpec = interpreterSpec;
     }
 
     protected ValidateRestriction(defaultVals: number[], request?: number[]): number[] {
@@ -69,6 +80,14 @@ export class OpUnderRestriction<Output> {
         return match;
     }
 
+    protected Interpret(ThisResult: Output, That: InterpreterSpec<Output>): boolean {
+        return this.interpreter(ThisResult, That.comparisonType, That.benchmark);
+    }
+
+    get InterpreterSpec(): InterpreterSpec<Output> | undefined {
+        return this.interpreterSpec;
+    }
+
     async Execute(permission: Permission, role: Role, input?: any): Promise<Restricted_Return<Output>> {
         const proceed: boolean = this.VerifyPermission(permission) && this.VerifyRole(role);
         if (!proceed) {
@@ -81,10 +100,18 @@ export class OpUnderRestriction<Output> {
             if (!goodInput) {
                 return BadCallToRestricted;
             }
-
             // And now we have "valid" input
             const returnVal = await this.op(input);
-            return { returnVal: returnVal, failedToAuthorize: false, badInput: false };
+
+            const interpretation = this.interpreterSpec
+                ? this.Interpret(returnVal, this.interpreterSpec)
+                : undefined;
+            return {
+                returnVal: returnVal,
+                interpretation: interpretation,
+                failedToAuthorize: false,
+                badInput: false,
+            };
         } catch (error) {
             return BadCallToRestricted;
         }

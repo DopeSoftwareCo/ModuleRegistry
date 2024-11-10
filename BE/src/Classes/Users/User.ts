@@ -252,9 +252,7 @@ export namespace User {
         }
     }
 
-    async function UnrestrictedSearchBy_Regex(
-        criteria: SearchQuery_ByRegex
-    ): Promise<RegistrySearchResult | undefined> {
+    async function UnrestrictedSearchBy_Regex(criteria: string): Promise<RegistrySearchResult | undefined> {
         return undefined;
     }
 

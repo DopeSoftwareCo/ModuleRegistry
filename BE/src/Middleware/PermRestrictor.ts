@@ -17,10 +17,11 @@ export function PermRestrictionMiddleware(op: OpUnderRestriction<any>, input?: a
                 return returnProperInvalidResponse(req, res);
             }
 
-            const user = req.decodedToken;
-            const result = await op.Execute(user.permission, user.role, input);
+            const perm = req.decodedToken.perm;
+            const role = req.decodedToken.role;
+            const result = await op.Execute(perm, role, input);
 
-            if (result === undefined) {
+            if (result.failedToAuthorize) {
                 return returnProperInvalidResponse(req, res);
             }
             return next();

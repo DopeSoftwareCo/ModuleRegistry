@@ -64,8 +64,8 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
             let nameofOwner = "";
             let nameofRepo = "";
 
-            if (repoURL.tokens.IsDefined) {
-                const content = repoURL.tokens.Content;
+            const content = repoURL.tokens;
+            if (content) {
                 nameofOwner = content[1];
                 nameofRepo = content[2];
             }
