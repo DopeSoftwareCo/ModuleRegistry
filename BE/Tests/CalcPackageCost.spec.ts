@@ -4,6 +4,7 @@ import {
     extractPackageName,
 } from "../src/Services/CalcPackageCost";
 import { afterEach, beforeEach, describe, it, expect, jest } from "@jest/globals";
+import { getFetchSpy } from "./TestUtils/mocks";
 
 const validPackageUrl = "https://github.com/facebook/react";
 const invalidPackageUrl = "https://github.com/user/invalid-package";
@@ -28,9 +29,7 @@ describe("CalcPackageCost functions", () => {
     // Use the facebook react package. That should be 0.3 MB when rounded in my function.
     describe("CalculateStandaloneCost", () => {
         it("should return the standalone size of the facebook react package", async () => {
-            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
-                json: async () => standaloneSizeMock,
-            } as unknown as Response);
+            const fetchspy = getFetchSpy(standaloneSizeMock, 200);
 
             const result = await CalculateStandaloneCost(validPackageUrl);
             expect(result).toBe(0.3);
