@@ -26,21 +26,18 @@ export const UploadInjestController = asyncHandler(
         let getRepoURL = false;
         let isExternal = false;
 
+
         const disqualifiedStandaloneSizeInGB = 750 // Approximately 1GB
         const disqualifiedTotalSizeInGB = 1000 // Approximately 1GB
         const packagesDirectory = path.join(process.cwd(), "Data/Packages");
         const tempDirectory = packagesDirectory + "/.Temp"
         const tempIDCeiling = 1000;
         const tempID = (Math.floor((Math.random() * tempIDCeiling) + 1)).toString();
-        const tempFile = path.join(tempDirectory, tempID)
+        const tempFileZip = path.join(tempDirectory, tempID + ".zip");
         const tempUnzippedFileDirectory = path.join(tempDirectory, tempID);
         const archiver = require("archiver");
 
         if (!fs.existsSync(tempDirectory)) { // This is where data is downloaded before being examined. 
-            fs.mkdirSync(tempDirectory);
-        }
-        else {
-            fs.rmSync(tempDirectory, { recursive: true, force: true})
             fs.mkdirSync(tempDirectory);
         }
 
@@ -48,7 +45,8 @@ export const UploadInjestController = asyncHandler(
 
         if (repositoryUrl == undefined && content != undefined) {
             // Confirmed that content exists, decode and extract repository URL.
-            binaryContent = Buffer.from(content, "base64");
+            const base64Data = content.split(",")[1];
+            binaryContent = Buffer.from(base64Data, "base64");
             repositoryUrl = repositoryUrl as unknown as string; // Type casts it from "string | undefined" to "string"
             getRepoURL = true;
         }
@@ -64,17 +62,22 @@ export const UploadInjestController = asyncHandler(
             return;
         }
 
-        fs.promises.writeFile(tempFile, binaryContent);
-
-        // Unzip and get the packageJson
-        const zipStream = unzipper.Parse();
-        zipStream.on('entry', async (entry: Entry) => {
-            const individualFilePath = path.join(tempUnzippedFileDirectory, entry.path);
-            const writeStream = fs.createWriteStream(individualFilePath);
-            entry.pipe(writeStream);
-        });
-        const packageJsonFile = await fs.promises.readFile(path.join(tempUnzippedFileDirectory, 'package.json'), 'utf-8');
-        const packageJson = JSON.parse(packageJsonFile);
+        try {
+            fs.promises.writeFile(tempFileZip, binaryContent);
+        }
+        catch {
+            fs.unlink(tempFileZip, (err) => {
+                if (err) {
+                    console.error("Filesystem error, deleting temp file.")
+                }
+                throw new Error(`Error: ${err}`);
+            });
+        }
+        
+        await unzipper.Open.buffer(binaryContent).then((directory) => directory.extract ({ path: tempUnzippedFileDirectory}));
+        const packageJsonFile = await fs.promises.readFile(path.join(tempUnzippedFileDirectory, "placeholder-main/package.json"), 'utf-8');
+        const packageJson = JSON.parse(packageJsonFile.toString());
+        //ENOENT: no such file or directory, open '/mnt/Shared/Shared Drive/School/Software Engineering/Homework/Phase 2/BE/Data/Packages/.Temp/357/ModuleRegistry-dev/package.json'
 
         let startingPointJS = packageJson.scripts.start;
         
@@ -84,8 +87,9 @@ export const UploadInjestController = asyncHandler(
         }
 
         // Checks if exists
-        const queriedPackage = PackageModel.findOne({ repoUrl: repositoryUrl})
-        if (queriedPackage != null) {
+        const queriedPackage = await PackageModel.exists({ repoUrl: repositoryUrl})
+        if (queriedPackage !== null) {
+            console.log(queriedPackage);
             responseMessage = "Package exists already.";
             res.status(409).send(responseMessage);
         }
@@ -194,7 +198,7 @@ export const UploadInjestController = asyncHandler(
         }
         else {
             // Just move the existing zip to Data and rename to the ID.
-            await fs.promises.copyFile(tempFile, path.join(packagesDirectory, packageID));
+            await fs.promises.copyFile(tempFileZip, path.join(packagesDirectory, packageID));
         }
 
         const returnBody: UploadInjestNewPackageResponseBody = {
