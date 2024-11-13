@@ -21,7 +21,8 @@ export async function debloatUploadedContent(content: string): Promise<string> {
  * @author Ben Kanter
  * Recursive function to find all JS files and debloat them
  * @param folderPath path to unzipped content
- * @returns whether or not operation was successful
+ * @returns whether or not operation was completely successful
+ * @
  */
 export async function debloatUnzippedContent(folderPath: string): Promise<boolean> {
     let isSuccessful = true;
@@ -41,5 +42,17 @@ export async function debloatUnzippedContent(folderPath: string): Promise<boolea
         }
         // All other files ignored
     }
+    return isSuccessful;
+}
+
+/**
+ * @author Ben Kanter
+ * @param zipPath path to zipped content
+ * @returns whether or not operation was completely successful
+ */
+export async function debloatZippedContent(zipPath: string): Promise<boolean> {
+    let isSuccessful = true;
+    const zippedContent = await fs.promises.readFile(zipPath);
+    //const zippedContentBuffer = Buffer.from(zippedContent, 'binary');
     return isSuccessful;
 }
