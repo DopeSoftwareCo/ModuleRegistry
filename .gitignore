@@ -2,3 +2,4 @@
 _Devtools/Bell/cs450.code-workspace
 .env
 BE/Logs/temporary.log
+BE/Tests/DebloatTestFiles/BE_TEST_Debloated/
