@@ -1,8 +1,8 @@
 import { minify } from 'terser';
 import fs from 'fs';
-import axios from 'axios';
 import path from 'path';
 import * as unzipper from 'unzipper';
+import * as tar from 'tar';
 import archiver from 'archiver'
 /**
  * @author Ben Kanter
@@ -27,21 +27,38 @@ export async function debloatUploadedContent(content: string): Promise<string> {
  */
 export async function debloatUnzippedContent(folderPath: string): Promise<boolean> {
     let isSuccessful = true;
-    const directoryContents = await fs.promises.readdir(folderPath, { withFileTypes: true });
-    for (let file of directoryContents) {
-        const filePath = path.join(folderPath, file.name);
-        if (file.isDirectory()) {
-            isSuccessful = await debloatUnzippedContent(filePath);
-        }
-        else if (file.isFile() && file.name.endsWith('.js')) {
-            const fileContent = await fs.promises.readFile(filePath, 'utf-8');
-            const debloatedContent = await debloatUploadedContent(fileContent);
-            await fs.promises.writeFile(filePath, debloatedContent, 'utf-8');
-            if (fileContent.length == debloatedContent.length) {
-                isSuccessful = false;
+    const tempIDCeiling = 1000;
+    const tempID = (Math.floor((Math.random() * tempIDCeiling) + 1)).toString();
+    const tempBackupFileDirectory = path.join(tempUnzippedDirectory, tempID);
+    await fs.promises.cp(folderPath, tempBackupFileDirectory, { recursive: true }) // Creates a backup
+    try { // Puts everything in a try block due to lots of file system interactions
+        const directoryContents = await fs.promises.readdir(folderPath, { withFileTypes: true });
+        for (let file of directoryContents) {
+            const filePath = path.join(folderPath, file.name);
+            if (file.isDirectory()) {
+                isSuccessful = await debloatUnzippedContent(filePath);
             }
+            else if (file.isFile() && file.name.endsWith('.js')) {
+                const fileContent = await fs.promises.readFile(filePath, 'utf-8');
+                const debloatedContent = await debloatUploadedContent(fileContent);
+                if (fileContent.length < debloatedContent.length) {
+                    isSuccessful = false; // Skips writing, something went wrong
+                    throw new Error("Debloat Failed for file: " + filePath)
+                }
+                else {
+                    await fs.promises.writeFile(filePath, debloatedContent, 'utf-8');
+                }
+            }
+            // All other files ignored
         }
-        // All other files ignored
+        await fs.promises.rm(tempBackupFileDirectory, { recursive: true, force: true }) // Remove backup
+    }
+    catch (error) {
+        isSuccessful = false;
+        console.error(error);
+        // Replace with original if it fails at any point. 
+        await fs.promises.rm(folderPath, { recursive: true, force: true });
+        await fs.promises.rename(tempBackupFileDirectory, folderPath);
     }
     return isSuccessful;
 }
@@ -53,6 +70,10 @@ export async function debloatUnzippedContent(folderPath: string): Promise<boolea
  */
 const tempUnzippedDirectory = path.join(process.cwd(), "Data/Packages/.Temp/Debloat_Operations");
 export async function debloatZippedContent(zipPath: string): Promise<boolean> {
+    const tempIDCeiling = 1000;
+    const tempID = (Math.floor((Math.random() * tempIDCeiling) + 1)).toString();
+    const tempUnzippedFileDirectory = path.join(tempUnzippedDirectory, tempID);
+
     let isSuccessful = true;
     let isZip: boolean = false;
     let isTarGz: boolean = false;
@@ -63,16 +84,27 @@ export async function debloatZippedContent(zipPath: string): Promise<boolean> {
         isTarGz = true;
     }
     else {
+        console.error("Not a supported archive file. Only supports .zip and .tar.gz");
         return false; // Not a supported zip archive
     }
-    const zippedContent = await fs.promises.readFile(zipPath);
-    const tempIDCeiling = 1000;
-    const tempID = (Math.floor((Math.random() * tempIDCeiling) + 1)).toString();
-    const tempUnzippedFileDirectory = path.join(tempUnzippedDirectory, tempID);
-    await unzipper.Open.buffer(zippedContent).then((directory) => directory.extract ({ path: tempUnzippedFileDirectory}));
-    isSuccessful = await debloatUnzippedContent(tempUnzippedFileDirectory);
+    try {
+        if (isZip) {
+            const zippedContent = await fs.promises.readFile(zipPath);
+            await unzipper.Open.buffer(zippedContent).then((directory) => directory.extract ({ path: tempUnzippedFileDirectory}));
+        }
+        else if (isTarGz) {
+            await fs.promises.mkdir(tempUnzippedFileDirectory);
+            await tar.x({file: zipPath, C: tempUnzippedFileDirectory});
+        }
+        isSuccessful = await debloatUnzippedContent(tempUnzippedFileDirectory);
+    }
+    catch (error) {
+        isSuccessful = false;
+        console.error(error);
+    }
+    
     if (isSuccessful) {
-        const backupZipPath = ("_" + zipPath); // Purpose of this is to provide a failsafe in case zipping operation fails
+        const backupZipPath = (zipPath + "_"); // Purpose of this is to provide a failsafe in case zipping operation fails
         await fs.promises.rename(zipPath, backupZipPath);
         try {
             const output = fs.createWriteStream(zipPath);
@@ -86,29 +118,23 @@ export async function debloatZippedContent(zipPath: string): Promise<boolean> {
             else { // Something went wrong in an unexpected way.
                 throw new Error("Neither a zip or tar, should not get to this point") // Gets caught and logged
             }
-            output.on('close', () => {
-                return true;
-            });
             archive.on('error', (error) => {
                 throw error; // Gets caught and logged
             });
             archive.pipe(output);
             archive.directory(tempUnzippedDirectory, false);
             archive.finalize();
+            await fs.promises.rm(backupZipPath); // Removes the temp directory
         }
         catch (error){
             console.error(error);
             if (fs.existsSync(zipPath)) {
                 await fs.promises.rm(zipPath); // Removes in case there is some file there
             }
-            await fs.promises.rename(backupZipPath, backupZipPath.slice(1)); // Revert
-            return false;
+            await fs.promises.rename(backupZipPath, backupZipPath.slice(0, backupZipPath.length-1)); // Revert
+            isSuccessful = false;
         }
-        return true;
     }
-    else {
-        fs.promises.rm(tempUnzippedDirectory, { recursive: true, force: true}); // Removes the temp directory
-        // Does not edit source zip file
-    }
+    await fs.promises.rm(tempUnzippedFileDirectory, { recursive: true, force: true}); // Removes the temp directory
     return isSuccessful;
 }

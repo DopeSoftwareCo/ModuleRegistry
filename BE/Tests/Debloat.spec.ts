@@ -7,31 +7,45 @@ import { debloatUnzippedContent, debloatZippedContent } from "../src/DSinc_Modul
  */
 
 const testDirectory = path.join(__dirname, "DebloatTestFiles");
-const timeout: number = 50000;
+const timeout: number = 50000; // All tests time out after 50 seconds
 const fileNameWithoutExtension = "BE_TEST";
 const debloatedFileWithoutExtension = fileNameWithoutExtension + "_Debloated"
+async function runDebloatTest(fileExtension: string): Promise<boolean> {
+    const backendPath = path.join(testDirectory, fileNameWithoutExtension + fileExtension);
+    const debloatedPath = path.join(testDirectory, debloatedFileWithoutExtension + fileExtension);
+    let isSuccessful = false; // Assume failure
+    try {
+        if (fileExtension == "") {
+            if (fs.existsSync(debloatedPath)) { // Cleans up previous test data if still there
+                await fs.promises.rm(debloatedPath, { recursive: true, force: true}); 
+            }
+            await fs.promises.cp(backendPath, debloatedPath, { recursive: true });
+            isSuccessful = await debloatUnzippedContent(debloatedPath);
+        }
+        else if (fileExtension.startsWith(".")) {
+            if (fs.existsSync(debloatedPath)) {
+                await fs.promises.rm(debloatedPath); 
+            }
+            await fs.promises.copyFile(backendPath, debloatedPath);
+            isSuccessful = await debloatZippedContent(debloatedPath);
+        } // In all other situations, fail, since it must be a file extension
+    }
+    catch (error) {
+        isSuccessful = false;
+        console.error(error);
+    }
+    return isSuccessful;
+}
 describe("Debloat Test", () => {
     test("Test using BE as Folder Input", async () => {
-        const backendPath = path.join(testDirectory, fileNameWithoutExtension);
-        const debloatedPath = path.join(backendPath, debloatedFileWithoutExtension);
-        await fs.promises.cp(backendPath, debloatedPath, { recursive: true });
-        const isSuccessful = await debloatUnzippedContent(debloatedPath);
-        expect(isSuccessful).toBe(true);
-    },timeout); // Times out after 50 seconds
+        expect(await runDebloatTest("")).toBe(true);
+    },timeout); 
+
     test("Test using Zipped BE as .zip Input", async () => {
-        const fileExtension = ".zip";
-        const backendPath = path.join(testDirectory, fileNameWithoutExtension + fileExtension);
-        const debloatedPath = path.join(backendPath, debloatedFileWithoutExtension + fileExtension);
-        await fs.promises.copyFile(backendPath, debloatedPath);
-        const isSuccessful = await debloatZippedContent(debloatedPath);
-        expect(isSuccessful).toBe(true);
+        expect(await runDebloatTest(".zip")).toBe(true);
     },timeout)
-    test("Test using Zipped BE as tar.gz Input", async () => { // Might remove
-        const fileExtension = ".tar.gz";
-        const backendPath = path.join(testDirectory, fileNameWithoutExtension + fileExtension);
-        const debloatedPath = path.join(backendPath, debloatedFileWithoutExtension + fileExtension);
-        //await fs.promises.copyFile(backendPath, debloatedPath);
-        //const isSuccessful = await debloatZippedContent(debloatedPath);
-        //expect(isSuccessful).toBe(true);
+
+    test("Test using Zipped BE as tar.gz Input", async () => { // Might remove if functionality is not needed
+        expect(await runDebloatTest(".tar.gz")).toBe(true);
     },timeout)
 });
