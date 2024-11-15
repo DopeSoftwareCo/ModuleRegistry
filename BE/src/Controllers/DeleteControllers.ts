@@ -1,9 +1,4 @@
-import {
-    DeleteAllVersionsByNameRequest,
-    DeletePackageByIDRequest,
-    ResetRegistryRequest,
-    SystemResetRequest,
-} from "RequestTypes";
+import { DeleteAllVersionsByNameRequest, DeletePackageByIDRequest, ResetRegistryRequest } from "RequestTypes";
 import asyncHandler from "../Middleware/asyncHandler";
 import {
     DeletePackageByNameResponse,
@@ -14,21 +9,17 @@ import {
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-import { User } from "../Classes/Users/User";
-import { Permission, Role } from "../Classes/Users/subdir.const";
-import { returnProperInvalidResponse } from "../Middleware/Auth";
+import PackageModel, { MongoPackage } from "../Schemas/Package";
+import { Auth0_Database } from "../Providers/Auth0/Auth0_DB";
+
 // /reset
 
 export const ResetControllerDANGER = asyncHandler(
-    async (req: SystemResetRequest, res: ResetRegistryResponse, next: NextFunction) => {
-        const role = req.userRole ? req.userRole : 0;
-        const perm = req.userPermission ? req.userPermission : 0;
-
-        const result = await User.ClearRegistry.Execute(perm, role);
-        const unathorized = result.failedToAuthorize;
+    async (req: ResetRegistryRequest, res: ResetRegistryResponse, next: NextFunction) => {
+        const result = await Auth0_Database.ClearDatabase();
 
         let responseMessage: ResetRegistryResponseMessages;
-        if (unathorized) {
+        if (result) {
             responseMessage = "You do not have permission to reset the registry.";
             res.status(401).send(responseMessage);
         } else {
@@ -38,18 +29,14 @@ export const ResetControllerDANGER = asyncHandler(
         }
     }
 );
+
 // /package/{id}
 export const DeletePackageByIDController = asyncHandler(
     async (req: DeletePackageByIDRequest, res: DeletePackageViaIDResponse, next: NextFunction) => {
         const packageID = req.params.id;
-        const role = req.userRole ? req.userRole : 0;
-        const perm = req.userPermission ? req.userPermission : 0;
 
-        const result = await User.RemoveFromRegistry.Execute(perm, role, packageID);
-        if (result.failedToAuthorize) {
-            return returnProperInvalidResponse;
-        }
-        const DNE = result.returnVal;
+        const result = await PackageModel.findByIdAndDelete<MongoPackage>(packageID);
+        const DNE: boolean = result != null && result.errors == undefined;
 
         let responseMessage: DeletePackageViaIDResponseMessages;
         if (!DNE) {

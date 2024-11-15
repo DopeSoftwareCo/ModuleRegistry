@@ -6,11 +6,15 @@
 import { Router } from "express";
 import { ResetControllerDANGER } from "../Controllers/DeleteControllers";
 import { verifyToken } from "../Middleware/Auth";
-import { PermRestrictionMiddleware } from "../Middleware/PermRestrictor";
-import { ALL_PERMISSIONS, Role } from "../Classes/Users/subdir.const";
-import { User } from "../Classes/Users/User";
+import { permRestrictionMiddleware } from "../Middleware/PermRestrictor";
+import { Restriction } from "./RoutePermissions";
 
 export const ResetRouter = Router();
 //**DANGEROUS USE WITH CAUTION**
 // /reset
-ResetRouter.delete("/", verifyToken, PermRestrictionMiddleware(User.ResetSystem), ResetControllerDANGER);
+ResetRouter.delete(
+    "/",
+    verifyToken,
+    permRestrictionMiddleware(Restriction.EmptyDatabase),
+    ResetControllerDANGER
+);

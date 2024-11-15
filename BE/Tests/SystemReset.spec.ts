@@ -1,5 +1,5 @@
 import { jest, beforeEach, describe, expect, it, beforeAll } from "@jest/globals";
-import { Permission, Role } from "../src/Classes/Users/subdir.const";
+import { Permission, Role } from "../src/Classes/Users/UserTypes";
 import { UnathorizedCall, OpUnderRestriction } from "../src/Classes/Ops-Under-Restriction/OpUnderRestriction";
 import { setFakeToken } from "../src/Middleware/ManagementToken";
 

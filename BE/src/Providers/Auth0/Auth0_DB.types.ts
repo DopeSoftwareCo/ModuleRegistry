@@ -1,4 +1,4 @@
-import { Permission, Role } from "../../Classes/Users/subdir.const";
+import { Permission, Role } from "../../Classes/Users/UserTypes";
 
 export interface RegistrationInfo {
     email: string;
@@ -8,7 +8,7 @@ export interface RegistrationInfo {
     username: string;
 }
 
-export interface RequestForUserChanges {
+export interface UpdateUserRequest_DevFriendly {
     uid: string;
     username?: string;
     password?: string;

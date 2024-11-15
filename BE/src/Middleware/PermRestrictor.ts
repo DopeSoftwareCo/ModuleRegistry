@@ -1,27 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import { returnProperInvalidResponse } from "./Auth";
-import { Permission, Role } from "../Classes/Users/subdir.const";
-import { OpUnderRestriction } from "../Classes/Ops-Under-Restriction/OpUnderRestriction";
-import { Restricted_Return } from "../Classes/Ops-Under-Restriction/subdir.types";
+import { Permission, Role } from "../Classes/Users/UserTypes";
 
+export type RestrictionType = { perm: Permission[]; roles: Role[] | undefined };
 /**
- * @author John Leidy + DBJ
+ * @author John Leidy
  * @param requiredPermissions
  * @param requiredRoles
  * @returns the next function in the chain {@type NextFunction}
  */
-export function PermRestrictionMiddleware(op: OpUnderRestriction<any>, input?: any | any[]): any {
-    return async (req: Request, res: Response, next: NextFunction) => {
+export const permRestrictionMiddleware = (restriction: RestrictionType) => {
+    return (req: Request, res: Response, next: NextFunction) => {
         if (process.env.NODE_ENV !== "dev") {
             if (!req.decodedToken) {
                 return returnProperInvalidResponse(req, res);
             }
 
-            const perm = req.decodedToken.perm;
-            const role = req.decodedToken.role;
-            const result = await op.Execute(perm, role, input);
+            const permission = req.userPermission ? req.userPermission : 0;
+            const role = req.userRole ? req.userRole : 0;
 
-            if (result.failedToAuthorize) {
+            const validRole = restriction.roles ? restriction.roles.includes(role) : true;
+            const authorize = restriction.perm.includes(permission) && validRole;
+
+            if (!authorize) {
                 return returnProperInvalidResponse(req, res);
             }
             return next();
@@ -29,4 +30,4 @@ export function PermRestrictionMiddleware(op: OpUnderRestriction<any>, input?: a
             return next();
         }
     };
-}
+};

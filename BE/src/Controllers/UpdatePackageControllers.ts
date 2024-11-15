@@ -1,9 +1,8 @@
-import { UpdatePackageContentRequest, VersionPackageRequest } from "RequestTypes";
+import { UpdatePackageContentRequest } from "RequestTypes";
 import asyncHandler from "../Middleware/asyncHandler";
 import { UpdatePackageViaIDResponse, UpdatePackageViaIDResponseMessages } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
-import { User } from "../Classes/Users/User";
 
 // /package/{id}
 export const UpdatePackageViaIDController = asyncHandler(
@@ -43,14 +42,14 @@ export const UpdatePackageViaIDController = asyncHandler(
 );
 
 export const UpdatePackageController = asyncHandler(
-    async (req: VersionPackageRequest, res: UpdatePackageViaIDResponse, next: NextFunction) => {
+    async (req: UpdatePackageContentRequest, res: UpdatePackageViaIDResponse, next: NextFunction) => {
         //the id requested
-        const permission = req.body.permission;
-        const role = req.body.role;
-        const updateReqs = req.body.updateReqs;
+        const target = req.requestedId;
+        const newData = req.body;
 
-        const result = await User.VersionPackage.Execute(permission, role, updateReqs);
-        const DNE = result.returnVal == undefined;
+        // why the fuck does this exist??
+        //const targetPackage = await PackageModel.
+        const DNE = true;
         let responseMesasge: UpdatePackageViaIDResponseMessages;
 
         if (!DNE) {

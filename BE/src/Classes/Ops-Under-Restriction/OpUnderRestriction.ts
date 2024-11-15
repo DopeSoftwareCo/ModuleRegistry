@@ -1,4 +1,4 @@
-import { Permission, Role } from "../Users/subdir.const";
+import { Permission, Role } from "../Users/UserTypes";
 import { Comparison, Interpret } from "./Interpretation";
 import { BadCallToRestricted, Restrictable_Op, Restricted_Return, UnathorizedCall } from "./subdir.types";
 

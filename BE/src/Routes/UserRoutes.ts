@@ -14,6 +14,8 @@ import { updateUserValidationRules } from "../Validation/UserValidationRules/use
 import { userDeleteValidationRules } from "../Validation/UserValidationRules/userDeleteValidationRules";
 import { verifyToken } from "../Middleware/Auth";
 import { checkManagementToken } from "../Middleware/ManagementToken";
+import { permRestrictionMiddleware } from "../Middleware/PermRestrictor";
+import { Restriction } from "./RoutePermissions";
 
 export const UserRouter = Router();
 // /adduser
@@ -22,6 +24,7 @@ UserRouter.post(
     "/adduser",
     verifyToken,
     checkManagementToken,
+    permRestrictionMiddleware(Restriction.Register),
     userAddValidationRules,
     validateRequest,
     addUserController
@@ -31,6 +34,7 @@ UserRouter.post(
     "/updateuser",
     verifyToken,
     checkManagementToken,
+    permRestrictionMiddleware(Restriction.Update),
     updateUserValidationRules,
     validateRequest,
     updateUserController
@@ -40,6 +44,7 @@ UserRouter.post(
     "/deleteuser",
     verifyToken,
     checkManagementToken,
+    permRestrictionMiddleware(Restriction.DeleteUser),
     userDeleteValidationRules,
     validateRequest,
     deleteUserController

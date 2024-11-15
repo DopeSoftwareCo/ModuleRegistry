@@ -26,10 +26,8 @@ import {
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import { ObjectId } from "mongoDb";
-import { User } from "../Classes/Users/User";
 import { returnProperInvalidResponse } from "../Middleware/Auth";
 
-const example_PackageID = new ObjectId(0);
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
@@ -42,8 +40,8 @@ export const GetPackagesFromRegistryController = asyncHandler(
 
         // Tim's Work
         const responseBody: GetPackagesResponseBody = [
-            { Version: "Some version", Name: "Some name", ID: example_PackageID },
-            { Version: "Some version", Name: "Some name", ID: example_PackageID },
+            //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
+            //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
         ];
         //something to signify too many packages were returned
         const tooManyreturned = false;
@@ -66,7 +64,7 @@ export const GetPackageViaIDController = asyncHandler(
 
         const role = req.userRole ? req.userRole : 0;
         const perm = req.userPermission ? req.userPermission : 0;
-        const response = User.DownloadPackage.Execute(role, perm, packID);
+        //const response = User.DownloadPackage.Execute(role, perm, packID);
 
         //return back something that signifies it was not found if that is the case;
         const DNE = false;
@@ -211,20 +209,22 @@ export const GetPackageRatingsViaIDController = asyncHandler(
 );
 
 // /package/byRegEx
+
 export const GetPackagesViaRegexController = asyncHandler(
     async (req: GetPackagesViaRegexRequest, res: GetPackageViaRegexResponse, next: NextFunction) => {
         const regexString = req.body.RegEx;
         const role = req.userRole ? req.userRole : 0;
         const perm = req.userPermission ? req.userPermission : 0;
 
+        /*
         const result = await User.SearchBy_Regex.Execute(perm, role, regexString);
         if (result.failedToAuthorize) {
             return returnProperInvalidResponse(req, res);
-        }
+        }*/
 
         let responseMessage: GetPackageViaRegexInvalidResponseMessages;
-        const DNE = result.returnVal && result.returnVal.length > 0;
-
+        //const DNE = result.returnVal && result.returnVal.length > 0;
+        const DNE = true;
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         //some return of this type as our response body
         const responseBody: GetPackageViaRegexData[] = [

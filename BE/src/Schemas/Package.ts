@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { Base } from "./Base";
 
-export interface Package extends Base {
+export interface MongoPackage extends Base {
     Title: string;
     repoUrl: string;
     metadata: {
@@ -15,10 +15,10 @@ export interface Package extends Base {
         Uploader: string;
         IsExternal: boolean;
         Safety: "unsafe" | "unkown" | "vetted";
-        IsSecret: boolean;
-        Visibility: "secret" | "internal" | "public";
+        IsSecret: boolean; // No longer needed
+        Visibility: "secret" | "internal" | "public"; // No longer need 3 options
         Availability: number;
-        PrivelegedGroup: number;
+        PrivelegedGroup: number; // No longer needed
     };
     data: {
         Content: string;
@@ -74,7 +74,7 @@ export interface Package extends Base {
     };
 }
 
-export const packageSchema: Schema<Package> = new Schema({
+export const packageSchema: Schema<MongoPackage> = new Schema({
     //this is package id, we will let mongodb handle the uuids on creation of document entry in db
     _id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -291,7 +291,7 @@ packageSchema.pre("save", function (next) {
     next();
 });
 
-const PackageModel = mongoose.model<Package>(
+const PackageModel = mongoose.model<MongoPackage>(
     "Package",
     packageSchema,
     `Packages${process.env.NODE_ENV === "dev" ? "Dev" : ""}`

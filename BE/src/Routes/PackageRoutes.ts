@@ -23,6 +23,9 @@ import { appendMongoDBid } from "../Middleware/MongoDB";
 import { DeleteByIDRules } from "../Validation/PackageValidationRules/DeleteByIDRules";
 import { GetRatingByIdRules } from "../Validation/PackageValidationRules/GetRatingByIDRules";
 import { UpdatePackageRules } from "../Validation/PackageValidationRules/UpdateRules";
+import { permRestrictionMiddleware } from "../Middleware/PermRestrictor";
+import { ALL_ROLES, ALLOW_U } from "../Classes/Users/UserTypes";
+import { Restriction } from "./RoutePermissions";
 
 export const PackageRouter = Router();
 
@@ -32,6 +35,7 @@ PackageRouter.post("/", verifyToken, UploadPackageRules, validateRequest, Upload
 PackageRouter.get(
     "/:id",
     verifyToken,
+    permRestrictionMiddleware(Restriction.Download),
     GeneralViaIDRuleset,
     validateRequest,
     appendMongoDBid,
@@ -41,6 +45,7 @@ PackageRouter.get(
 PackageRouter.put(
     "/:id",
     verifyToken,
+    permRestrictionMiddleware(Restriction.Version),
     UpdatePackageRules,
     validateRequest,
     appendMongoDBid,
@@ -50,6 +55,7 @@ PackageRouter.put(
 PackageRouter.delete(
     "/:id",
     verifyToken,
+    permRestrictionMiddleware(Restriction.DeletePackage),
     DeleteByIDRules,
     validateRequest,
     appendMongoDBid,
@@ -74,4 +80,11 @@ PackageRouter.get(
     GetPackageSizeCostViaIDController
 );
 // /package/byRegex
-PackageRouter.post("/byRegex", verifyToken, ByRegexRules, validateRequest, GetPackagesViaRegexController);
+PackageRouter.post(
+    "/byRegex",
+    verifyToken,
+    permRestrictionMiddleware(Restriction.Search),
+    ByRegexRules,
+    validateRequest,
+    GetPackagesViaRegexController
+);

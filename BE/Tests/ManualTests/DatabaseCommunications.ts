@@ -1,5 +1,4 @@
-import { Permission, Role } from "../../src/Classes/Users/subdir.const";
-import { User } from "../../src/Classes/Users/User";
+import { Permission, Role } from "../../src/Classes/Users/UserTypes";
 import { Auth0_Database } from "../../src/Providers/Auth0/Auth0_DB";
 import { Auth0User, RegistrationInfo } from "../../src/Providers/Auth0/Auth0_DB.types";
 

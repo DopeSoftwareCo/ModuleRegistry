@@ -4,9 +4,27 @@ dotenv.config();
 import axios from "axios";
 import { LogDebug } from "../Utils/Log";
 import { token } from "../../Middleware/ManagementToken";
-import { Auth0User, RegistrationInfo, RequestForUserChanges, UpdateUserRequest } from "./Auth0_DB.types";
+import {
+    Auth0User,
+    RegistrationInfo,
+    UpdateUserRequest_DevFriendly,
+    UpdateUserRequest,
+} from "./Auth0_DB.types";
+import { DEFAULT_UID } from "../../Classes/Users/UserTypes";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
+
+export type UserAttribute =
+    | "user_id"
+    | "name"
+    | "email"
+    | "username"
+    | "user_metadata"
+    | "user_metadata: { permission }"
+    | "user_metadata: { role }"
+    | "created_at"
+    | "last_login"
+    | "logins_count";
 
 export namespace Auth0_Database {
     export async function INSERT(info: RegistrationInfo): Promise<string | undefined> {
@@ -63,7 +81,7 @@ export namespace Auth0_Database {
         }
     }
 
-    export async function UPDATE(request: RequestForUserChanges): Promise<boolean> {
+    export async function UPDATE(request: UpdateUserRequest_DevFriendly): Promise<boolean> {
         if (!token) {
             throw new Error("Management token is not available");
         }
@@ -126,14 +144,17 @@ export namespace Auth0_Database {
             return null;
         }
     }
-    export async function SELECT_UID(): Promise<string[] | undefined> {
+
+    export async function SELECT(attributes?: UserAttribute[]): Promise<string[] | undefined> {
         try {
+            //const fields = (attributes) ? attributes.join() : "user_id";
+
             const response = await axios.get<Auth0User[]>(`https://${auth0Domain}/api/v2/users`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
                 params: {
-                    //fields: "user_id",
+                    ields: attributes ? attributes.join() : "user_id",
                     include_fields: true,
                     per_page: 100, // Adjust this to fetch more or less per request,
                 },
@@ -152,5 +173,32 @@ export namespace Auth0_Database {
         } catch (error) {
             console.error(error);
         }
+    }
+
+    export async function ClearDatabase(): Promise<boolean> {
+        const userIDs = await Auth0_Database.SELECT();
+        if (!userIDs) {
+            return false;
+        }
+        let failures = 0;
+
+        const promises = userIDs.map(async (user) => {
+            try {
+                if (user != DEFAULT_UID) {
+                    await axios.delete(`https://${auth0Domain}/api/v2/users/${user}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Fixed the extra `}`
+                        },
+                    });
+                    LogDebug(`Deleted user: ${user}`);
+                }
+            } catch (error) {
+                LogDebug(`Failed to delete user: ${user}, Error: ${error}`);
+                ++failures;
+            }
+        });
+
+        await Promise.all(promises);
+        return failures == 0;
     }
 }

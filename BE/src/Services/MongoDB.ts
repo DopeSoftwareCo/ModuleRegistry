@@ -1,7 +1,7 @@
-import PackageModel, { Package } from "../Schemas/Package";
+import PackageModel, { MongoPackage } from "../Schemas/Package";
 
 export const createRandomPackage = async (version: string) => {
-    const newPackage: Package = new PackageModel({
+    const newPackage: MongoPackage = new PackageModel({
         Title: "Example Package",
         repoUrl: "https://github.com/example/package",
         metadata: {

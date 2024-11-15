@@ -1,10 +1,10 @@
-import { RepoURL } from "../../Providers/ModEval/RepoComponents/URL/URLProcessor.interface";
-import { Repository } from "../../Providers/ModEval/RepoComponents/Repository";
-import { RepoID } from "../../Providers/ModEval/RepoComponents/ID/RepoID";
+import { RepoURL } from "../../Providers/RepoEvaluator/RepoComponents/URL/URLProcessor.interface";
+import { Repository } from "../../Providers/RepoEvaluator/RepoComponents/Repository";
+import { RepoID } from "../../Providers/RepoEvaluator/RepoComponents/ID/RepoID";
 import {
     I_RepoScoreset,
     RepoScoreset,
-} from "../../Providers/ModEval/RepoComponents/Metrics_Scores/RepoScoreset";
+} from "../../Providers/RepoEvaluator/RepoComponents/Metrics_Scores/RepoScoreset";
 
 export type GuardLogic = (value: any) => number;
 

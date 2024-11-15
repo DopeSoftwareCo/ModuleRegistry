@@ -1,5 +1,5 @@
 import * as DSincMath from "../../../../DSinc_Modules/DSinc_Math";
-import { Repository } from "../../RepoComponents/Repository";
+import { Repository } from "../Repository";
 import { functionTimer } from "../../Assets/ScoringFunctions/function-timer";
 import { Metric } from "./Metric";
 import { MetricName } from "./Metric.const";

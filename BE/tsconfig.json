@@ -106,8 +106,8 @@
     "include": [
         "src/**/*.ts",
         "tests/**/*.ts",
-        "src/Providers/ModEval/GQL_Queries/Fields/Field_ResponseTypes",
-        "src/Providers/ModEval/GQL_Queries/Reponse",
+        "src/Providers/RepoEvaluator/GQL_Queries/Fields/Field_ResponseTypes",
+        "src/Providers/RepoEvaluator/GQL_Queries/Reponse",
         "src/Classes/Essential_Interfaces",
         "dist/TestUtils/ModEvalSubscores.spec.ts"
     ],

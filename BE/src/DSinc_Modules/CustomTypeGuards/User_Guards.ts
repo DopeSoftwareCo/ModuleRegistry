@@ -1,6 +1,6 @@
 import { Admin } from "../../Classes/Users/Admin";
-import { Role } from "../../Classes/Users/subdir.const";
-import { UDS } from "../../Classes/Users/subdir.const";
+import { Role } from "../../Classes/Users/UserTypes";
+import { UDS } from "../../Classes/Users/UserTypes";
 import { User } from "../../Classes/Users/User";
 import { SkeletonIsType } from "./ModEval_Guards";
 

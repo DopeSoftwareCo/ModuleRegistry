@@ -11,7 +11,13 @@ export enum Comparison {
     Satisfies_ArrayNotEmpty = 9,
 }
 
-export function Interpret<Type>(This: Type, as: boolean, when: Comparison, That: any, SecondaryWhen?: any) {
+export function Interpret<Type>(
+    This: Type,
+    as: boolean,
+    when: Comparison,
+    That: any,
+    SecondaryWhen?: Comparison
+): boolean {
     let interpretation: boolean;
     switch (when) {
         case Comparison.Equals:
@@ -41,7 +47,11 @@ export function Interpret<Type>(This: Type, as: boolean, when: Comparison, That:
         case Comparison.Satisfies_ArrayNotEmpty:
             interpretation = When_ArrayNotEmpty(This, as);
         case Comparison.Satisfies_ArrayLengthComparison:
+            if (!SecondaryWhen) {
+                return false;
+            }
             interpretation = When_ArrayLength(This, as, SecondaryWhen, That);
+            break;
         default:
             interpretation = false;
     }

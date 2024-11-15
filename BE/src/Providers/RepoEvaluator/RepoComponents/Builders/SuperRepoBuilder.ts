@@ -1,4 +1,4 @@
-import { DEFAULT_WEIGHTS, WeightSpecSet } from "./../Metrics_Scores/Weightspec.const";
+import { DEFAULT_WEIGHTS, WeightSpecSet } from "../Metrics_Scores/Weightspec.const";
 import { RepoID } from "../ID/RepoID";
 import { RepoID_Builder } from "../ID/RepoID_Builder";
 import { Repository } from "../Repository";

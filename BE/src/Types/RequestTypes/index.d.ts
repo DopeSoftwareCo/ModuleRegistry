@@ -1,7 +1,10 @@
 import { Request } from "express";
-import { AuthenticationRequestModel, PackageData, PackageMetaData } from "../Models";
-import { Permission, Role, UpdatePackageRequest } from "../../Classes/Users/subdir.const";
-import { RequestForUserChanges } from "../../Providers/Auth0/Auth0_DB.types";
+import { APIAuthenticationRequestModel, APIPackageData, APIPackageMetaData } from "../Models";
+import { Permission, Role, UpdatePackageRequest } from "../../Classes/Users/UserTypes";
+import { UpdateUserRequest_DevFriendly } from "../../Providers/Auth0/Auth0_DB.types";
+
+import { Request } from "express";
+import { APIAuthenticationRequestModel, APIPackageData, APIPackageMetaData } from "../Models";
 
 declare module "RequestTypes" {
     export type TestRequestBody = {
@@ -12,47 +15,28 @@ declare module "RequestTypes" {
         body: TestRequestBody;
     }
 
-    export type GetPackagesData = Omit<PackageMetaData, "ID">;
+    export type GetPackagesData = Omit<APIPackageMetaData, "ID">;
 
     export interface GetPackagesRequest extends Request {
         body: GetPackagesData[];
     }
-
-    export interface SystemResetRequest extends Request {
-        body: SystemResetRequestBodyl;
-    }
-
-    export type SystemResetRequestBody = {
-        permission: number;
-        role: number;
-    };
 
     export interface ResetRegistryRequest extends Request {}
 
     export interface GetPackageViaIdRequest extends Request {}
 
     export type UpdatePackageContentRequestBody = {
-        metadata: PackageMetaData;
-        data: PackageData;
+        metadata: APIPackageMetaData;
+        data: APIPackageData;
     };
 
     export interface UpdatePackageContentRequest extends Request {
         body: UpdatePackageContentRequestBody;
     }
 
-    export type UpdatePackageContentRequestBody = {
-        permission: number;
-        role: number;
-        changeRequests: UpdatePackageRequest | UpdatePackageRequest[];
-    };
-
-    export interface VersionPackageRequest extends Request {
-        body: VersionPackageRequestBody;
-    }
-
     export interface DeletePackageByIDRequest extends Request {}
 
-    export type UploadInjestPackageRequestBody = PackageData;
+    export type UploadInjestPackageRequestBody = APIPackageData;
 
     export interface UploadInjestPackageRequest extends Request {
         body: UploadInjestPackageRequestBody;
@@ -62,7 +46,7 @@ declare module "RequestTypes" {
 
     export interface GetPackageSizeCostRequest extends Request {}
 
-    export type AuthenticationRequestBody = AuthenticationRequestModel;
+    export type AuthenticationRequestBody = APIAuthenticationRequestModel;
 
     export interface AuthenticationRequest extends Request {
         body: AuthenticationRequestBody;
@@ -97,9 +81,7 @@ declare module "RequestTypes" {
     }
 
     export type DeleteUserRequestBody = {
-        targetID: string;
-        permission: number;
-        role: number;
+        id: string;
     };
 
     export interface DeleteUserRequest extends Reequest {
@@ -107,12 +89,22 @@ declare module "RequestTypes" {
     }
 
     export type UpdateUserRequestBody = {
-        permission: number;
-        role: number;
-        changeReq: RequestForUserChanges;
+        uid: string;
+        username?: string;
+        password?: string;
+        permission?: number;
+        role?: number;
     };
 
     export interface UpdateUserRequest extends Request {
         body: UpdateUserRequestBody;
+    }
+
+    export type VSearchRequestBody = {
+        versions: string;
+    };
+
+    export interface VSearchRequest extends Request {
+        body: VSearchRequestBody;
     }
 }

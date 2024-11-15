@@ -1,12 +1,13 @@
-import { Response } from "express";
+import { response, Response } from "express";
 import {
-    PackageCost,
-    PackageData,
-    PackageHistoryEntry,
-    PackageMetaData,
-    PackageRating,
+    APIPackageCost,
+    APIPackageData,
+    APIPackageHistoryEntry,
+    APIPackageMetaData,
+    APIPackageRating,
     UserType,
 } from "../Models";
+import { CompletePackage } from "../../Providers/PackageVersioning/types";
 
 declare module "ResponseTypes" {
     export type GetPackagesInvalidResponseMessages =
@@ -14,7 +15,7 @@ declare module "ResponseTypes" {
         | "Authentication failed due to invalid or missing AuthenticationToken."
         | "Too many packages returned.";
 
-    export type GetPackagesResponseBody = PackageMetaData[];
+    export type GetPackagesResponseBody = APIPackageMetaData[];
 
     export interface GetPackagesResponse extends Response {
         body: GetPackagesResponseBody;
@@ -38,7 +39,7 @@ declare module "ResponseTypes" {
 
     export type GetPackageViaIDResponseBody = {
         metadata: PackageMetadataResponse;
-        data: PackageData;
+        data: APIPackageData;
     };
 
     export interface GetPackageViaIDResponse extends Response {
@@ -68,14 +69,14 @@ declare module "ResponseTypes" {
 
     export type UploadInjestNewPackageResponseBody = {
         metadata: PackageMetadataResponse;
-        data: PackageData;
+        data: APIPackageData;
     };
 
     export interface UploadInjestNewPackageResponse extends Response {
         body: UploadInjectNewPackageBody;
     }
 
-    export type GetSizeCostForPackageResponseBody = PackageCost;
+    export type GetSizeCostForPackageResponseBody = APIPackageCost;
     //size cost and ratings are the same response messages
     export type GetSizeCostForPackageInvalidResponses =
         | "There is missing field(s) in the PackageID"
@@ -87,7 +88,7 @@ declare module "ResponseTypes" {
         body: GetSizeCostForPackageResponseBody;
     }
 
-    export type GetRatingsForPackageResponseBody = PackageRating;
+    export type GetRatingsForPackageResponseBody = APIPackageRating;
 
     export type GetRatingsForPackageInvalidResponses =
         | "There is missing field(s) in the PackageID"
@@ -107,7 +108,7 @@ declare module "ResponseTypes" {
 
     export interface AuthenticationResponse extends Response {}
 
-    export type GetHistoryOfPackageResponseBody = PackageHistoryEntry;
+    export type GetHistoryOfPackageResponseBody = APIPackageHistoryEntry;
 
     export type GetHistoryOfPackageResponseMessages =
         | "There is missing field(s) in the PackageName/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
@@ -128,7 +129,7 @@ declare module "ResponseTypes" {
         | "Authentication failed due to invalid or missing AuthenticationToken."
         | "No package found under this regex.";
 
-    export type GetPackageViaRegexData = Omit<PackageMetaData, "ID">;
+    export type GetPackageViaRegexData = Omit<APIPackageMetaData, "ID">;
     export interface GetPackageViaRegexResponse extends Response {
         body: GetPackageViaRegexData[];
     }
@@ -152,5 +153,17 @@ declare module "ResponseTypes" {
     export type DeleteUserResponseMessages =
         | "User deleted."
         | "Failed to delete user."
+        | "Invalid request body.";
+
+    export interface VSearchResponse extends Response {
+        body: {
+            message: string;
+            data: CompletePackage[] | null;
+        };
+    }
+
+    export type VSearchResponseMessages =
+        | "Retrieved version(s)."
+        | "No versions of the specified project match the search criteria."
         | "Invalid request body.";
 }

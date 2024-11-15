@@ -7,7 +7,7 @@ import {
     DeleteUserResponseMessages,
     UpdateUserResponseMessages,
 } from "ResponseTypes";
-import { User } from "../Classes/Users/User";
+import { Auth0_Database } from "../Providers/Auth0/Auth0_DB";
 
 export const addUserController = asyncHandler(
     async (req: AddUserRequest, res: Response, next: NextFunction) => {
@@ -24,8 +24,9 @@ export const addUserController = asyncHandler(
             role: role,
             username: userUsername,
         };
+
         let responseMessage: AddUserResponseMessages;
-        const result = await User.RegisterUser.Execute(permission, role, info);
+        const result = await Auth0_Database.INSERT(info);
         const failed = result == undefined;
 
         if (!failed) {
@@ -40,13 +41,11 @@ export const addUserController = asyncHandler(
 
 export const updateUserController = asyncHandler(
     async (req: UpdateUserRequest, res: Response, next: NextFunction) => {
-        const permission = req.body.permission;
-        const role = req.body.role;
-        const changeReq = req.body.changeReq;
+        const newData = req.body;
 
         let responseMessage: UpdateUserResponseMessages;
-        const result = await User.UpdateProfile.Execute(permission, role, changeReq);
-        const failed = result == undefined;
+        const result = await Auth0_Database.UPDATE(newData);
+        const failed = !result;
 
         if (!failed) {
             responseMessage = "User permissions updated.";
@@ -60,12 +59,11 @@ export const updateUserController = asyncHandler(
 
 export const deleteUserController = asyncHandler(
     async (req: DeleteUserRequest, res: Response, next: NextFunction) => {
-        const permission = req.body.permission;
-        const role = req.body.role;
-        const userID = req.body.targetID;
+        const user = req.body.id;
 
         let responseMessage: DeleteUserResponseMessages;
-        const failed = await User.DeleteProfile.Execute(permission, role, userID);
+        const result = await Auth0_Database.DELETE(user);
+        const failed = !result;
 
         if (!failed) {
             responseMessage = "User deleted.";
