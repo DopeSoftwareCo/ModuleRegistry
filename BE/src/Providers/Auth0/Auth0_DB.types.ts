@@ -1,4 +1,4 @@
-import { Permission, Role } from "../../Classes/Users/UserTypes";
+import { Permission, Role } from "./UserData";
 
 export interface RegistrationInfo {
     email: string;

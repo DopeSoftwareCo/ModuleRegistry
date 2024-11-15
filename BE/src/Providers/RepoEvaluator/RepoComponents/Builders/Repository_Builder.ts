@@ -2,7 +2,7 @@ import { Repository } from "../Repository";
 import { RepoID } from "../ID/RepoID";
 import { RepoID_Builder } from "../ID/RepoID_Builder";
 import { RepoURL } from "../URL/URLProcessor.interface";
-import { AsyncBuilder } from "../../../../Classes/Abstract/Abstract_Builders";
+import { AsyncBuilder } from "../../Assets/Abstract_Builders";
 import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
 import { IsType_RepoID, IsType_RepoURL } from "../../../../DSinc_Modules/CustomTypeGuards/ModEval_Guards";
 import { RepoScoreset } from "../Metrics_Scores/RepoScoreset";

@@ -24,7 +24,7 @@ import { DeleteByIDRules } from "../Validation/PackageValidationRules/DeleteByID
 import { GetRatingByIdRules } from "../Validation/PackageValidationRules/GetRatingByIDRules";
 import { UpdatePackageRules } from "../Validation/PackageValidationRules/UpdateRules";
 import { permRestrictionMiddleware } from "../Middleware/PermRestrictor";
-import { ALL_ROLES, ALLOW_U } from "../Classes/Users/UserTypes";
+import { ALL_ROLES, ALLOW_U } from "../Providers/Auth0/UserData";
 import { Restriction } from "./RoutePermissions";
 
 export const PackageRouter = Router();

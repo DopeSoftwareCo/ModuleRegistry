@@ -1,4 +1,4 @@
-import { ALL_PERMISSIONS, ALLOW_D, ALLOW_S, ALLOW_U, Permission, Role } from "../Classes/Users/UserTypes";
+import { ALL_PERMISSIONS, ALLOW_D, ALLOW_S, ALLOW_U, Permission, Role } from "../Providers/Auth0/UserData";
 
 export const JUST_NOT_UNKNOWN = [Role.External, Role.Internal, Role.Admin];
 

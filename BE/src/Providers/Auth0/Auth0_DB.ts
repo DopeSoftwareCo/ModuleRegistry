@@ -10,7 +10,7 @@ import {
     UpdateUserRequest_DevFriendly,
     UpdateUserRequest,
 } from "./Auth0_DB.types";
-import { DEFAULT_UID } from "../../Classes/Users/UserTypes";
+import { DEFAULT_UID } from "./UserData";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 

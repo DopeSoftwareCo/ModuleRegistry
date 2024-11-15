@@ -1,4 +1,4 @@
-import { Permission, Role } from "../../src/Classes/Users/UserTypes";
+import { Permission, Role } from "../../src/Providers/Auth0/UserData";
 import { Auth0_Database } from "../../src/Providers/Auth0/Auth0_DB";
 import { Auth0User, RegistrationInfo } from "../../src/Providers/Auth0/Auth0_DB.types";
 

@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { APIAuthenticationRequestModel, APIPackageData, APIPackageMetaData } from "../Models";
-import { Permission, Role, UpdatePackageRequest } from "../../Classes/Users/UserTypes";
+import { Permission, Role, UpdatePackageRequest } from "../../Providers/Auth0/UserData";
 import { UpdateUserRequest_DevFriendly } from "../../Providers/Auth0/Auth0_DB.types";
 
 import { Request } from "express";

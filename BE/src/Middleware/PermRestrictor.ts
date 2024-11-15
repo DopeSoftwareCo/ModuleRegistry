@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { returnProperInvalidResponse } from "./Auth";
-import { Permission, Role } from "../Classes/Users/UserTypes";
+import { Permission, Role } from "../Providers/Auth0/UserData";
 
 export type RestrictionType = { perm: Permission[]; roles: Role[] | undefined };
 /**
