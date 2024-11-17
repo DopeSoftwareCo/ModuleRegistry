@@ -1,19 +1,12 @@
 import { UpdateType, VersionRangeEndpoints } from "./types";
 
-export function IsVersionString(someString: string): boolean {
-    const components = someString.split(".");
-    if (components.length !== 3) {
-        return false;
-    }
+export const versionFormat = "(\\d+)\\.(\\d+)\\.(\\d+)"; // Matches three groups of numbers.
+export const versionFormatRegex = `^[~^]?${versionFormat}(-${versionFormat})?$`; // Allows optional prefix and range.
+export const VersionType_RegExp = new RegExp(versionFormatRegex);
+export const SimpleVersion_RegExp = new RegExp(versionFormat);
 
-    try {
-        const max = parseInt(components[0]);
-        const min = parseInt(components[1]);
-        const patch = parseInt(components[2]);
-        return true;
-    } catch {
-        return false;
-    }
+export function IsVersionString(someString: string): boolean {
+    return VersionType_RegExp.test(someString);
 }
 
 export function IncrementVersion(current: string, updateType: UpdateType): string | undefined {
@@ -64,7 +57,7 @@ export function GetRangeEndpoints(dashFormattedRangeString: string): VersionRang
 
     const earliest = components[0];
     const latest = components[1];
-    return IsVersionString(earliest) && IsVersionString(latest)
+    return SimpleVersion_RegExp.test(earliest) && SimpleVersion_RegExp.test(latest)
         ? { earliest: earliest, latest: latest }
         : undefined;
 }

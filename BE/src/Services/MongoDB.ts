@@ -1,4 +1,5 @@
 import PackageModel, { MongoPackage } from "../Schemas/Package";
+import AltPackageModel, { MongoRatings_Empty, Package } from "../Schemas/PackageSchema";
 
 export const createRandomPackage = async (version: string) => {
     const newPackage: MongoPackage = new PackageModel({
@@ -71,6 +72,25 @@ export const createRandomPackage = async (version: string) => {
         FinalRating: {
             netscore: Math.random(),
             netscore_latency: Math.random(),
+        },
+    });
+    await newPackage.save();
+};
+
+export const CreateRandomPackage = async (version: string) => {
+    const newPackage: Package = new AltPackageModel({
+        Name: "Example Package",
+        URL: "https://github.com/example/package",
+        Version: version,
+        License: "MIT",
+        Uploader: "Uploader123",
+        IsExternal: true,
+        Safety: "vetted",
+        Visibility: "public",
+        Ratings: MongoRatings_Empty,
+        dataRefs: {
+            ContentID: "some-UUID-goes-here", // UUID of the package content in storage
+            JSRef: "console.log('Hello, World!');", // Some 'reference' to the location of the associated JS program
         },
     });
     await newPackage.save();

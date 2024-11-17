@@ -1,6 +1,6 @@
 import PackageModel from "../../Schemas/Package";
 import { CompletePackage, EmptyProject, Project } from "./types";
-import { GetRangeEndpoints, IsVersionString } from "./utils";
+import { GetRangeEndpoints, IsVersionString, VersionType_RegExp } from "./utils";
 import semver from "semver";
 
 export namespace SearchVersion {
@@ -65,4 +65,30 @@ export namespace SearchVersion {
     export async function ByCarat(project: Project, filter: string): Promise<CompletePackage[] | undefined> {
         return undefined;
     }
+
+    export async function Find(project: Project, versionRequest: string) {
+        const proceed = VersionType_RegExp.test(versionRequest);
+        if (proceed) {
+            const symbol = versionRequest[0];
+            if (symbol === "^") {
+                return await ByCarat(project, versionRequest);
+            } else if (symbol === "~") {
+                return await ByTilde(project, versionRequest);
+            } else if (versionRequest.includes("-")) {
+                return BySimpleRange(versionRequest, project.projectID);
+            } else {
+                return ByExact(project.projectID, versionRequest);
+            }
+        }
+        return ByRegex(project, versionRequest);
+    }
+
+    export async function FindMany(versionRequests: string[]) {}
 }
+
+/*
+    Things I want John Leidy to give to me:
+    - Which type of version request is incoming
+    - The request itself (the string)
+    - The name of the "package" being requested (Project name)
+*/

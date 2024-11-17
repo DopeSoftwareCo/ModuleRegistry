@@ -27,10 +27,12 @@ import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import { ObjectId } from "mongoDb";
 import { returnProperInvalidResponse } from "../Middleware/Auth";
+import { SearchVersion } from "../Providers/PackageVersioning/search-functions";
 
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
+        const x = req.httpVersion;
         const requestedPackages = req.body;
         //hover to see types
         //your code here

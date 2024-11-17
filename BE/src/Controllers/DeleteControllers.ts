@@ -16,7 +16,7 @@ import { Auth0_Database } from "../Providers/Auth0/Auth0_DB";
 
 export const ResetControllerDANGER = asyncHandler(
     async (req: ResetRegistryRequest, res: ResetRegistryResponse, next: NextFunction) => {
-        const result = await Auth0_Database.ClearDatabase();
+        const result = await Auth0_Database.RESET();
 
         let responseMessage: ResetRegistryResponseMessages;
         if (result) {

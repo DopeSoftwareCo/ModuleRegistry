@@ -175,7 +175,7 @@ export namespace Auth0_Database {
         }
     }
 
-    export async function ClearDatabase(): Promise<boolean> {
+    export async function RESET(): Promise<boolean> {
         const userIDs = await Auth0_Database.SELECT();
         if (!userIDs) {
             return false;

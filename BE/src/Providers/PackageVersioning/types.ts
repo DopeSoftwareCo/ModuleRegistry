@@ -15,11 +15,11 @@ export enum SearchType {
 }
 
 export interface Project {
-    projectID?: string;
+    projectID: string;
     iterations: MongoPackage[];
 }
 
-export const EmptyProject: Project = { iterations: [] };
+export const EmptyProject: Project = { projectID: "", iterations: [] };
 
 export interface CompletePackage extends MongoPackage {
     projectID?: string;
