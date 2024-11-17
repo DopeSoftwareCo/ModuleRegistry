@@ -217,14 +217,17 @@ export const GetPackagesViaRegexController = asyncHandler(
                 return res.status(404).send(responseMessage);
             }
 
-            const responseBody: GetPackageViaRegexData[] = packages.map((pack) => ({
-                Version: pack.metadata.Version,
-                Name: pack.metadata.Name,
-                ID: pack._id.toString(),
-            }));
+            const responseBody: GetPackageViaRegexData[] = packages
+                .filter((pack) => pack.metadata && pack.metadata.Version && pack.metadata.Name)
+                .map((pack) => ({
+                    Version: pack.metadata.Version,
+                    Name: pack.metadata.Name,
+                    ID: pack._id.toString(),
+                }));
 
             res.status(200).json(responseBody);
         } catch (err) {
+            console.error("Error in GetPackagesViaRegexController:", err);
             next(err);
         }
     }
