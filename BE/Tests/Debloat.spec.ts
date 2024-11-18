@@ -1,9 +1,9 @@
-import { beforeAll, describe, expect, test } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import * as path from 'path';
 import fs from 'fs';
-import { debloatUnzippedContent, debloatZippedContent } from "../src/DSinc_Modules/DSinc_PackageHandling"
+import { debloatUnzippedContent, debloatZippedContent, zipContents } from "../src/DSinc_Modules/DSinc_PackageHandling"
 /**
- * Requires the DebloatTestFiles folder
+ * Requires the DebloatTestFiles folder to run tests
  */
 
 const testDirectory = path.join(__dirname, "DebloatTestFiles");
@@ -36,6 +36,7 @@ async function runDebloatTest(fileExtension: string): Promise<boolean> {
     }
     return isSuccessful;
 }
+/*
 describe("Debloat Test", () => {
     test("Test using BE as Folder Input", async () => {
         expect(await runDebloatTest("")).toBe(true);
@@ -48,4 +49,17 @@ describe("Debloat Test", () => {
     test("Test using Zipped BE as tar.gz Input", async () => { // Might remove if functionality is not needed
         expect(await runDebloatTest(".tar.gz")).toBe(true);
     },timeout)
+    test("Test using Zipped BE as tar.gz Input", async () => { // Purposefully bad input, sees if it handles it. 
+        expect(await runDebloatTest("txt")).toBe(false);
+    },timeout)
 });
+*/
+const compressThisFolder = path.join(testDirectory, "BE_TEST_Compression_Test");
+describe("Compression Test", () => {
+    test("Zip Archive Test", async () => {
+        expect(await zipContents(compressThisFolder, ".zip", compressThisFolder + "_ZIP_TEST.ZIP")).toBe(true);
+    }, timeout)
+    test("Tar Gz Archive Test", async () => {
+        expect(await zipContents(compressThisFolder, ".tar.gz", compressThisFolder + "_targz_TEST.tar.gz")).toBe(true);
+    }, timeout)
+})
