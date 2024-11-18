@@ -36,7 +36,7 @@ async function runDebloatTest(fileExtension: string): Promise<boolean> {
     }
     return isSuccessful;
 }
-/*
+
 describe("Debloat Test", () => {
     test("Test using BE as Folder Input", async () => {
         expect(await runDebloatTest("")).toBe(true);
@@ -53,7 +53,7 @@ describe("Debloat Test", () => {
         expect(await runDebloatTest("txt")).toBe(false);
     },timeout)
 });
-*/
+
 const compressThisFolder = path.join(testDirectory, "BE_TEST_Compression_Test");
 describe("Compression Test", () => {
     test("Zip Archive Test", async () => {
