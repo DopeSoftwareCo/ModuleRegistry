@@ -29,11 +29,13 @@ import { ObjectId } from "mongoDb";
 import { returnProperInvalidResponse } from "../Middleware/Auth";
 import { SearchVersion } from "../Providers/PackageVersioning/search-functions";
 
+// Setup all of the search-functions to take GetPackagesData[] as input
+
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
-        const x = req.httpVersion;
         const requestedPackages = req.body;
+
         //hover to see types
         //your code here
 

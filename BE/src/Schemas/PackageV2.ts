@@ -16,19 +16,3 @@ export interface APIPackage {
 }
 
 export type Rating = { version: string; scoreset: APIPackageRating };
-
-export interface Project {
-    Name: string;
-    ID: string;
-    PackageVersions: PackageVersions;
-}
-
-export type PackageVersions = PackageVersion[];
-export type PackageVersion = {
-    Version: string;
-    ContentID: string;
-    URL: string;
-    JSProjram: string;
-    Debloat: boolean;
-    Rating: MongoRatings;
-};
