@@ -27,7 +27,7 @@ export const getPackagesRequest = async (
                 Authorization: `${localStorage.getItem('token')}`,
             },
 
-            // This follows the schema for /pacakges request body.
+            // This follows the schema for /packages request body.
             body: JSON.stringify({
                 Version: `${versionType} (${request})`,
                 Name: projectName,
