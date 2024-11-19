@@ -8,17 +8,17 @@ import { PackageMetaDataFromAPI } from '../../Models/Models';
  *
  * @param {string} versionType - The type of version request (e.g., 'Exact', 'Bounded Range', 'Carat', 'Tilde').
  * @param {string} request - The version request string (e.g., '1.2.3', '1.2.3-2.1.0', '^1.2.3', '~1.2.0').
- * @param {string} projectName - The name of the package being requested.
+ * @param {string} projectName - The name of the package being requested or '*' for all packages.
  * @param errorSetter - A function to handle error messages.
  *
- * @returns {Promise<PackageMetaDataFromAPI[] | undefined>} An array of package metadata if successful, otherwise undefined.
+ * @returns An array of package metadata and an optional next offset if successful, otherwise undefined.
  */
 export const getPackagesRequest = async (
     versionType: string,
     request: string,
     projectName: string,
     errorSetter: (error: string) => void
-): Promise<PackageMetaDataFromAPI[] | undefined> => {
+): Promise<{ data: PackageMetaDataFromAPI[]; nextOffset?: string } | undefined> => {
     try {
         const response = await fetch(`${GeneralConfig.BACKEND_URL}packages`, {
             method: 'POST',
@@ -30,7 +30,7 @@ export const getPackagesRequest = async (
             // This follows the schema for /packages request body.
             body: JSON.stringify({
                 Version: `${versionType} (${request})`,
-                Name: projectName,
+                Name: projectName === '*' ? '*' : projectName, // If * is passed, we want all packages.
             }),
         });
 
@@ -40,8 +40,11 @@ export const getPackagesRequest = async (
             return undefined;
         }
 
+        // Extract the offset for pagination from the response headers if available
+        const nextOffset = response.headers.get('next-offset');
+
         const packagesData: PackageMetaDataFromAPI[] = await response.json();
-        return packagesData;
+        return { data: packagesData, nextOffset: nextOffset ?? undefined };
     } catch (err) {
         if (err instanceof Error) {
             errorSetter(err.message);
