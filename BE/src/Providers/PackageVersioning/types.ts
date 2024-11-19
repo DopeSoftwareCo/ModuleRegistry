@@ -25,7 +25,7 @@ export interface CompletePackage extends MongoPackage {
     projectID?: string;
 }
 
-export type VersionRangeEndpoints = { earliest: string; latest: string };
+export type VersionRangeEndpoints = { oldest: string; newest: string };
 
 /*  export function BuildObjectIds(idStrings: string[]): ObjectId[] {
         return idStrings.map((id) => {

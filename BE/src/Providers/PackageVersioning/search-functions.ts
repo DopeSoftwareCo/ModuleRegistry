@@ -1,92 +1,136 @@
-import PackageModel from "../../Schemas/Package";
-import { CompletePackage, EmptyProject, Project } from "./types";
-import { GetRangeEndpoints, IsVersionString, VersionType_RegExp } from "./utils";
+import PackageModel, { MongoPackage } from "../../Schemas/Package";
+import { GetPackagesResponseBody } from "ResponseTypes";
+import { UpdateType } from "./types";
+import { GetRangeEndpoints, IncrementVersion, VersionType_RegExp } from "./utils";
+import { GetPackagesData } from "RequestTypes";
 import semver from "semver";
+import { APIPackageMetaData } from "../../Types/Models";
 
 export namespace SearchVersion {
-    export async function ByExact(
-        filter: string,
-        project: string,
-        skipProject: boolean = false
-    ): Promise<CompletePackage[] | undefined> {
-        if (skipProject) {
-            const result = await PackageModel.find<CompletePackage>({ "metadata.Version": filter });
-            return result;
-        }
-
-        const matches = await PackageModel.find<CompletePackage>({
-            //projectID: project.projectID,
-            "metadata.version": filter,
-        });
-        return matches;
-    }
-
-    export async function BySimpleRange(
-        filter: string,
-        project: string,
-        skipProject: boolean = false
-    ): Promise<CompletePackage[] | undefined> {
-        const rangeEndpoints = GetRangeEndpoints(filter);
-        if (!rangeEndpoints) {
-            return undefined;
-        }
-
-        const allPackages = await PackageModel.find<CompletePackage>({
-            "metadata.Version": { $exists: true }, // Ensure version field exists
-        });
-
-        const matches = allPackages.filter((pkg) => {
-            const version = pkg.metadata.Version;
-            if (IsVersionString(version)) {
-                // Check if the version is a valid semantic version
-                return (
-                    semver.gte(version, rangeEndpoints.earliest) && semver.lte(version, rangeEndpoints.latest)
-                );
-            }
-        });
-
-        console.log(
-            matches.map((match) => {
-                return { name: match.Title, version: match.metadata.Version };
-            })
+    export async function ByExact(title: string, filter: string): Promise<GetPackagesResponseBody> {
+        let result: APIPackageMetaData[] = [];
+        const matches = await PackageModel.find<MongoPackage>(
+            { "metadata.Name": title, "metadata.Version": filter },
+            { _id: 1, "metadata.Name": 1, "metadata.Version": 1 }
         );
 
-        return matches;
-    }
-
-    export async function ByTilde(ect: string, filter: string): Promise<CompletePackage[] | undefined> {
-        return undefined;
-    }
-
-    export async function ByCaret(name: string, filter: string): Promise<CompletePackage[] | undefined> {
-        return undefined;
-    }
-
-
-    
-    export async function Find(requests :GetPackagesData[]): string, versionRequest: string) {
-        const proceed = VersionType_RegExp.test(request);
-        if (proceed) {
-            const symbol = versionRequest[0];
-            if (symbol === "-") {
-                return await BySimpleRange(project, versionRequest);
-            } else if (symbol === "~") {
-                return await ByTilde(project, versionRequest);
-            } else if (versionRequest.includes("^")) {
-                return ByCaret(versionRequest, project.projectID);
-            } else {
-                return ByExact(project.projectID, versionRequest);
-            }
+        if (matches.length > 0) {
+            result = matches.map((match) => ({
+                ID: match._id.toString(),
+                Name: match.metadata.Name,
+                Version: match.metadata.Version,
+            }));
         }
-        return undefined;
+        return result;
     }
 
-    export async function FindMany(versionRequests: string[]) {}
+    export async function BySimpleRange(title: string, filter: string): Promise<GetPackagesResponseBody> {
+        const rangeEndpoints = GetRangeEndpoints(filter);
+        if (!rangeEndpoints) return [];
+        try {
+            const allVersions = await RetrieveAll(title);
+
+            const matches: APIPackageMetaData[] = allVersions.filter((iteration) => {
+                const version = iteration.Version;
+                return (
+                    semver.gte(version, rangeEndpoints.oldest) && semver.lte(version, rangeEndpoints.newest)
+                );
+            });
+
+            return matches;
+        } catch {
+            return [];
+        }
+    }
+
+    export async function RetrieveAll(title: string): Promise<GetPackagesResponseBody> {
+        const allVersions = await PackageModel.find(
+            { "metadata.Name": title },
+            { _id: 1, "metadata.Name": 1, "metadata.Version": 1 }
+        ).lean();
+
+        return allVersions.map<APIPackageMetaData>((doc) => ({
+            ID: doc._id.toString(),
+            Name: doc.metadata.Name,
+            Version: doc.metadata.Version,
+        }));
+    }
+
+    export async function ByTilde(title: string, filter: string): Promise<GetPackagesResponseBody> {
+        try {
+            const allVersions = await RetrieveAll(title);
+            if (allVersions.length < 1) return [];
+
+            const oldest = filter;
+            const newest = IncrementVersion(filter, UpdateType.Minor);
+            if (!newest) return [];
+
+            const matches: APIPackageMetaData[] = allVersions.filter((iteration) => {
+                const version = iteration.Version;
+                return semver.gte(version, oldest) && semver.lte(version, newest);
+            });
+
+            return matches;
+        } catch {
+            return [];
+        }
+    }
+
+    export async function ByCaret(title: string, filter: string): Promise<GetPackagesResponseBody> {
+        try {
+            const allVersions = await RetrieveAll(title);
+            if (allVersions.length < 1) return [];
+
+            const oldest = filter;
+            const newest = IncrementVersion(filter, UpdateType.Major);
+            if (!newest) return [];
+
+            const matches: APIPackageMetaData[] = allVersions.filter((iteration) => {
+                const version = iteration.Version;
+                return semver.gte(version, oldest) && semver.lte(version, newest);
+            });
+
+            return matches;
+        } catch {
+            return [];
+        }
+    }
 }
 
-/*k
-    Things I want John Leidy to give to me:
-    - Which type of version request is incoming
-    - The request itself (the string)
-    - The name of the "package" being requested (Project name)
-*/
+export async function FetchVersions(requests: GetPackagesData[]): Promise<GetPackagesResponseBody> {
+    let versions: GetPackagesResponseBody = [];
+
+    const response = requests.map((req) => ProcessSingleVersionRequest(req));
+    const arrays = await Promise.all(response);
+
+    arrays.forEach((arr) => {
+        versions.push(...arr);
+    });
+
+    return versions;
+}
+
+export async function ProcessSingleVersionRequest(
+    request: GetPackagesData
+): Promise<GetPackagesResponseBody> {
+    let result: GetPackagesResponseBody = [];
+    const title = request.Name;
+    const filter = request.Version.trim();
+    const proceed = VersionType_RegExp.test(filter);
+
+    if (proceed) {
+        const symbol = filter[0];
+
+        if (symbol === "~") {
+            result = await SearchVersion.ByTilde(title, filter);
+        } else if (symbol === "^") {
+            result = await SearchVersion.ByCaret(title, filter);
+        } else if (filter.includes("-")) {
+            result = await SearchVersion.BySimpleRange(title, filter);
+        } else {
+            result = await SearchVersion.ByExact(title, filter);
+        }
+    }
+
+    return result;
+}

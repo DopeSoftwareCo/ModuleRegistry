@@ -2,8 +2,6 @@ import { MergeRestriction_Scorer } from "../src/Providers/RepoEvaluator/Function
 import { Repository } from "../src/Providers/RepoEvaluator/RepoComponents/Repository";
 import { SendRequestToGQL } from "../src/Providers/RepoEvaluator/GQL_Queries/Requests/GQLRequests";
 import { beforeEach, describe, it, expect, jest, afterEach } from "@jest/globals";
-import { RepoID } from "../src/Providers/RepoEvaluator/RepoComponents/ID/RepoID";
-import { RepoURL } from "../src/Providers/RepoEvaluator/RepoComponents/URL/URLProcessor.interface";
 import { SuperRepoBuilder } from "../src/Providers/RepoEvaluator/RepoComponents/Builders/SuperRepoBuilder";
 jest.mock("../src/Providers/ModEval/RepoComponents/URL/URLProcessor.interface", () => ({
     RepoURL: jest.fn().mockImplementation(() => ({

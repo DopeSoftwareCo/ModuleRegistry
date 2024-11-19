@@ -25,9 +25,7 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
-import { ObjectId } from "mongoDb";
-import { returnProperInvalidResponse } from "../Middleware/Auth";
-import { SearchVersion } from "../Providers/PackageVersioning/search-functions";
+import { FetchVersions } from "../Providers/PackageVersioning/search-functions";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 
@@ -35,20 +33,16 @@ import { SearchVersion } from "../Providers/PackageVersioning/search-functions";
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
         const requestedPackages = req.body;
-
-        //hover to see types
-        //your code here
-
-        //^^^^^^^^^^^^^^^^
-        //should return back to here a typed arr like this, this is metadata ab the package
-
-        // Tim's Work
+        /*
         const responseBody: GetPackagesResponseBody = [
             //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
             //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
-        ];
+        ];*/
+
+        const responseBody: GetPackagesResponseBody = await FetchVersions(requestedPackages);
+
         //something to signify too many packages were returned
-        const tooManyreturned = false;
+        const tooManyreturned = responseBody.length < 1;
         let responseMessage: GetPackagesInvalidResponseMessages;
         if (!tooManyreturned) {
             res.status(200).json(responseBody);

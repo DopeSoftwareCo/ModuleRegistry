@@ -11,37 +11,34 @@ export function IsVersionString(someString: string): boolean {
 
 export function IncrementVersion(current: string, updateType: UpdateType): string | undefined {
     // MajorStr.MinorStr.PatchStr <==> major#.minor#.patch#
-    const strComponents = current.split(".");
-    if (strComponents.length != 3) {
+    const tokens = TokenizeVersion(current);
+    if (!tokens) {
         return undefined;
     }
 
     let newVersion: string | undefined;
     const dotZero = ".0";
 
-    if (updateType == UpdateType.Major) {
-        let major = parseInt(strComponents[0]);
-        if (!major) return undefined;
+    let major = parseInt(tokens.major);
+    let minor = parseInt(tokens.minor);
+    let patch = parseInt(tokens.patch);
 
-        ++major;
-        newVersion = major + dotZero + dotZero;
-    } else if (updateType == UpdateType.Minor) {
-        let minor = parseInt(strComponents[1]);
-        if (!minor) return undefined;
-
-        const major = strComponents[0] + ".";
-        ++minor;
-        newVersion = major + minor + dotZero;
-    } else {
-        let patch = parseInt(strComponents[2]);
-        if (!patch) return undefined;
-
-        const major = strComponents[0] + ".";
-        const minor = strComponents[0] + ".";
-        patch++;
-        newVersion = major + minor + "." + patch;
+    if (!major || !minor || !patch) {
+        return undefined;
     }
-    return newVersion;
+
+    if (updateType == UpdateType.Major) {
+        ++major;
+        minor = 0;
+        patch = 0;
+    } else if (updateType == UpdateType.Minor) {
+        ++minor;
+        patch = 0;
+    } else {
+        ++patch;
+    }
+
+    return `${major}.${minor}.${patch}`;
 }
 
 export function GetRangeEndpoints(dashFormattedRangeString: string): VersionRangeEndpoints | undefined {
@@ -58,6 +55,13 @@ export function GetRangeEndpoints(dashFormattedRangeString: string): VersionRang
     const earliest = components[0];
     const latest = components[1];
     return SimpleVersion_RegExp.test(earliest) && SimpleVersion_RegExp.test(latest)
-        ? { earliest: earliest, latest: latest }
+        ? { oldest: earliest, newest: latest }
         : undefined;
+}
+
+export function TokenizeVersion(
+    version: string
+): { major: string; minor: string; patch: string } | undefined {
+    const tokens = version.split(".");
+    return tokens.length === 3 ? { major: tokens[0], minor: tokens[1], patch: tokens[2] } : undefined;
 }
