@@ -32,7 +32,7 @@ export const UpdatePackageViaIDController = asyncHandler(
 
         const body = req.body;
         let repositoryUrl = body?.data.URL;
-        let content = body?.data.Content;
+        let content = body.data.Content;
         let binaryContent; // Meant to store the non-string encoded version
         let getRepoURL = false;
 
@@ -48,12 +48,13 @@ export const UpdatePackageViaIDController = asyncHandler(
             fs.rmSync(tempDirectory, { recursive: true, force: true });
             fs.mkdirSync(tempDirectory);
         }
-
+        
         if (content != undefined) {
             // Confirmed that content exists, decode and extract repository URL.
-            binaryContent = Buffer.from(content, "base64");
             repositoryUrl = repositoryUrl as unknown as string; // Type casts it from "string | undefined" to "string"
             getRepoURL = true;
+            const base64Data = content.split(",")[1]; // Added this, basically removes the header
+            binaryContent = Buffer.from(base64Data, "base64");
         } else {
             responseMessage =
                 "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
@@ -64,19 +65,12 @@ export const UpdatePackageViaIDController = asyncHandler(
         await fs.promises.writeFile(tempFile, binaryContent);
 
         if (body.data.debloat == true) {
-            // Zip up, and store
-            binaryContent = await debloatZippedContent(binaryContent.toString("binary")); // Placeholder
-            const zippedContentStream = fs.createWriteStream(
-                path.join(packagesDirectory, packageIDToUpdate!)
-            );
-            const archive = archiver("zip", { zlib: { level: 9 } });
-            archive.pipe(zippedContentStream);
-            archive.append(binaryContent);
-            archive.finalize();
-        } else {
-            // Just move the existing zip to Data and rename to the ID.
-            await fs.promises.copyFile(tempFile, path.join(packagesDirectory, packageIDToUpdate!));
+            await debloatZippedContent(tempFile); // Returns whether or not successful, but if it is not successful, it just returns the original package *unless it hits an uncaught error*
+            // Removed the zipping section, function already does that :) 
         }
+        // Removed Else Statement since it needs to copy regardless of debloat
+        // Just move the existing zip to Data and rename to the ID.
+        await fs.promises.copyFile(tempFile, path.join(packagesDirectory, packageIDToUpdate!));
 
         // const returnBody: UpdatePackageViaIDResponse = {
         //     metadata: {
