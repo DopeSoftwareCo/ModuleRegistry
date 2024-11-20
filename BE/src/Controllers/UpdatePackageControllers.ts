@@ -31,7 +31,7 @@ export const UpdatePackageViaIDController = asyncHandler(
 
         const packagesDirectory = path.join(process.cwd(), "Data/Packages");
         const tempDirectory = packagesDirectory + "/.Temp";
-        const tempFile = path.join(tempDirectory, packageIDToUpdate!);
+        const tempFile = path.join(tempDirectory, packageIDToUpdate!) + ".zip";
 
         if (!fs.existsSync(tempDirectory)) {
             // This is where data is downloaded before being examined.
