@@ -1,4 +1,4 @@
-import { AsyncLoops } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
+import { AsyncLoops } from "../../../Utils/DSinc_Modules/DSinc_LoopsMaps";
 import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
 import { RepoURL } from "./URLProcessor.interface";
 

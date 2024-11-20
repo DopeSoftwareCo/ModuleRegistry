@@ -23,6 +23,7 @@ import { VersionRouter } from "./Routes/VersionRoutes";
 import { SearchVersion } from "./Providers/PackageVersioning/search-functions";
 import { VSearchBySimpleRangeController } from "./Controllers/VersionControllers";
 import { VSearchRequest } from "RequestTypes";
+import { FakeMongo, FillFakeMongo } from "../Tests/TestUtils/mocked_mongo";
 
 dotenv.config();
 
@@ -136,7 +137,10 @@ const johnProfiles = [
 }
 async function Execute() {
     await GenerateManagementToken();
-    await runServer();
+    //await runServer();
+    FillFakeMongo();
+    //console.log(FakeMongo.storage);'
+    FakeMongo.PrintAll();
 }
 
 Execute();

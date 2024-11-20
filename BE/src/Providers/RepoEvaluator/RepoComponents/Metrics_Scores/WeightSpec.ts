@@ -1,4 +1,4 @@
-import * as DSincMath from "../../../../DSinc_Modules/DSinc_Math";
+import * as DSincMath from "../../../Utils/DSinc_Modules/DSinc_Math";
 import { MetricName } from "./Metric.const";
 
 export class WeightSpec {

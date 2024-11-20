@@ -1,10 +1,10 @@
-import { RepoURL } from "../../Providers/RepoEvaluator/RepoComponents/URL/URLProcessor.interface";
-import { Repository } from "../../Providers/RepoEvaluator/RepoComponents/Repository";
-import { RepoID } from "../../Providers/RepoEvaluator/RepoComponents/ID/RepoID";
+import { RepoURL } from "../../../RepoEvaluator/RepoComponents/URL/URLProcessor.interface";
+import { Repository } from "../../../RepoEvaluator/RepoComponents/Repository";
+import { RepoID } from "../../../RepoEvaluator/RepoComponents/ID/RepoID";
 import {
     I_RepoScoreset,
     RepoScoreset,
-} from "../../Providers/RepoEvaluator/RepoComponents/Metrics_Scores/RepoScoreset";
+} from "../../../../Providers/RepoEvaluator/RepoComponents/Metrics_Scores/RepoScoreset";
 
 export type GuardLogic = (value: any) => number;
 

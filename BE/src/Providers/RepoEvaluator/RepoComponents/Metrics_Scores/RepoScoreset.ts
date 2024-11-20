@@ -1,6 +1,6 @@
 import { FindWeightSpecByReceiver, WeightSpec } from "./WeightSpec";
 import { EMPTY_WEIGHTSPEC, WeightSpecSet, DEFAULT_WEIGHTS } from "./Weightspec.const";
-import { TryIndexOrDefaultTo } from "../../../../DSinc_Modules/DSinc_LoopsMaps";
+import { TryIndexOrDefaultTo } from "../../../Utils/DSinc_Modules/DSinc_LoopsMaps";
 import { MetricName } from "./Metric.const";
 import { Metric } from "./Metric";
 

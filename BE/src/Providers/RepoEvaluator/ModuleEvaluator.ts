@@ -4,7 +4,7 @@ import { MetricName } from "./RepoComponents/Metrics_Scores/Metric.const";
 import { SubscoreCalculator } from "./RepoComponents/Metrics_Scores/ScoreCalculator";
 import { WeightSpec, FindWeightSpecByReceiver } from "./RepoComponents/Metrics_Scores/WeightSpec";
 import { EMPTY_WEIGHTSPEC, WeightSpecSet } from "./RepoComponents/Metrics_Scores/Weightspec.const";
-import { AsyncLoops, TryIndexOrDefaultTo } from "../../DSinc_Modules/DSinc_LoopsMaps";
+import { AsyncLoops, TryIndexOrDefaultTo } from "../Utils/DSinc_Modules/DSinc_LoopsMaps";
 import { VersionDependence_Scorer, MergeRestriction_Scorer } from "./Functions/DSincScorers";
 
 import {

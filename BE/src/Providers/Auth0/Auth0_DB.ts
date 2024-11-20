@@ -154,7 +154,7 @@ export namespace Auth0_Database {
                     Authorization: `Bearer ${token}`,
                 },
                 params: {
-                    ields: attributes ? attributes.join() : "user_id",
+                    fields: attributes ? attributes.join() : "user_id",
                     include_fields: true,
                     per_page: 100, // Adjust this to fetch more or less per request,
                 },
@@ -171,7 +171,7 @@ export namespace Auth0_Database {
             });
             return all_ids;
         } catch (error) {
-            console.error(error);
+            return undefined;
         }
     }
 
