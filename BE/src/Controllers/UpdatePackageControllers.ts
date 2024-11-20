@@ -61,7 +61,7 @@ export const UpdatePackageViaIDController = asyncHandler(
         await fs.promises.writeFile(tempFile, binaryContent);
 
         if (body.data.debloat == true) {
-            console.log(await debloatZippedContent(tempFile));
+            await debloatZippedContent(tempFile);
         }
 
         // Save to database
