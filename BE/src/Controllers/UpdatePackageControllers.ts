@@ -70,7 +70,6 @@ export const UpdatePackageViaIDController = asyncHandler(
         }
         // Removed Else Statement since it needs to copy regardless of debloat
         // Just move the existing zip to Data and rename to the ID.
-        await fs.promises.rename(tempFile, path.join(packagesDirectory, packageIDToUpdate!)); // Moves the file instead of copying. 
 
         // const returnBody: UpdatePackageViaIDResponse = {
         //     metadata: {
@@ -88,6 +87,8 @@ export const UpdatePackageViaIDController = asyncHandler(
         pack!.metadata.Version = newData.metadata.Version;
         pack!.save();
 
+        // Moved this to after the database save incase errors happen, there won't be a mismatch between what the database says and what is stored. 
+        await fs.promises.rename(tempFile, path.join(packagesDirectory, packageIDToUpdate!)); // Moves the file instead of copying. 
         //something to signify the package didnt exist
         // let responseMessage: UpdatePackageViaIDResponseMessages;
 
