@@ -70,7 +70,7 @@ export const UpdatePackageViaIDController = asyncHandler(
         }
         // Removed Else Statement since it needs to copy regardless of debloat
         // Just move the existing zip to Data and rename to the ID.
-        await fs.promises.copyFile(tempFile, path.join(packagesDirectory, packageIDToUpdate!));
+        await fs.promises.rename(tempFile, path.join(packagesDirectory, packageIDToUpdate!)); // Moves the file instead of copying. 
 
         // const returnBody: UpdatePackageViaIDResponse = {
         //     metadata: {
@@ -91,7 +91,7 @@ export const UpdatePackageViaIDController = asyncHandler(
         //something to signify the package didnt exist
         // let responseMessage: UpdatePackageViaIDResponseMessages;
 
-        fs.rmSync(tempDirectory, { recursive: true, force: true });
+        //fs.rmSync(tempDirectory, { recursive: true, force: true }); // since file is moved, no longer needed
         responseMessage = "Version is updated.";
         res.status(200).send(responseMessage);
     }
