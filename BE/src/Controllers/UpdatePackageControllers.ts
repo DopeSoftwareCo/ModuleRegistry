@@ -65,13 +65,13 @@ export const UpdatePackageViaIDController = asyncHandler(
 
         if (body.data.debloat == true) {
             // Zip up, and store
-            binaryContent = await debloatZippedContent(binaryContent.toString("binary")); // Placeholder
+            binaryContent = await debloatZippedContent(`${packagesDirectory}/${packageIDToUpdate}`); // Placeholder
             const zippedContentStream = fs.createWriteStream(
                 path.join(packagesDirectory, packageIDToUpdate!)
             );
             const archive = archiver("zip", { zlib: { level: 9 } });
             archive.pipe(zippedContentStream);
-            archive.append(binaryContent);
+            archive.append(binaryContent, { name: `${packagesDirectory}/${packageIDToUpdate}` });
             archive.finalize();
         } else {
             // Just move the existing zip to Data and rename to the ID.
