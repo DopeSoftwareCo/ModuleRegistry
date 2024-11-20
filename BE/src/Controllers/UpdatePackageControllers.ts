@@ -51,6 +51,13 @@ export const UpdatePackageViaIDController = asyncHandler(
             return;
         }
 
+        if (newData.metadata.Name == "no name" || newData.metadata.Version == "no version") {
+            responseMessage =
+                "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+            res.status(424).send(responseMessage);
+            return;
+        }
+
         await fs.promises.writeFile(tempFile, binaryContent);
 
         if (body.data.debloat == true) {
