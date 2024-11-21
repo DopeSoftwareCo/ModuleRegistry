@@ -7,7 +7,7 @@ import { debloatUnzippedContent, debloatZippedContent, zipContents } from "../sr
  */
 
 const testDirectory = path.join(__dirname, "DebloatTestFiles");
-const timeout: number = 50000; // All tests time out after 50 seconds
+const timeout: number = 30000; // All tests time out after 50 seconds
 const fileNameWithoutExtension = "BE_TEST";
 const debloatedFileWithoutExtension = fileNameWithoutExtension + "_Debloated"
 async function runDebloatTest(fileExtension: string): Promise<boolean> {
