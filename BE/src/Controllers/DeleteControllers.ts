@@ -9,23 +9,20 @@ import {
 import { NextFunction } from "express";
 import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/ResetSystem";
 import { Restricted_INSERT } from "../Classes/RestrictedOperations/InsertUser";
-import { swapDefaultPass } from "../Providers/Auth0/AuthenticateAuth0";
-// /reset
 
+// /reset
 export const ResetControllerDANGER = asyncHandler(
     async (req: SystemResetRequest, res: ResetRegistryResponse, next: NextFunction) => {
         const perm = req.permission;
         const role = req.role;
         let responseMessage: ResetRegistryResponseMessages;
         if (!perm || !role) {
+            //everyone will have some perm and some role
             responseMessage = "You do not have permission to reset the registry.";
             res.status(401).send(responseMessage);
             return;
         }
         const result = await Restricted_ResetSystem.Execute([], perm, role);
-
-        const unathorized = result.failedToAuthorize;
-
         const resultInsert = await Restricted_INSERT.Execute(
             [
                 {
@@ -40,6 +37,13 @@ export const ResetControllerDANGER = asyncHandler(
             perm,
             role
         );
+
+        //covering our bases here incase there is some weird failure, while not transparent to the user..
+        const unathorized =
+            result.failedToAuthorize ||
+            resultInsert.failedToAuthorize ||
+            result.badInput ||
+            resultInsert.badInput;
 
         //this type is a union of our return strings
         if (unathorized) {
