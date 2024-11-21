@@ -1,5 +1,5 @@
 import { Auth0_Database } from "../../Providers/Auth0/Auth0_DB";
-import { Permission, UDS, Role } from "./subdir.const";
+import { PermissionEnum, UDS, Role } from "./subdir.const";
 import { ToUDS, ToPermissionNumber } from "./subdir.utils";
 
 export class User {
@@ -12,7 +12,7 @@ export class User {
     constructor(
         uid: string,
         email: string,
-        permissions: Permission, // This is an enum value
+        permissions: PermissionEnum, // This is an enum value
         role: Role = Role.Unknown, // This is also an enum value
         username: string
     ) {
@@ -61,7 +61,7 @@ export class User {
         return this.uds;
     }
 
-    get Numeric_Permission(): Permission {
+    get Numeric_Permission(): PermissionEnum {
         return ToPermissionNumber(this.uds);
     }
 

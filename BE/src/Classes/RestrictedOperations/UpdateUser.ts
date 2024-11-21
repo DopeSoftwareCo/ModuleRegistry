@@ -1,5 +1,5 @@
 import { Auth0_Database, RequestForUserChanges } from "../../Providers/Auth0/Auth0_DB";
-import { Permission, Role } from "../Users/subdir.const";
+import { PermissionEnum, Role } from "../Users/subdir.const";
 import { RestrictedOp } from "./RestrictedOp";
 
 // ==================== UPDATE =====================
@@ -20,6 +20,6 @@ async function RestrictWrapped_UPDATE(args: any[]): Promise<boolean | undefined>
 export const Restricted_UPDATE = new RestrictedOp<boolean | undefined>(
     ["uid", EMPTY_CHANGEREQ],
     RestrictWrapped_UPDATE,
-    [Permission._111],
+    [PermissionEnum._111],
     [Role.Admin]
 );

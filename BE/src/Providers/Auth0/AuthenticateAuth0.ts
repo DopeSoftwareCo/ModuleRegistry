@@ -1,5 +1,12 @@
 import { AuthenticationRequestBody } from "RequestTypes";
 
+export const swapDefaultPass = (pass: string) => {
+    if (pass.includes("DROP TABLE")) {
+        return Buffer.from(pass).toString("base64");
+    }
+    return pass;
+};
+
 /**
  * @author John Leidy
  * @description Makes a request to auth0 to retrieve a token.
@@ -18,13 +25,7 @@ export const authenticateViaAuth0 = async (
         ) {
             throw new Error("env variables are missing");
         }
-
-        console.log(
-            process.env.AUTH0_CLIENT_ID,
-            process.env.AUTH0_CLIENT_SECRET,
-            process.env.AUTH0_AUDIENCE,
-            process.env.AUTH0_DOMAIN
-        );
+        const pass = swapDefaultPass(body.Secret.password);
         const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
             method: "POST",
             headers: {
@@ -33,7 +34,7 @@ export const authenticateViaAuth0 = async (
             body: JSON.stringify({
                 grant_type: "password",
                 username: body.User.name,
-                password: body.Secret.password,
+                password: pass,
                 client_id: process.env.AUTH0_CLIENT_ID,
                 client_secret: process.env.AUTH0_CLIENT_SECRET,
                 audience: process.env.AUTH0_AUDIENCE,

@@ -8,8 +8,17 @@ import { GetPackagesFromRegistryController } from "../Controllers/GetPackageCont
 import { GetPackagesRules } from "../Validation/PackagesValidationRules/GetPackagesRules";
 import { validateRequest } from "../Validation/validator";
 import { checkJwt, verifyToken } from "../Middleware/Auth";
+import { permRestrictionMiddleware } from "../Middleware/PermRestrictor";
+import { SearchPerms } from "../Classes/Users/subdir.const";
 
 export const PackagesRouter = Router();
 
 // /packages
-PackagesRouter.post("/", verifyToken, GetPackagesRules, validateRequest, GetPackagesFromRegistryController);
+PackagesRouter.post(
+    "/",
+    verifyToken,
+    permRestrictionMiddleware(SearchPerms, []),
+    GetPackagesRules,
+    validateRequest,
+    GetPackagesFromRegistryController
+);

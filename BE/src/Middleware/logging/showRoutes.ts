@@ -40,7 +40,9 @@ const listRoutes = (app: Application) => {
                 // Handle regular routes
                 const path = normalizePath(parentPath + layer.route.path);
                 layer.route.stack.forEach((routeLayer: any) => {
-                    const route = `${handleRouteMethod(routeLayer.method.toUpperCase())} ${path}`;
+                    const route = `${
+                        routeLayer.method ? handleRouteMethod(routeLayer.method.toUpperCase()) : ""
+                    } ${path}`;
                     if (!loggedRoutes.has(route)) {
                         console.log(`             ${route}/`);
                         loggedRoutes.add(route);
