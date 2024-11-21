@@ -29,9 +29,11 @@ describe("CalcPackageCost functions", () => {
     // Use the facebook react package. That should be 0.3 MB when rounded in my function.
     describe("CalculateStandaloneCost", () => {
         it("should return the standalone size of the facebook react package", async () => {
-            const fetchspy = getFetchSpy(standaloneSizeMock, 200);
+            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
+                json: async () => standaloneSizeMock,
+            } as unknown as Response);
 
-            const result = await CalculateStandaloneCost(validPackageUrl);
+            const result = await CalculateStandaloneCost("https://github.com/facebook/react");
             expect(result).toBe(0.3);
         });
 
