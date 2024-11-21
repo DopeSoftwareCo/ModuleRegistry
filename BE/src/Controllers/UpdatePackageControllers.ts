@@ -65,8 +65,6 @@ export const UpdatePackageViaIDController = asyncHandler(
         }
 
         // Save to database
-        pack!.data.Content = newData.data.Content!;
-        pack!.data.JSProgram = newData.data.JSProgram!;
         pack!.repoUrl = newData.data.URL!;
         pack!.metadata.Name = newData.metadata.Name;
         pack!.metadata.Version = newData.metadata.Version;
