@@ -1,63 +1,65 @@
-import { debloatUploadedContent } from "../src/DSinc_Modules/DSinc_PackageHandling";
 import { describe, expect, test } from "@jest/globals";
+import * as path from 'path';
+import fs from 'fs';
+import { debloatUnzippedContent, debloatZippedContent, zipContents } from "../src/DSinc_Modules/DSinc_PackageHandling"
+/**
+ * Requires the DebloatTestFiles folder to run tests
+ */
 
-describe("Debloat Uploaded Content", () => {
-    test("UploadIngestController", async () => {
-        const testJSFile: string = `
-            "use strict";
-            var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-                function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-                return new (P || (P = Promise))(function (resolve, reject) {
-                    function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-                    function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-                    function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-                    step((generator = generator.apply(thisArg, _arguments || [])).next());
-                });
-            };
-            var __importDefault = (this && this.__importDefault) || function (mod) {
-                return (mod && mod.__esModule) ? mod : { "default": mod };
-            };
-            Object.defineProperty(exports, "__esModule", { value: true });
-            exports.UploadInjestController = void 0;
-            const asyncHandler_1 = __importDefault(require("../Middleware/asyncHandler"));
-            // /packages
-            exports.UploadInjestController = (0, asyncHandler_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-                //hover for custom typed body
-                const body = req.body;
-                //use the body data for your code here
-                //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                //will need some return that signifies package exists already
-                const existsAlready = false;
-                //will need some return that signifies package is not uploaded due to disqualified rating
-                const disqualified = false;
-                const returnBody = {
-                    metadata: {
-                        Name: "some name",
-                        Version: "Some version",
-                        ID: "Some id",
-                    },
-                    //all fields are optional in data
-                    data: {},
-                };
-                //this type is a union of our return strings
-                let responseMessage;
-                if (!existsAlready && !disqualified) {
-                    res.status(200).json(returnBody);
-                }
-                else if (existsAlready) {
-                    responseMessage = "Package exists already.";
-                    res.status(409).send(responseMessage);
-                }
-                else if (disqualified) {
-                    responseMessage = "Pacakge is not uploaded due to disqualified rating.";
-                    res.status(424).send(responseMessage);
-                }
-            }));
-        `;
-        const size = testJSFile.length;
-        const debloatedContent = await debloatUploadedContent(testJSFile);
-        const debloatedSize = debloatedContent.length;
-        console.log(debloatedSize + " < " + size);
-        expect(debloatedSize).toBeLessThan(size);
-    });
+const testDirectory = path.join(__dirname, "DebloatTestFiles");
+const timeout: number = 30000; // All tests time out after 50 seconds
+const fileNameWithoutExtension = "BE_TEST";
+const debloatedFileWithoutExtension = fileNameWithoutExtension + "_Debloated"
+async function runDebloatTest(fileExtension: string): Promise<boolean> {
+    const backendPath = path.join(testDirectory, fileNameWithoutExtension + fileExtension);
+    const debloatedPath = path.join(testDirectory, debloatedFileWithoutExtension + fileExtension);
+    let isSuccessful = false; // Assume failure
+    try {
+        if (fileExtension == "") {
+            if (fs.existsSync(debloatedPath)) { // Cleans up previous test data if still there
+                await fs.promises.rm(debloatedPath, { recursive: true, force: true}); 
+            }
+            await fs.promises.cp(backendPath, debloatedPath, { recursive: true });
+            isSuccessful = await debloatUnzippedContent(debloatedPath);
+        }
+        else if (fileExtension.startsWith(".")) {
+            if (fs.existsSync(debloatedPath)) {
+                await fs.promises.rm(debloatedPath); 
+            }
+            await fs.promises.copyFile(backendPath, debloatedPath);
+            isSuccessful = await debloatZippedContent(debloatedPath);
+        } // In all other situations, fail, since it must be a file extension
+    }
+    catch (error) {
+        isSuccessful = false;
+        console.error(error);
+    }
+    return isSuccessful;
+}
+
+describe("Debloat Test", () => {
+    test("Test using BE as Folder Input", async () => {
+        expect(await runDebloatTest("")).toBe(true);
+    },timeout); 
+
+    test("Test using Zipped BE as .zip Input", async () => {
+        expect(await runDebloatTest(".zip")).toBe(true);
+    },timeout)
+
+    test("Test using Zipped BE as tar.gz Input", async () => { // Might remove if functionality is not needed
+        expect(await runDebloatTest(".tar.gz")).toBe(true);
+    },timeout)
+    test("Test using Zipped BE as tar.gz Input", async () => { // Purposefully bad input, sees if it handles it. 
+        expect(await runDebloatTest("txt")).toBe(false);
+    },timeout)
 });
+
+const compressThisFolder = path.join(testDirectory, "BE_TEST_Compression_Test");
+describe("Compression Test", () => {
+    test("Zip Archive Test", async () => {
+        expect(await zipContents(compressThisFolder, ".zip", compressThisFolder + "_ZIP_TEST.ZIP")).toBe(true);
+    }, timeout)
+    test("Tar Gz Archive Test", async () => {
+        expect(await zipContents(compressThisFolder, ".tar.gz", compressThisFolder + "_targz_TEST.tar.gz")).toBe(true);
+    }, timeout)
+})

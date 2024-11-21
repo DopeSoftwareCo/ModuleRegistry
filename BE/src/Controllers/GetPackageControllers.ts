@@ -178,22 +178,31 @@ export const GetPackageRatingsViaIDController = asyncHandler(
 export const GetPackagesViaRegexController = asyncHandler(
     async (req: GetPackagesViaRegexRequest, res: GetPackageViaRegexResponse, next: NextFunction) => {
         const regexStr = req.body.RegEx;
-        //your code here using the regex str
+        const regex = new RegExp(regexStr, "i"); // case-insensitive regex
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //some return of this type as our response body
-        const responseBody: GetPackageViaRegexData[] = [
-            { Version: "some version", Name: "some name" },
-            { Version: "some version", Name: "some name" },
-        ];
-        //some return that states the package wasnt found via regex
-        const DNE = false;
-        let responseMessage: GetPackageViaRegexInvalidResponseMessages;
-        if (!DNE) {
+        try {
+            const packages = await PackageModel.find({
+                $or: [{ "metadata.Name": regex }, { "data.Content": regex }],
+            });
+
+            if (packages.length === 0) {
+                const responseMessage: GetPackageViaRegexInvalidResponseMessages =
+                    "No package found under this regex.";
+                return res.status(404).send(responseMessage);
+            }
+
+            const responseBody: GetPackageViaRegexData[] = packages
+                .filter((pack) => pack.metadata && pack.metadata.Version && pack.metadata.Name)
+                .map((pack) => ({
+                    Version: pack.metadata.Version,
+                    Name: pack.metadata.Name,
+                    ID: pack._id.toString(),
+                }));
+
             res.status(200).json(responseBody);
-        } else {
-            responseMessage = "No package found under this regex.";
-            res.status(404).send(responseMessage);
+        } catch (err) {
+            console.error("Error in GetPackagesViaRegexController:", err);
+            next(err);
         }
     }
 );

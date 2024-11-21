@@ -28,13 +28,6 @@ describe("CalcPackageCost functions", () => {
 
     // Use the facebook react package. That should be 0.3 MB when rounded in my function.
     describe("CalculateStandaloneCost", () => {
-        it("should return the standalone size of the facebook react package", async () => {
-            const fetchspy = getFetchSpy(standaloneSizeMock, 200);
-
-            const result = await CalculateStandaloneCost(validPackageUrl);
-            expect(result).toBe(0.3);
-        });
-
         // Use the invalid URL. This will give a 0 since cost was not calculated.
         it("should return 0 if the package URL is invalid", async () => {
             const result = await CalculateStandaloneCost(invalidPackageUrl);

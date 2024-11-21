@@ -2,27 +2,14 @@ import mongoose, { Schema } from "mongoose";
 import { Base } from "./Base";
 
 export interface Package extends Base {
-    Title: string;
     repoUrl: string;
     metadata: {
         Name: string;
         Version: string;
         License: {
             name: string;
-            spxId: string;
-            url: string;
         };
-        Uploader: string;
         IsExternal: boolean;
-        Safety: "unsafe" | "unkown" | "vetted";
-        IsSecret: boolean;
-        Visibility: "secret" | "internal" | "public";
-        Availability: number;
-        PrivelegedGroup: number;
-    };
-    data: {
-        Content: string;
-        JSProgram: string;
     };
     RampupTime: {
         rampup_score: number;
@@ -81,10 +68,6 @@ export const packageSchema: Schema<Package> = new Schema({
         required: true,
         default: () => new mongoose.Types.ObjectId(),
     },
-    Title: {
-        type: String,
-        required: true,
-    },
     repoUrl: {
         type: String,
         required: true,
@@ -103,53 +86,9 @@ export const packageSchema: Schema<Package> = new Schema({
                 type: String,
                 required: true,
             },
-            spxId: {
-                type: String,
-                required: true,
-            },
-            url: {
-                type: String,
-                required: true,
-            },
-        },
-        Uploader: {
-            type: String,
-            required: true,
         },
         IsExternal: {
             type: Boolean,
-            required: true,
-        },
-        Safety: {
-            type: String,
-            enum: ["unsafe", "unknown", "vetted"],
-            required: true,
-        },
-        IsSecret: {
-            type: Boolean,
-            required: true,
-        },
-        Visibility: {
-            type: String,
-            enum: ["secret", "internal", "public"],
-            required: true,
-        },
-        Availability: {
-            type: Number,
-            required: true,
-        },
-        PrivelegedGroup: {
-            type: Number,
-            required: true,
-        },
-    },
-    data: {
-        Content: {
-            type: String,
-            required: true,
-        },
-        JSProgram: {
-            type: String,
             required: true,
         },
     },
