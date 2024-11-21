@@ -1,7 +1,7 @@
-import { Permission, Role } from "../Users/subdir.const";
+import { PermissionEnum, Role } from "../Users/subdir.const";
 
 export const ALL_ROLES: Role[] = [0, 1, 2, 3];
-export const ALL_PERMISSIONS: Permission[] = [0, 1, 2, 3, 4, 5, 6, 7];
+export const ALL_PERMISSIONS: PermissionEnum[] = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export interface Restricted_Return<T> {
     returnVal: T | undefined;
@@ -24,14 +24,14 @@ export class RestrictedOp<Output> {
     exampleInput: any[];
     op: (input: any[]) => Promise<Output>;
     roleRestriction: Role[];
-    permissionsAllowed: Permission[];
+    permissionsAllowed: PermissionEnum[];
     limitedByRole: boolean = false;
     voidInput = false;
 
     constructor(
         exampleInput: any[],
         operation: (input: any[]) => Promise<Output>,
-        permissionRequirement: Permission[],
+        permissionRequirement: PermissionEnum[],
         roleRestriction?: Role[]
     ) {
         this.exampleInput = exampleInput;
@@ -47,7 +47,8 @@ export class RestrictedOp<Output> {
         this.permissionsAllowed = permissionRequirement.length > 0 ? permissionRequirement : ALL_PERMISSIONS;
     }
 
-    VerifyPermission(permission: Permission): boolean {
+    VerifyPermission(permission: PermissionEnum): boolean {
+        console.log("PERMISSION IN RESTRICTED OP", permission);
         return this.permissionsAllowed.includes(permission);
     }
 
@@ -68,7 +69,7 @@ export class RestrictedOp<Output> {
         return match;
     }
 
-    async Execute(input: any[], permission: Permission, role: Role): Promise<Restricted_Return<Output>> {
+    async Execute(input: any[], permission: PermissionEnum, role: Role): Promise<Restricted_Return<Output>> {
         const proceed: boolean = this.VerifyPermission(permission) && this.VerifyRole(role);
         if (!proceed) {
             return UnathorizedCall;

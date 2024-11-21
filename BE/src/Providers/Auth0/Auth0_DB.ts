@@ -6,14 +6,14 @@ import { LogDebug } from "../Utils/Log";
 import { User } from "../../Classes/Users/User";
 import { Admin } from "../../Classes/Users/Admin";
 import { token } from "../../Middleware/ManagementToken";
-import { Permission, Role } from "../../Classes/Users/subdir.const";
+import { PermissionEnum, Role } from "../../Classes/Users/subdir.const";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 
 export interface RegistrationInfo {
     email: string;
     password: string;
-    permission: Permission;
+    permission: PermissionEnum;
     role: Role;
     username: string;
 }

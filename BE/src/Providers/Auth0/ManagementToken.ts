@@ -14,6 +14,7 @@ export async function getManagementToken(): Promise<string | null> {
             audience: audience,
             grant_type: "client_credentials",
         });
+        console.log(response.data.access_token);
         return response.data.access_token;
     } catch (error) {
         LogDebug("Failed to get Management API token:");

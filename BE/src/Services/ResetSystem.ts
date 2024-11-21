@@ -1,11 +1,11 @@
 import axios from "axios";
 import { LogDebug } from "../Providers/Utils/Log";
-import { Mock_RestrictedOperation, RestrictedOperation } from "../Classes/PrivilegedOperations";
+import { getManagementToken } from "../Providers/Auth0/ManagementToken";
 import { token } from "../Middleware/ManagementToken";
 const DEFAULT_USER_UID = "abc"; // will replace with the default user's uid
 
 export async function GetAllUserIDs() {
-    const response = await axios.get(`https://YOUR_AUTH0_DOMAIN/api/v2/users`, {
+    const response = await axios.get(`https://${process.env.AUTH0_DOMAIN}/api/v2/users`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -21,6 +21,7 @@ export async function GetAllUserIDs() {
 }
 
 async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirmFullDelete: boolean = false) {
+    const token = await getManagementToken();
     // Retrieve all user IDs
     const userIDs = await GetAllUserIDs();
 

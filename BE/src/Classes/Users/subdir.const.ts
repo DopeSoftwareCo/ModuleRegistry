@@ -22,7 +22,7 @@ export enum Role {
     Admin = 3,
 }
 
-export enum Permission {
+export enum PermissionEnum {
     _000 = 0,
     _001 = 1,
     _010 = 2,
@@ -32,3 +32,22 @@ export enum Permission {
     _110 = 6,
     _111 = 7,
 }
+
+export const SearchPerms = [
+    PermissionEnum._001,
+    PermissionEnum._011,
+    PermissionEnum._111,
+    PermissionEnum._101,
+];
+export const DownloadPerms = [
+    PermissionEnum._010,
+    PermissionEnum._011,
+    PermissionEnum._110,
+    PermissionEnum._111,
+];
+export const UploadPerms = [
+    PermissionEnum._100,
+    PermissionEnum._101,
+    PermissionEnum._110,
+    PermissionEnum._111,
+];

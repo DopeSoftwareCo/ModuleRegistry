@@ -1,16 +1,16 @@
 import { Role, UDS } from "./Users/subdir.const";
 import * as jsonwebtoken from "jsonwebtoken";
-import { Permission } from "./Users/subdir.const";
+import { PermissionEnum } from "./Users/subdir.const";
 
 const ALL_ROLES: Role[] = [0, 1, 2, 3];
-export const ALL_PERMISSIONS: Permission[] = [0, 1, 2, 3, 4, 5, 6, 7];
+export const ALL_PERMISSIONS: PermissionEnum[] = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export class RestrictedOperation {
     roleRestriction: Role[];
-    permissionsAllowed: Permission[];
+    permissionsAllowed: PermissionEnum[];
     limitedByRole: boolean = false;
 
-    constructor(permissionRequirement: Permission[], roleRestriction?: Role[]) {
+    constructor(permissionRequirement: PermissionEnum[], roleRestriction?: Role[]) {
         if (!roleRestriction) {
             this.roleRestriction = ALL_ROLES;
         } else {
@@ -21,7 +21,7 @@ export class RestrictedOperation {
         this.permissionsAllowed = permissionRequirement.length > 0 ? permissionRequirement : ALL_PERMISSIONS;
     }
 
-    VerifyPermission(permission: Permission): boolean {
+    VerifyPermission(permission: PermissionEnum): boolean {
         return this.permissionsAllowed.includes(permission);
     }
 
@@ -41,13 +41,13 @@ export class RestrictedOperation {
 export class Mock_RestrictedOperation<Input, Output> {
     op: (input: Input) => Output;
     roleRestriction: Role[];
-    permissionsAllowed: Permission[];
+    permissionsAllowed: PermissionEnum[];
     limitedByRole: boolean = false;
     voidInput = false;
 
     constructor(
         operation: (input: Input) => Output,
-        permissionRequirement: Permission[],
+        permissionRequirement: PermissionEnum[],
         roleRestriction?: Role[]
     ) {
         this.op = operation;
@@ -61,7 +61,7 @@ export class Mock_RestrictedOperation<Input, Output> {
         this.permissionsAllowed = permissionRequirement.length > 0 ? permissionRequirement : ALL_PERMISSIONS;
     }
 
-    VerifyPermission(permission: Permission): boolean {
+    VerifyPermission(permission: PermissionEnum): boolean {
         return this.permissionsAllowed.includes(permission);
     }
 
@@ -69,7 +69,7 @@ export class Mock_RestrictedOperation<Input, Output> {
         return this.limitedByRole ? this.roleRestriction.includes(role) : true;
     }
 
-    async Execute(input: Input, permission: Permission, role: Role): Promise<Output | undefined> {
+    async Execute(input: Input, permission: PermissionEnum, role: Role): Promise<Output | undefined> {
         const proceed: boolean = this.VerifyPermission(permission) && this.VerifyRole(role);
 
         if (proceed) {

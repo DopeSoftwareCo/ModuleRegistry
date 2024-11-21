@@ -1,10 +1,10 @@
 import { User } from "./User";
 import { Auth0_Database, RegistrationInfo } from "../../Providers/Auth0/Auth0_DB";
-import { Permission, Role } from "./subdir.const";
+import { PermissionEnum, Role } from "./subdir.const";
 
 export class Admin extends User {
     constructor(uid: string, email: string, username: string) {
-        super(uid, email, Permission._111, Role.Admin, username);
+        super(uid, email, PermissionEnum._111, Role.Admin, username);
     }
 
     async DeleteOtherUser(uid: string): Promise<boolean> {
@@ -14,7 +14,7 @@ export class Admin extends User {
     async Register_User(
         email: string,
         password: string,
-        permission: Permission,
+        permission: PermissionEnum,
         role: Role,
         username: string
     ): Promise<User | undefined> {
@@ -33,7 +33,7 @@ export class Admin extends User {
         const info: RegistrationInfo = {
             email: email,
             password: password,
-            permission: Permission._111,
+            permission: PermissionEnum._111,
             role: Role.Admin,
             username: username, // Optional: Only if needed
         };
