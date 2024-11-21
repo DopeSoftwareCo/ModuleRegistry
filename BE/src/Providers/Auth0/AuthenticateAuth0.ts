@@ -25,7 +25,7 @@ export const authenticateViaAuth0 = async (
         ) {
             throw new Error("env variables are missing");
         }
-        const pass = swapDefaultPass(body.Secret.password);
+        const pass = swapDefaultPass(body.Secret.password.replace(/\\/g, ""));
         const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
             method: "POST",
             headers: {
