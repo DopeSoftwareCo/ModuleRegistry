@@ -16,13 +16,6 @@ import { RunEvalSubsystemDemo } from "./Providers/RepoEvaluator/DevTools/Subsyst
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
-import { Test_Auth0 } from "../Tests/ManualTests/DatabaseCommunications";
-import { permission } from "process";
-import { toBase64 } from "openai/core";
-import { VersionRouter } from "./Routes/VersionRoutes";
-import { SearchVersion } from "./Providers/PackageVersioning/search-functions";
-import { VSearchBySimpleRangeController } from "./Controllers/VersionControllers";
-import { VSearchRequest } from "RequestTypes";
 import { FakeMongo, FillFakeMongo } from "../Tests/TestUtils/mocked_mongo";
 
 dotenv.config();
@@ -65,7 +58,6 @@ const addRoutes = (app: Express) => {
     app.use("/authenticate", AuthRouter);
     app.use("/tracks", TracksRouter);
     app.use("/users", UserRouter);
-    app.use("/versions", VersionRouter);
 };
 
 const addMiddleWare = (app: Express) => {

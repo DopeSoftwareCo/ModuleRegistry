@@ -7,11 +7,16 @@ describe("Version Fetching", () => {
         FillFakeMongo();
     });
 
-    describe("Fetch ByExact Version", () => {
-        test("Valid (Exact Version)", async () => {
+    describe("Fetch w/ VALID input", () => {
+        test("(Valid) Exact Version", async () => {
             const request = [{ Name: "B1", Version: "5.7.4" }];
             let matches = await fakeMongoFunctions.FetchVersions(request);
             expect(matches.length).toBe(1);
+        });
+        test("(Valid) Simple Range", async () => {
+            const request = [{ Name: "A1", Version: "1.0.0-10.0.0" }];
+            let matches = await fakeMongoFunctions.FetchVersions(request);
+            expect(matches.length).toBe(9);
         });
     });
 });
