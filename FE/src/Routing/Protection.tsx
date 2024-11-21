@@ -41,7 +41,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children, validPermissions, validRoles }: ProtectedRouteProps) => {
     const tokenValid = isTokenValid();
     if (!tokenValid || !userHasProperPermission(validPermissions) || !userHasProperRole(validRoles)) {
-        return <Navigate to="/auth" replace />;
+        return <Navigate to="/permroleerror" replace />;
     }
 
     return children;
