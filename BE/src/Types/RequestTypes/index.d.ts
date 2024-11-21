@@ -41,7 +41,7 @@ declare module "RequestTypes" {
 
     export interface DeletePackageByIDRequest extends Request {}
 
-    export type UploadInjestPackageRequestBody = PackageData;
+    export type UploadInjestPackageRequestBody = PackageData & { Name?: string };
 
     export interface UploadInjestPackageRequest extends Request {
         body: UploadInjestPackageRequestBody;

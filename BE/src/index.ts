@@ -16,6 +16,7 @@ import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
+import { CatchAllRouter } from "./Routes/CatchAll";
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ const addRoutes = (app: Express) => {
     app.use("/authenticate", AuthRouter);
     app.use("/tracks", TracksRouter);
     app.use("/users", UserRouter);
+    app.use("/", CatchAllRouter);
 };
 
 const addMiddleWare = (app: Express) => {

@@ -5,6 +5,6 @@ import { NextFunction } from "express";
 
 export const GetTracksController = asyncHandler(
     async (req: GetTracks, res: GetPlannedTracksResponse, next: NextFunction) => {
-        res.status(200).json({ plannedTracks: ["authorization"] });
+        res.status(200).json({ plannedTracks: ["Access control track"] });
     }
 );
