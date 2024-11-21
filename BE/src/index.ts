@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { errorHandler } from "./Middleware/errorMiddleware";
@@ -15,9 +15,8 @@ import mongoose from "mongoose";
 import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
-import { Permission, Role } from "./Classes/Users/subdir.const";
-import { Auth0_Database, RegistrationInfo } from "./Providers/Auth0/Auth0_DB";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
+import { CatchAllRouter } from "./Routes/CatchAll";
 
 dotenv.config();
 
@@ -29,6 +28,9 @@ const envVarNames = [
     "AUTH0_DOMAIN",
     "NODE_ENV",
     "MONGODB_URL",
+    "API_CLIENT_ID",
+    "API_CLIENT_SECRET",
+    "MANAGEMENT_API_TOKEN_REQUEST_AUDIENCE",
 ];
 
 const checkEnvs = () => {
@@ -59,6 +61,7 @@ const addRoutes = (app: Express) => {
     app.use("/authenticate", AuthRouter);
     app.use("/tracks", TracksRouter);
     app.use("/users", UserRouter);
+    app.use("/", CatchAllRouter);
 };
 
 const addMiddleWare = (app: Express) => {
