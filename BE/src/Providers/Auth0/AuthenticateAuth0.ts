@@ -2,7 +2,6 @@ import { AuthenticationRequestBody } from "RequestTypes";
 
 export const swapDefaultPass = (pass: string) => {
     if (pass.includes("DROP TABLE")) {
-        console.log(Buffer.from(pass).toString("base64"));
         return Buffer.from(pass).toString("base64");
     }
     return pass;
@@ -43,7 +42,6 @@ export const authenticateViaAuth0 = async (
             }),
         });
         const json = await response.json();
-        console.log(json);
         return {
             invalidUserPass: json.error || json.error_description,
             token: `Bearer ${json.access_token}`,
