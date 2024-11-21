@@ -32,6 +32,10 @@ import { FetchVersions, SearchVersion } from "../Providers/PackageVersioning/sea
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
+        //BEWARE: There is a case where there will be ONE ITEM in the array
+        // This object will be requesting for ALL packages
+        // all responses/requests should be paginated
+        // An example below,
         const requestedPackages = req.body;
         /*
         const responseBody: GetPackagesResponseBody = [

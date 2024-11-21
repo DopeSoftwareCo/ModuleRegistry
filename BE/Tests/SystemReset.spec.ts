@@ -1,5 +1,5 @@
 import { jest, beforeEach, describe, expect, it, beforeAll } from "@jest/globals";
-import { Permission, Role } from "../src/Classes/Users/subdir.const";
+import { PermissionEnum, Role } from "../src/Classes/Users/subdir.const";
 import { UnathorizedCall, RestrictedOp } from "../src/Classes/RestrictedOperations/RestrictedOp";
 import { setFakeToken } from "../src/Middleware/ManagementToken";
 
@@ -25,7 +25,7 @@ const mocked_Op_SystemReset = async (args: any[]): Promise<string> => {
 const mocked_SystemReset = new RestrictedOp<string>(
     ["string", "string", "string", false],
     mocked_Op_SystemReset,
-    [Permission._111],
+    [PermissionEnum._111],
     [Role.Admin]
 );
 
@@ -38,19 +38,19 @@ describe("System Reset", () => {
     });
     it("should have a defined returnVal upon successful execution", async () => {
         expect(
-            (await mocked_SystemReset.Execute(validInput, Permission._111, Role.Admin)).returnVal
+            (await mocked_SystemReset.Execute(validInput, PermissionEnum._111, Role.Admin)).returnVal
         ).toBeDefined();
     });
 
     it("should return undefined returnVal if DeleteAllUsers fails during Execute", async () => {
         expect(
-            (await mocked_SystemReset.Execute(inputToFailDelete, Permission._111, Role.Admin)).returnVal
+            (await mocked_SystemReset.Execute(inputToFailDelete, PermissionEnum._111, Role.Admin)).returnVal
         ).toBeUndefined();
     });
 
     it("should return undefined returnVal if ClearAllPackages fails during Execute", async () => {
         expect(
-            (await mocked_SystemReset.Execute(["", "", "", true], Permission._111, Role.Admin)).returnVal
+            (await mocked_SystemReset.Execute(["", "", "", true], PermissionEnum._111, Role.Admin)).returnVal
         ).toBeUndefined();
     });
 });
@@ -63,7 +63,7 @@ describe("mocked_SystemReset.Execute()", () => {
         jest.spyOn(mocked_SystemReset, "VerifyPermission").mockReturnValue(false);
         jest.spyOn(mocked_SystemReset, "VerifyRole");
 
-        const result = await mocked_SystemReset.Execute(validInput, 0 as Permission, 3 as Role);
+        const result = await mocked_SystemReset.Execute(validInput, 0 as PermissionEnum, 3 as Role);
 
         expect(result).toEqual(UnathorizedCall);
         expect(result.returnVal).toBeUndefined();
@@ -77,7 +77,7 @@ describe("mocked_SystemReset.Execute()", () => {
         jest.spyOn(mocked_SystemReset, "VerifyPermission").mockReturnValue(true);
         jest.spyOn(mocked_SystemReset, "VerifyRole").mockReturnValue(false);
 
-        const result = await mocked_SystemReset.Execute(validInput, 7 as Permission, 0 as Role);
+        const result = await mocked_SystemReset.Execute(validInput, 7 as PermissionEnum, 0 as Role);
 
         expect(result).toEqual(UnathorizedCall);
         expect(result.returnVal).toBeUndefined();
@@ -89,7 +89,7 @@ describe("mocked_SystemReset.Execute()", () => {
         jest.spyOn(mocked_SystemReset, "VerifyPermission").mockReturnValue(true);
         jest.spyOn(mocked_SystemReset, "VerifyRole").mockReturnValue(true);
 
-        const result = await mocked_SystemReset.Execute(validInput, Permission._111, Role.Admin);
+        const result = await mocked_SystemReset.Execute(validInput, PermissionEnum._111, Role.Admin);
 
         expect(result.returnVal).toBeDefined();
         expect(result.failedToAuthorize).toBe(false);

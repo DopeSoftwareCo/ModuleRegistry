@@ -6,18 +6,22 @@ import { Token } from "graphql";
 import axios from "axios";
 import { LogDebug } from "../../Providers/Utils/Log";
 import { RestrictedOp } from "./RestrictedOp";
-import { Permission, Role } from "../Users/subdir.const";
+import { PermissionEnum, Role } from "../Users/subdir.const";
+import mongoose from "mongoose";
+import { getManagementToken } from "../../Providers/Auth0/ManagementToken";
+import { token } from "../../Middleware/ManagementToken";
 
 const DEFAULT_UID = "abc";
 const MAIN_DB = "SWEdb";
 const MAIN_COLLECTION = "Packages";
+
+const rateLimitEnforcer = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // ==================== SYSRESET =====================
 export async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirmFullDelete: boolean = false) {
     // Retrieve all user IDs
     const userIDs = await GetAllUserIDs();
 
-    // Delete each user individually
     for (const uid of userIDs) {
         if (uid === DEFAULT_UID) {
             if (deleteDefaultUser == false || confirmFullDelete == false) {
@@ -25,39 +29,38 @@ export async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirm
             }
         }
         try {
-            await axios.delete(`https://YOUR_AUTH0_DOMAIN/api/v2/users/${uid}`, {
+            await axios.delete(`https://${process.env.AUTH0_DOMAIN}/api/v2/users/${uid}`, {
                 headers: {
-                    Authorization: `Bearer ${Token}}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
             LogDebug(`Deleted user: ${uid}`);
+            await rateLimitEnforcer(2000);
         } catch (error) {
             console.error(`Failed to delete user: ${uid}`, error);
         }
     }
 }
 
-export async function ClearAllPackages(uri: string, databaseName: string, collectionName: string) {
-    const client = new MongoClient(uri);
-
+export async function ClearAllPackages() {
     try {
-        await client.connect();
-        const database = client.db(databaseName);
-        const collection = database.collection(collectionName);
+        if (!mongoose.connection.db) {
+            throw new Error("Failed to delete packages");
+        }
+        const db = mongoose.connection.db;
 
-        // Retrieve all package IDs
-        const packages = await collection.find({}, { projection: { packageID: 1, _id: 0 } }).toArray();
-        const packageIDs = packages.map((pkg) => pkg.packageID);
-
-        // Delete all packages with those IDs
-        const deleteResult = await collection.deleteMany({ packageID: { $in: packageIDs } });
-
-        console.log(`Deleted ${deleteResult.deletedCount} packages.`);
+        const collections = await db?.listCollections().toArray();
+        for (const collection of collections) {
+            console.log(`Removing: ${collection.name}`);
+            await db.dropCollection(collection.name);
+        }
+        for (const collection of collections) {
+            console.log(`Adding: ${collection.name}`);
+            await db.createCollection(collection.name);
+        }
     } catch (error) {
         console.error("Failed to delete packages:", error);
         throw error;
-    } finally {
-        await client.close();
     }
 }
 
@@ -67,8 +70,8 @@ async function RestrictWrapped_ResetSystem(args: any[]) {
     }
 
     try {
+        await ClearAllPackages();
         await DeleteAllUsers();
-        await ClearAllPackages(process.env.MONGODB_URL, MAIN_DB, MAIN_COLLECTION);
     } catch (error) {
         throw error;
     }
@@ -77,6 +80,6 @@ async function RestrictWrapped_ResetSystem(args: any[]) {
 export const Restricted_ResetSystem = new RestrictedOp<void>(
     [],
     RestrictWrapped_ResetSystem,
-    [Permission._111],
+    [PermissionEnum._111],
     [Role.Admin]
 );

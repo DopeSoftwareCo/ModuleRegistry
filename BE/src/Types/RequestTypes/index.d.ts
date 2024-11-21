@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { AuthenticationRequestModel, PackageData, PackageMetaData } from "../Models";
-import { Permission, Role } from "../../Classes/Users/subdir.const";
+import { PermissionEnum, Role } from "../../Classes/Users/subdir.const";
 
 declare module "RequestTypes" {
     export type TestRequestBody = {
@@ -41,7 +41,7 @@ declare module "RequestTypes" {
 
     export interface DeletePackageByIDRequest extends Request {}
 
-    export type UploadInjestPackageRequestBody = PackageData;
+    export type UploadInjestPackageRequestBody = PackageData & { Name?: string };
 
     export interface UploadInjestPackageRequest extends Request {
         body: UploadInjestPackageRequestBody;
