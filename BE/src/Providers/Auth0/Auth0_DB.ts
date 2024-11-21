@@ -164,7 +164,6 @@ export namespace Auth0_Database {
             });
 
             const data = response.data;
-            console.log(data);
             const user = new User(
                 data.user_id,
                 data.email,

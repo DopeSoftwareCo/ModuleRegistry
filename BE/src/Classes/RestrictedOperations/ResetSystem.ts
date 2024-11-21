@@ -22,8 +22,6 @@ export async function DeleteAllUsers(deleteDefaultUser: boolean = false, confirm
     // Retrieve all user IDs
     const userIDs = await GetAllUserIDs();
 
-    //console.log("USER IDS", userIDs);
-    // Delete each user individually
     for (const uid of userIDs) {
         if (uid === DEFAULT_UID) {
             if (deleteDefaultUser == false || confirmFullDelete == false) {

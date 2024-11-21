@@ -8,6 +8,8 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/ResetSystem";
+import { Restricted_INSERT } from "../Classes/RestrictedOperations/InsertUser";
+import { swapDefaultPass } from "../Providers/Auth0/AuthenticateAuth0";
 // /reset
 
 export const ResetControllerDANGER = asyncHandler(
@@ -21,7 +23,23 @@ export const ResetControllerDANGER = asyncHandler(
             return;
         }
         const result = await Restricted_ResetSystem.Execute([], perm, role);
+
         const unathorized = result.failedToAuthorize;
+
+        const resultInsert = await Restricted_INSERT.Execute(
+            [
+                {
+                    email: "ece30861defaultadminuser@email.com",
+                    password:
+                        "Y29ycmVjdGhvcnNlYmF0dGVyeXN0YXBsZTEyMyghX18rQCoqKEEnImA7RFJPUCBUQUJMRSBwYWNrYWdlczs=",
+                    permission: 7,
+                    role: 3,
+                    username: "ece30861defaultadminuser",
+                },
+            ],
+            perm,
+            role
+        );
 
         //this type is a union of our return strings
         if (unathorized) {
