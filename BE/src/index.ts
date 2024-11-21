@@ -100,39 +100,12 @@ async function RunDemo_ModEval() {
     await RunEvalSubsystemDemo(2);
 }
 
-const profiles = [
-    { uid: "auth0|671eeb736d7e32b41f73ef85", permission: 7, role: 1 },
-    { uid: "auth0|671eea82ebe6fb9d387a2387", permission: 0, role: 1 },
-    { uid: "auth0|671eeaa8d7dd87d554e5611d", permission: 1, role: 1 },
-    { uid: "auth0|671eeaeca0264cb1fe7a5516", permission: 2, role: 1 },
-    { uid: "auth0|671eeb0c7ed11ed361ff67d6", permission: 3, role: 1 },
-    { uid: "auth0|671eeb274c718dbc6226fa45", permission: 4, role: 1 },
-    { uid: "auth0|671eeb3f6d7e32b41f73ef6c", permission: 5, role: 1 },
-    { uid: "auth0|671eeb5eebe6fb9d387a2405", permission: 6, role: 1 },
-];
-
-const admins = [
-    { uid: "auth0|670aaa9d690c6fe8e0d0ceb1", permission: 7, role: 3 },
-    { uid: "auth0|6726bfa8ba7c0c3e1bddb02f", permission: 7, role: 3 },
-    { uid: "auth0|672666803cf3ee6ca06f0783", permission: 7, role: 3 },
-    { uid: "auth0|67267770811352d1f3ee80c1", permission: 7, role: 3 },
-];
-
-const johnProfiles = [
-    { uid: "oauth2|discord|363872785950441472", permission: 7, role: 1 },
-    { uid: "google-oauth2|113004467258994058267", permission: 7, role: 1 },
-    { uid: "google-oauth2|103694541876851692084", permission: 7, role: 1 },
-    { uid: "auth0|6529cab888412146d57f4dcc", username: "JohnnyL", permission: 7, role: 3 },
-];
-
-{
-}
 async function Execute() {
     await GenerateManagementToken();
-    //await runServer();
+    await runServer();
     FillFakeMongo();
-    //console.log(FakeMongo.storage);'
-    FakeMongo.PrintAll();
+    //console.log(FakeMongo.storage);
+    //FakeMongo.PrintAll();
 }
 
 Execute();

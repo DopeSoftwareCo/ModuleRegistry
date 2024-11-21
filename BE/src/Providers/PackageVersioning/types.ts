@@ -1,4 +1,4 @@
-import { MongoPackage } from "../../Schemas/Package";
+import { Package } from "../../Schemas/Package";
 
 export enum UpdateType {
     Major = 0,
@@ -16,12 +16,12 @@ export enum SearchType {
 
 export interface Project {
     projectID: string;
-    iterations: MongoPackage[];
+    iterations: Package[];
 }
 
 export const EmptyProject: Project = { projectID: "", iterations: [] };
 
-export interface CompletePackage extends MongoPackage {
+export interface CompletePackage extends Package {
     projectID?: string;
 }
 

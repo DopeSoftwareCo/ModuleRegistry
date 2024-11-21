@@ -41,3 +41,7 @@ export interface UpdateUserRequest {
     };
     password?: string;
 }
+
+export type IndexableAuth0User = Auth0User & {
+    [key: string]: any;
+};

@@ -9,7 +9,7 @@ import {
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-import PackageModel, { MongoPackage } from "../Schemas/Package";
+import PackageModel, { Package } from "../Schemas/Package";
 import { Auth0_Database } from "../Providers/Auth0/Auth0_DB";
 
 // /reset
@@ -35,7 +35,7 @@ export const DeletePackageByIDController = asyncHandler(
     async (req: DeletePackageByIDRequest, res: DeletePackageViaIDResponse, next: NextFunction) => {
         const packageID = req.params.id;
 
-        const result = await PackageModel.findByIdAndDelete<MongoPackage>(packageID);
+        const result = await PackageModel.findByIdAndDelete<Package>(packageID);
         const DNE: boolean = result != null && result.errors == undefined;
 
         let responseMessage: DeletePackageViaIDResponseMessages;

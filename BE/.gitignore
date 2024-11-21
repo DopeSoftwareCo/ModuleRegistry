@@ -5,3 +5,8 @@ coverage/
 Data/Users/
 Data/Packages/
 coverage/
+Tests/DebloatTestFiles/BE_TEST_Debloated/
+Tests/DebloatTestFiles/BE_TEST_Debloated.tar.gz
+Tests/DebloatTestFiles/BE_TEST_Debloated.zip
+Tests/DebloatTestFiles/BE_TEST_Compression_Test_targz_TEST.tar.gz
+Tests/DebloatTestFiles/BE_TEST_Compression_Test_ZIP_TEST.ZIP

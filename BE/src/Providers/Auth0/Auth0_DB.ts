@@ -9,8 +9,9 @@ import {
     RegistrationInfo,
     UpdateUserRequest_DevFriendly,
     UpdateUserRequest,
+    IndexableAuth0User,
 } from "./Auth0_DB.types";
-import { DEFAULT_UID } from "./UserData";
+import { DEFAULT_USERNAME } from "./UserData";
 
 const auth0Domain = process.env.AUTH0_DOMAIN;
 
@@ -145,60 +146,91 @@ export namespace Auth0_Database {
         }
     }
 
-    export async function SELECT(attributes?: UserAttribute[]): Promise<string[] | undefined> {
+    export async function SELECT(attributes?: UserAttribute[]): Promise<Record<string, any>[] | undefined> {
+        if (!token || !auth0Domain) {
+            console.error("Auth0 domain or token is missing in the environment variables.");
+            return undefined;
+        }
+
         try {
-            //const fields = (attributes) ? attributes.join() : "user_id";
+            const allUsers: Record<string, any>[] = [];
+            let page = 0;
+            let moreUsers = true;
 
-            const response = await axios.get<Auth0User[]>(`https://${auth0Domain}/api/v2/users`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                params: {
-                    fields: attributes ? attributes.join() : "user_id",
-                    include_fields: true,
-                    per_page: 100, // Adjust this to fetch more or less per request,
-                },
-            });
+            while (moreUsers) {
+                const response = await axios.get<IndexableAuth0User[]>(
+                    `https://${auth0Domain}/api/v2/users`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                        params: {
+                            fields: attributes ? attributes.join() : "user_id",
+                            include_fields: true,
+                            page,
+                            per_page: 100,
+                        },
+                    }
+                );
 
-            if (!response) {
-                return undefined;
+                const users = response.data;
+
+                if (users.length > 0) {
+                    // Map and filter users based on requested attributes
+                    users.forEach((user) => {
+                        const filteredUser: Record<string, any> = {};
+                        if (attributes) {
+                            for (const attribute of attributes) {
+                                filteredUser[attribute] = user[attribute];
+                            }
+                        } else {
+                            filteredUser["user_id"] = user.user_id; // Default case
+                        }
+                        allUsers.push(filteredUser);
+                    });
+                    page++;
+                } else {
+                    moreUsers = false;
+                }
             }
-            const data = response.data;
-            console.log(data);
 
-            const all_ids = data.map<string>((user: Auth0User, index: number) => {
-                return user.user_id;
-            });
-            return all_ids;
+            return allUsers;
         } catch (error) {
+            console.error("Error fetching users from Auth0:", error);
             return undefined;
         }
     }
 
     export async function RESET(): Promise<boolean> {
-        const userIDs = await Auth0_Database.SELECT();
-        if (!userIDs) {
+        try {
+            // Fetch all users with `username` and `user_id`
+            const users = await SELECT(["username", "user_id"]);
+            if (!users) {
+                console.error("Failed to fetch users from Auth0.");
+                return false;
+            }
+
+            // Filter users to exclude "defaultUser" and "admin_user"
+            const usersToDelete = users.filter(
+                (user) => user.username !== "defaultUser" && user.username !== DEFAULT_USERNAME
+            );
+
+            if (usersToDelete.length === 0) {
+                console.log("No users to delete.");
+                return true;
+            }
+
+            // Use the DELETE function for each user
+            const deletionResults = await Promise.all(usersToDelete.map((user) => DELETE(user.user_id)));
+
+            // Check if all deletions were successful
+            const allSuccessful = deletionResults.every((result) => result === true);
+            if (!allSuccessful) {
+                console.error("One or more deletions failed.");
+            }
+
+            return allSuccessful;
+        } catch (error) {
+            console.error("An error occurred while attempting to reset user db:", error);
             return false;
         }
-        let failures = 0;
-
-        const promises = userIDs.map(async (user) => {
-            try {
-                if (user != DEFAULT_UID) {
-                    await axios.delete(`https://${auth0Domain}/api/v2/users/${user}`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // Fixed the extra `}`
-                        },
-                    });
-                    LogDebug(`Deleted user: ${user}`);
-                }
-            } catch (error) {
-                LogDebug(`Failed to delete user: ${user}, Error: ${error}`);
-                ++failures;
-            }
-        });
-
-        await Promise.all(promises);
-        return failures == 0;
     }
 }

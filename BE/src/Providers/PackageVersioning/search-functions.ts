@@ -1,4 +1,4 @@
-import PackageModel, { MongoPackage } from "../../Schemas/Package";
+import PackageModel, { Package } from "../../Schemas/Package";
 import { GetPackagesResponseBody } from "ResponseTypes";
 import { UpdateType } from "./types";
 import { GetRangeEndpoints, IncrementVersion, VersionType_RegExp } from "./utils";
@@ -9,7 +9,7 @@ import { APIPackageMetaData } from "../../Types/Models";
 export namespace SearchVersion {
     export async function ByExact(title: string, filter: string): Promise<GetPackagesResponseBody> {
         let result: APIPackageMetaData[] = [];
-        const matches = await PackageModel.find<MongoPackage>(
+        const matches = await PackageModel.find<Package>(
             { "metadata.Name": title, "metadata.Version": filter },
             { _id: 1, "metadata.Name": 1, "metadata.Version": 1 }
         );

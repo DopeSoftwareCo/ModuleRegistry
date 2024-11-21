@@ -1,4 +1,4 @@
-import { MongoPackage } from "../../src/Schemas/Package";
+import { Package } from "../../src/Schemas/Package";
 import { GetPackagesResponseBody } from "ResponseTypes";
 import { APIPackageMetaData } from "../../src/Types/Models";
 import {
@@ -41,8 +41,8 @@ export abstract class AlphabeticalCataloguee<T> {
     abstract Insert(item: T): boolean;
 }
 
-export class FakeMongoDB extends AlphabeticalCataloguee<MongoPackage> {
-    Insert(item: MongoPackage): boolean {
+export class FakeMongoDB extends AlphabeticalCataloguee<Package> {
+    Insert(item: Package): boolean {
         const title = item.metadata.Name;
         const index = this.WordToIndex(title);
 
@@ -56,7 +56,7 @@ export class FakeMongoDB extends AlphabeticalCataloguee<MongoPackage> {
 
     Remove(id: string) {}
 
-    SelectProject(name: string): MongoPackage[] {
+    SelectProject(name: string): Package[] {
         const index = this.WordToIndex(name);
 
         if (index > -1) {
@@ -71,7 +71,7 @@ export class FakeMongoDB extends AlphabeticalCataloguee<MongoPackage> {
         return [];
     }
 
-    Select(): Array<MongoPackage[]> {
+    Select(): Array<Package[]> {
         return this.storage;
     }
 
@@ -104,7 +104,7 @@ export namespace fakeMongoFunctions {
     async function FetchDir() {}
 
     export namespace SearchBy {
-        export function MapPackagesToAPIMetadata(project: MongoPackage[]) {
+        export function MapPackagesToAPIMetadata(project: Package[]) {
             return project.map<APIPackageMetaData>((iteration) => {
                 return {
                     Name: iteration.metadata.Name,
@@ -249,7 +249,7 @@ export async function FillFakeMongo() {
             name = names[i];
             for (let k = 3; k < 6; k++) {
                 version = `5.${j}.${k}`;
-                const item: MongoPackage = MakeFakePackage(version, name);
+                const item: Package = MakeFakePackage(version, name);
                 FakeMongo.Insert(item);
             }
         }

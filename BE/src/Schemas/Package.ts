@@ -1,28 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 import { Base } from "./Base";
 
-export interface MongoPackage extends Base {
-    Title: string;
+export interface Package extends Base {
     repoUrl: string;
     metadata: {
         Name: string;
         Version: string;
         License: {
             name: string;
-            spxId: string;
-            url: string;
         };
-        Uploader: string;
         IsExternal: boolean;
-        Safety: "unsafe" | "unkown" | "vetted";
-        IsSecret: boolean; // No longer needed
-        Visibility: "secret" | "internal" | "public"; // No longer need 3 options
-        Availability: number;
-        PrivelegedGroup: number; // No longer needed
-    };
-    data: {
-        Content: string;
-        JSProgram: string;
     };
     RampupTime: {
         rampup_score: number;
@@ -74,16 +61,12 @@ export interface MongoPackage extends Base {
     };
 }
 
-export const packageSchema: Schema<MongoPackage> = new Schema({
+export const packageSchema: Schema<Package> = new Schema({
     //this is package id, we will let mongodb handle the uuids on creation of document entry in db
     _id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         default: () => new mongoose.Types.ObjectId(),
-    },
-    Title: {
-        type: String,
-        required: true,
     },
     repoUrl: {
         type: String,
@@ -103,53 +86,9 @@ export const packageSchema: Schema<MongoPackage> = new Schema({
                 type: String,
                 required: true,
             },
-            spxId: {
-                type: String,
-                required: true,
-            },
-            url: {
-                type: String,
-                required: true,
-            },
-        },
-        Uploader: {
-            type: String,
-            required: true,
         },
         IsExternal: {
             type: Boolean,
-            required: true,
-        },
-        Safety: {
-            type: String,
-            enum: ["unsafe", "unknown", "vetted"],
-            required: true,
-        },
-        IsSecret: {
-            type: Boolean,
-            required: true,
-        },
-        Visibility: {
-            type: String,
-            enum: ["secret", "internal", "public"],
-            required: true,
-        },
-        Availability: {
-            type: Number,
-            required: true,
-        },
-        PrivelegedGroup: {
-            type: Number,
-            required: true,
-        },
-    },
-    data: {
-        Content: {
-            type: String,
-            required: true,
-        },
-        JSProgram: {
-            type: String,
             required: true,
         },
     },
@@ -291,7 +230,7 @@ packageSchema.pre("save", function (next) {
     next();
 });
 
-const PackageModel = mongoose.model<MongoPackage>(
+const PackageModel = mongoose.model<Package>(
     "Package",
     packageSchema,
     `Packages${process.env.NODE_ENV === "dev" ? "Dev" : ""}`

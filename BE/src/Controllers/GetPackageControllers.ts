@@ -214,27 +214,29 @@ export const GetPackagesViaRegexController = asyncHandler(
         const role = req.userRole ? req.userRole : 0;
         const perm = req.userPermission ? req.userPermission : 0;
 
-        /*
-        const result = await User.SearchBy_Regex.Execute(perm, role, regexString);
-        if (result.failedToAuthorize) {
-            return returnProperInvalidResponse(req, res);
-        }*/
+        try {
+            /*
+            const result = await User.SearchBy_Regex.Execute(perm, role, regexString);
+            if (result.failedToAuthorize) {
+                return returnProperInvalidResponse(req, res);
+            }*/
 
-        let responseMessage: GetPackageViaRegexInvalidResponseMessages;
-        //const DNE = result.returnVal && result.returnVal.length > 0;
-        const DNE = true;
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //some return of this type as our response body
-        const responseBody: GetPackageViaRegexData[] = [
-            { Version: "some version", Name: "some name" },
-            { Version: "some version", Name: "some name" },
-        ];
+            let responseMessage: GetPackageViaRegexInvalidResponseMessages;
+            //const DNE = result.returnVal && result.returnVal.length > 0;
+            const DNE = true;
+            //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            //some return of this type as our response body
+            const responseBody: GetPackageViaRegexData[] = [
+                { Version: "some version", Name: "some name" },
+                { Version: "some version", Name: "some name" },
+            ];
 
-        if (!DNE) {
-            res.status(200).json(responseBody);
-        } else {
-            responseMessage = "No package found under this regex.";
-            res.status(404).send(responseMessage);
+            if (!DNE) {
+                res.status(200).json(responseBody);
+            }
+        } catch (err) {
+            console.error("Error in GetPackagesViaRegexController:", err);
+            next(err);
         }
     }
 );

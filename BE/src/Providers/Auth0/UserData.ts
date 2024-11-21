@@ -26,4 +26,4 @@ export const ALLOW_U: Permission[] = [Permission._111, Permission._110, Permissi
 export const ALLOW_D: Permission[] = [Permission._111, Permission._110, Permission._011, Permission._010];
 export const ALLOW_S: Permission[] = [Permission._111, Permission._101, Permission._011, Permission._001];
 
-export const DEFAULT_UID = "someLongString";
+export const DEFAULT_USERNAME = "ece30861defaultadminuser";
