@@ -210,30 +210,29 @@ export const GetPackageRatingsViaIDController = asyncHandler(
 
 export const GetPackagesViaRegexController = asyncHandler(
     async (req: GetPackagesViaRegexRequest, res: GetPackageViaRegexResponse, next: NextFunction) => {
-        const regexString = req.body.RegEx;
-        const role = req.userRole ? req.userRole : 0;
-        const perm = req.userPermission ? req.userPermission : 0;
+        const regexStr = req.body.RegEx;
+        const regex = new RegExp(regexStr, "i"); // case-insensitive regex
 
         try {
-            /*
-            const result = await User.SearchBy_Regex.Execute(perm, role, regexString);
-            if (result.failedToAuthorize) {
-                return returnProperInvalidResponse(req, res);
-            }*/
+            const packages = await PackageModel.find({
+                $or: [{ "metadata.Name": regex }, { "data.Content": regex }],
+            });
 
-            let responseMessage: GetPackageViaRegexInvalidResponseMessages;
-            //const DNE = result.returnVal && result.returnVal.length > 0;
-            const DNE = true;
-            //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-            //some return of this type as our response body
-            const responseBody: GetPackageViaRegexData[] = [
-                { Version: "some version", Name: "some name" },
-                { Version: "some version", Name: "some name" },
-            ];
-
-            if (!DNE) {
-                res.status(200).json(responseBody);
+            if (packages.length === 0) {
+                const responseMessage: GetPackageViaRegexInvalidResponseMessages =
+                    "No package found under this regex.";
+                return res.status(404).send(responseMessage);
             }
+
+            const responseBody: GetPackageViaRegexData[] = packages
+                .filter((pack) => pack.metadata && pack.metadata.Version && pack.metadata.Name)
+                .map((pack) => ({
+                    Version: pack.metadata.Version,
+                    Name: pack.metadata.Name,
+                    ID: pack._id.toString(),
+                }));
+
+            res.status(200).json(responseBody);
         } catch (err) {
             console.error("Error in GetPackagesViaRegexController:", err);
             next(err);
