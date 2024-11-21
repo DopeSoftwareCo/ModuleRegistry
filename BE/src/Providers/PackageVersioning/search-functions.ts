@@ -29,7 +29,6 @@ export namespace SearchVersion {
         if (!rangeEndpoints) return [];
         try {
             const allVersions = await RetrieveAll(title);
-
             const matches: APIPackageMetaData[] = allVersions.filter((iteration) => {
                 const version = iteration.Version;
                 return (
@@ -61,13 +60,14 @@ export namespace SearchVersion {
             const allVersions = await RetrieveAll(title);
             if (allVersions.length < 1) return [];
 
-            const oldest = filter;
-            const newest = IncrementVersion(filter, UpdateType.Minor);
+            const cleanFilter = filter.substring(1);
+            const oldest = cleanFilter;
+            const newest = IncrementVersion(cleanFilter, UpdateType.Minor);
             if (!newest) return [];
 
             const matches: APIPackageMetaData[] = allVersions.filter((iteration) => {
                 const version = iteration.Version;
-                return semver.gte(version, oldest) && semver.lte(version, newest);
+                return semver.gte(version, oldest) && semver.lt(version, newest);
             });
 
             return matches;
@@ -81,13 +81,14 @@ export namespace SearchVersion {
             const allVersions = await RetrieveAll(title);
             if (allVersions.length < 1) return [];
 
-            const oldest = filter;
-            const newest = IncrementVersion(filter, UpdateType.Major);
+            const cleanFilter = filter.substring(1);
+            const oldest = cleanFilter;
+            const newest = IncrementVersion(cleanFilter, UpdateType.Major);
             if (!newest) return [];
 
             const matches: APIPackageMetaData[] = allVersions.filter((iteration) => {
                 const version = iteration.Version;
-                return semver.gte(version, oldest) && semver.lte(version, newest);
+                return semver.gte(version, oldest) && semver.lt(version, newest);
             });
 
             return matches;

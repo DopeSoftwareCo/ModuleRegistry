@@ -16,7 +16,6 @@ import { RunEvalSubsystemDemo } from "./Providers/RepoEvaluator/DevTools/Subsyst
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
-import { FakeMongo, FillFakeMongo } from "../Tests/TestUtils/mocked_mongo";
 
 dotenv.config();
 
@@ -95,17 +94,9 @@ const runServer = async () => {
     });
 };
 
-async function RunDemo_ModEval() {
-    console.log("=== Here's an evaluation demo! ===");
-    await RunEvalSubsystemDemo(2);
-}
-
 async function Execute() {
     await GenerateManagementToken();
     await runServer();
-    FillFakeMongo();
-    //console.log(FakeMongo.storage);
-    //FakeMongo.PrintAll();
 }
 
 Execute();

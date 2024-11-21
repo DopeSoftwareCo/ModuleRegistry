@@ -23,9 +23,9 @@ import {
     GetSizeCostForPackageResponse,
     GetSizeCostForPackageResponseBody,
 } from "ResponseTypes";
-import { NextFunction } from "express";
+import { NextFunction, response } from "express";
 import PackageModel from "../Schemas/Package";
-import { FetchVersions } from "../Providers/PackageVersioning/search-functions";
+import { FetchVersions, SearchVersion } from "../Providers/PackageVersioning/search-functions";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 
@@ -41,10 +41,8 @@ export const GetPackagesFromRegistryController = asyncHandler(
 
         const responseBody: GetPackagesResponseBody = await FetchVersions(requestedPackages);
 
-        //something to signify too many packages were returned
-        const tooManyreturned = responseBody.length < 1;
         let responseMessage: GetPackagesInvalidResponseMessages;
-        if (!tooManyreturned) {
+        if (responseBody.length < 100) {
             res.status(200).json(responseBody);
         } else {
             responseMessage = "Too many packages returned.";
