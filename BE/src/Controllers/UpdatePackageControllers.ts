@@ -3,6 +3,9 @@ import asyncHandler from "../Middleware/asyncHandler";
 import { UpdatePackageViaIDResponse, UpdatePackageViaIDResponseMessages } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
+import * as fs from "fs";
+import * as path from "path";
+import { debloatZippedContent } from "../DSinc_Modules/DSinc_PackageHandling";
 
 // /package/{id}
 export const UpdatePackageViaIDController = asyncHandler(
@@ -14,29 +17,65 @@ export const UpdatePackageViaIDController = asyncHandler(
 
         const pack = await PackageModel.findById(packageIDToUpdate);
 
-        let DNE;
+        let responseMessage: UpdatePackageViaIDResponseMessages;
 
-        if (pack) {
-            pack.data.Content = newData.data.Content!;
-            pack.data.JSProgram = newData.data.JSProgram!;
-            pack.repoUrl = newData.data.URL!;
-            pack.metadata.Name = newData.metadata.Name;
-            pack.metadata.Version = newData.metadata.Version;
-            pack.save();
-            DNE = false;
-        } else {
-            DNE = true;
+        if (pack?.metadata.Name == undefined) {
+            responseMessage = "Package does not exist.";
+            res.status(404).send(responseMessage);
+            return;
         }
 
-        //something to signify the package didnt exist
-        let responseMesasge: UpdatePackageViaIDResponseMessages;
+        const body = req.body;
+        let content = body.data.Content;
+        let binaryContent; // Meant to store the non-string encoded version
 
-        if (!DNE) {
-            responseMesasge = "Version is updated.";
-            res.status(200).send(responseMesasge);
+        const packagesDirectory = path.join(process.cwd(), "Data/Packages");
+        const tempDirectory = packagesDirectory + "/.Temp";
+        const tempFile = path.join(tempDirectory, packageIDToUpdate!) + ".zip";
+
+        if (!fs.existsSync(tempDirectory)) {
+            // This is where data is downloaded before being examined.
+            fs.mkdirSync(tempDirectory);
         } else {
-            responseMesasge = "Package does not exist.";
-            res.status(404).send(responseMesasge);
+            fs.rmSync(tempDirectory, { recursive: true, force: true });
+            fs.mkdirSync(tempDirectory);
         }
+
+        if (content != undefined) {
+            const base64Data = content.split(",")[1]; // Remove the file header
+            binaryContent = Buffer.from(base64Data, "base64");
+        } else {
+            responseMessage =
+                "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+            res.status(424).send(responseMessage);
+            return;
+        }
+
+        if (newData.metadata.Name == "no name" || newData.metadata.Version == "no version") {
+            responseMessage =
+                "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+            res.status(424).send(responseMessage);
+            return;
+        }
+
+        await fs.promises.writeFile(tempFile, binaryContent);
+
+        if (body.data.debloat == true) {
+            await debloatZippedContent(tempFile);
+        }
+
+        // Save to database
+        pack!.data.Content = newData.data.Content!;
+        pack!.data.JSProgram = newData.data.JSProgram!;
+        pack!.repoUrl = newData.data.URL!;
+        pack!.metadata.Name = newData.metadata.Name;
+        pack!.metadata.Version = newData.metadata.Version;
+        pack!.save();
+
+        // Save file
+        await fs.promises.rename(tempFile, path.join(packagesDirectory, packageIDToUpdate!) + ".zip");
+
+        responseMessage = "Version is updated.";
+        res.status(200).send(responseMessage);
     }
 );
