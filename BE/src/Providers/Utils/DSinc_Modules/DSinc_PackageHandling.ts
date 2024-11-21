@@ -1,0 +1,208 @@
+import { minify } from "terser";
+import fs from "fs";
+import path from "path";
+import * as unzipper from "unzipper";
+import * as tar from "tar";
+import archiver from "archiver";
+
+/**
+ * @author Ben Kanter
+ * @param pathToZip
+ * @param fileExtension accepts either .zip or .tar.gz
+ * @param zipPath where to store zip
+ * @returns whether or not successful
+ */
+export async function zipContents(
+    pathToFolder: string,
+    fileExtension: string,
+    zipPath: string
+): Promise<boolean> {
+    let isZip: boolean = false;
+    let isTarGz: boolean = false;
+    if (fileExtension == ".zip") {
+        isZip = true;
+    } else if (fileExtension == ".tar.gz") {
+        isTarGz = true;
+    }
+    try {
+        const output = fs.createWriteStream(zipPath);
+        let archive;
+        // Compress again
+        if (isZip) {
+            archive = archiver("zip", { zlib: { level: 9 } });
+        } else if (isTarGz) {
+            archive = archiver("tar", { gzip: true, gzipOptions: { level: 9 } });
+        } else {
+            // Something went wrong in an unexpected way.
+            throw new Error("Neither a zip or tar, should not get to this point"); // Gets caught and logged
+        }
+        archive.on("error", (error) => {
+            throw error; // Gets caught and logged
+        });
+        archive.on("warning", (error) => {
+            console.warn(error);
+        });
+        archive.pipe(output);
+        archive.directory(pathToFolder, false);
+        await archive.finalize();
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
+/**
+ * @author Ben Kanter
+ * @param content package content encoded in binary
+ * @returns minified package
+ */
+export async function debloatUploadedContent(content: string): Promise<string> {
+    const result = (await minify(content)).code;
+    if (result == undefined) {
+        console.error("Debloat operation failed, returning original content");
+        return content;
+    }
+    return result;
+}
+
+/**
+ * @author Ben Kanter
+ * Recursive function to find all JS files and debloat them
+ * @param folderPath path to unzipped content
+ * @returns whether or not operation was completely successful
+ * @
+ */
+export async function debloatUnzippedContent(folderPath: string): Promise<boolean> {
+    let isSuccessful = true;
+    const tempIDCeiling = 1000;
+    const tempID = Math.floor(Math.random() * tempIDCeiling + 1).toString();
+    const tempBackupFileDirectory = path.join(tempUnzippedDirectory, tempID);
+    await fs.promises.cp(folderPath, tempBackupFileDirectory, { recursive: true }); // Creates a backup
+    try {
+        // Puts everything in a try block due to lots of file system interactions
+        const directoryContents = await fs.promises.readdir(folderPath, { withFileTypes: true });
+        for (let file of directoryContents) {
+            const filePath = path.join(folderPath, file.name);
+            if (file.isDirectory()) {
+                isSuccessful = await debloatUnzippedContent(filePath);
+            } else if (file.isFile() && file.name.endsWith(".js")) {
+                const fileContent = await fs.promises.readFile(filePath, "utf-8");
+                const debloatedContent = await debloatUploadedContent(fileContent);
+                if (fileContent.length < debloatedContent.length) {
+                    isSuccessful = false; // Skips writing, something went wrong
+                    throw new Error("Debloat Failed for file: " + filePath);
+                } else {
+                    await fs.promises.writeFile(filePath, debloatedContent, "utf-8");
+                }
+            }
+            // All other files ignored
+        }
+        await fs.promises.rm(tempBackupFileDirectory, { recursive: true, force: true }); // Remove backup
+    } catch (error) {
+        isSuccessful = false;
+        console.error(error);
+        // Replace with original if it fails at any point.
+        await fs.promises.rm(folderPath, { recursive: true, force: true });
+        await fs.promises.rename(tempBackupFileDirectory, folderPath);
+    }
+    return isSuccessful;
+}
+
+/**
+ * @author Ben Kanter
+ * @param zipPath path to zipped content
+ * @returns whether or not operation was completely successful. If unsuccessful, source file remains intact. If successful, debloated zip file replaces the zip.
+ */
+const tempUnzippedDirectory = path.join(process.cwd(), "Data/Packages/.Temp/Debloat_Operations");
+export async function debloatZippedContent(zipPath: string): Promise<boolean> {
+    const tempIDCeiling = 1000;
+    const tempID = Math.floor(Math.random() * tempIDCeiling + 1).toString();
+    const tempUnzippedFileDirectory = path.join(tempUnzippedDirectory, tempID);
+
+    let isSuccessful = true;
+    let isZip: boolean = false;
+    let isTarGz: boolean = false;
+    if (zipPath.endsWith(".zip")) {
+        isZip = true;
+    } else if (zipPath.endsWith(".tar.gz")) {
+        isTarGz = true;
+    } else {
+        console.error("Not a supported archive file. Only supports .zip and .tar.gz");
+        return false; // Not a supported zip archive
+    }
+    try {
+        // Unzip
+        if (isZip) {
+            const zippedContent = await fs.promises.readFile(zipPath);
+            await unzipper.Open.buffer(zippedContent).then((directory) =>
+                directory.extract({ path: tempUnzippedFileDirectory })
+            );
+        } else if (isTarGz) {
+            await fs.promises.mkdir(tempUnzippedFileDirectory);
+            await tar.x({ file: zipPath, C: tempUnzippedFileDirectory });
+        }
+        // Run operation
+        isSuccessful = await debloatUnzippedContent(tempUnzippedFileDirectory);
+    } catch (error) {
+        isSuccessful = false;
+        console.error(error);
+    }
+    const backupZipPath = zipPath + "_"; // Purpose of this is to provide a failsafe in case zipping operation fails
+    await fs.promises.rename(zipPath, backupZipPath);
+    if (isSuccessful) {
+        if (isZip) {
+            isSuccessful = await zipContents(tempUnzippedFileDirectory, ".zip", zipPath);
+        } else if (isTarGz) {
+            isSuccessful = await zipContents(tempUnzippedFileDirectory, ".zip", zipPath);
+        }
+        if (!isSuccessful) {
+            console.error("Zip contents failed!");
+            if (fs.existsSync(zipPath)) {
+                await fs.promises.rm(zipPath); // Removes in case there is some file there
+            }
+            await fs.promises.rename(backupZipPath, backupZipPath.slice(0, backupZipPath.length - 1)); // Revert
+            isSuccessful = false;
+        } else {
+            await fs.promises.rm(backupZipPath); // Removes the temp directory
+        }
+    }
+    await fs.promises.rm(tempUnzippedFileDirectory, { recursive: true, force: true }); // Removes the temp directory
+    return isSuccessful;
+}
+
+//gpt suggestions
+/*
+export async function debloatZippedContent(zipPath: string): Promise<boolean> {
+    const tempUnzippedFileDirectory = path.join(TEMP_DIR, `temp_${Date.now()}`);
+    const backupZipPath = zipPath + "_";
+    let isSuccessful = true;
+
+    try {
+        if (!validatePath(zipPath)) throw new Error("Invalid archive file path.");
+
+        const isZip = zipPath.endsWith(".zip");
+        const isTarGz = zipPath.endsWith(".tar.gz");
+        if (!isZip && !isTarGz) throw new Error("Unsupported archive format.");
+
+        await (isZip ? unzipFile(zipPath, tempUnzippedFileDirectory) : untarFile(zipPath, tempUnzippedFileDirectory));
+
+        await createBackup(zipPath, backupZipPath);
+        isSuccessful = await debloatUnzippedContent(tempUnzippedFileDirectory);
+
+        if (isSuccessful) {
+            isSuccessful = await zipContents(tempUnzippedFileDirectory, isZip ? ".zip" : ".tar.gz", zipPath);
+        }
+
+        if (!isSuccessful) await restoreBackup(backupZipPath, zipPath);
+    } catch (error) {
+        console.error(error);
+        await restoreBackup(backupZipPath, zipPath);
+        isSuccessful = false;
+    } finally {
+        await fs.promises.rm(tempUnzippedFileDirectory, { recursive: true, force: true });
+        if (fs.existsSync(backupZipPath)) await fs.promises.rm(backupZipPath, { recursive: true, force: true });
+    }
+
+    return isSuccessful;
+}*/
