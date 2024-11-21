@@ -15,7 +15,7 @@ import path from 'path';
 import unzipper, { Entry } from 'unzipper'
 import { ModuleEvaluator } from "../Providers/ModEval/ModuleEvaluator";
 import { DEFAULT_WEIGHTS } from "../Providers/ModEval/RepoComponents/Metrics_Scores/Weightspec.const";
-//import { SuperRepoBuilder } from "../Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
+import { SuperRepoBuilder } from "../Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
 
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
@@ -79,9 +79,6 @@ export const UploadInjestController = asyncHandler(
         const packageJson = JSON.parse(packageJsonFile.toString());
         //ENOENT: no such file or directory, open '/mnt/Shared/Shared Drive/School/Software Engineering/Homework/Phase 2/BE/Data/Packages/.Temp/357/ModuleRegistry-dev/package.json'
 
-        let startingPointJS = packageJson.scripts.start;
-        
-
         if (getRepoURL) {
             repositoryUrl = packageJson.repository.url as string;
         }
@@ -102,18 +99,17 @@ export const UploadInjestController = asyncHandler(
             }
         }
 
-        /*
         const evaluator = new ModuleEvaluator(DEFAULT_WEIGHTS);
-        const repoBuilder = new SuperRepoBuilder();
-        const repository = await repoBuilder.SuperBuild(repositoryUrl);
-        
-        if (repository == undefined) {
-            responseMessage = "Package is not uploaded due to disqualified rating.";
-            res.status(424).send(responseMessage);
-            return;
+        const builder = new SuperRepoBuilder(DEFAULT_WEIGHTS);
+        let row;
+        const repoForEval = await builder.SuperBuild(repositoryUrl ? repositoryUrl : "");
+        if (repoForEval && repositoryUrl) {
+            await evaluator.Eval(repoForEval);
+            row = repoForEval.NDJSONRow;
         }
-        //const score = await evaluator.Eval(repository);
-        */
+
+        // Add values to database here
+        
         const packageReference = new PackageModel({
             Title: packageJson.name,
             repoURL: packageJson.repository.url,
