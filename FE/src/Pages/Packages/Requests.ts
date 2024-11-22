@@ -6,32 +6,36 @@ import { PackageMetaDataFromAPI } from '../../Models/Models';
  * @description - Sends a request to the backend to fetch package data based on a specific version type and request.
  * - This function contains the frontend logic works with the BE /packages endpoint to display the appropriate packages.
  *
- * @param {string} versionType - The type of version request (e.g., 'Exact', 'Bounded Range', 'Carat', 'Tilde').
+ * @param {string} versionType - The type of version request (e.g., 'Exact', 'Bounded Range', 'Carat', 'Tilde').            //OUTDATED.
  * @param {string} request - The version request string (e.g., '1.2.3', '1.2.3-2.1.0', '^1.2.3', '~1.2.0').
- * @param {string} projectName - The name of the package being requested or '*' for all packages.
+ * @param {string} packageName - The name of the package being requested or '*' for all packages.
  * @param errorSetter - A function to handle error messages.
  *
  * @returns An array of package metadata and an optional next offset if successful, otherwise undefined.
  */
 export const getPackagesRequest = async (
-    versionType: string,
     request: string,
-    projectName: string,
+    packageName: string,
     errorSetter: (error: string) => void
 ): Promise<{ data: PackageMetaDataFromAPI[]; nextOffset?: string } | undefined> => {
     try {
+        // The backend expects an array of objects
+        // If we get just name = * just show that to the backend. Will need to fix this below cuz that still sends a version but can do later.
+        // Need pagination and offset somewhere.
+        const bodyPayload = [
+            {
+                Name: packageName === '*' ? '*' : packageName, // '*' for all packages
+                Version: request.trim(), // Send the raw version string
+            },
+        ];
+
         const response = await fetch(`${GeneralConfig.BACKEND_URL}packages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `${localStorage.getItem('token')}`,
             },
-
-            // This follows the schema for /packages request body.
-            body: JSON.stringify({
-                Version: `${versionType} (${request})`,
-                Name: projectName === '*' ? '*' : projectName, // If * is passed, we want all packages.
-            }),
+            body: JSON.stringify(bodyPayload),
         });
 
         if (!response.ok) {
@@ -40,11 +44,8 @@ export const getPackagesRequest = async (
             return undefined;
         }
 
-        // Extract the offset for pagination from the response headers if available
-        const nextOffset = response.headers.get('next-offset');
-
         const packagesData: PackageMetaDataFromAPI[] = await response.json();
-        return { data: packagesData, nextOffset: nextOffset ?? undefined };
+        return { data: packagesData };
     } catch (err) {
         if (err instanceof Error) {
             errorSetter(err.message);
