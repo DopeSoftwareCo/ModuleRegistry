@@ -8,7 +8,7 @@ import {
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/CalcPackageCost";
-import { debloatUploadedContent } from "../DSinc_Modules/DSinc_PackageHandling";
+import { debloatUnzippedContent, debloatUploadedContent, zipContents } from "../DSinc_Modules/DSinc_PackageHandling";
 import fs from 'fs';
 import axios from 'axios';
 import path from 'path';
@@ -16,6 +16,61 @@ import unzipper, { Entry } from 'unzipper'
 import { ModuleEvaluator } from "../Providers/ModEval/ModuleEvaluator";
 import { DEFAULT_WEIGHTS } from "../Providers/ModEval/RepoComponents/Metrics_Scores/Weightspec.const";
 import { SuperRepoBuilder } from "../Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
+import { buildMongoDBPackage } from "../Services/MongoDB";
+
+async function getNPMDownload(repoURL: string): Promise<string> {
+    return repoURL;
+    /*
+    const regex = /https:\/\/www\.npmjs\.com\/package\/([^\/]+)/;
+    const match = repoURL.match(regex);
+    
+    if (match) {
+        const packageName = match[1];
+        if (packageName == null) {
+            throw new Error ('Failed to fetch NPM package data')
+        }
+        try {
+            const packageData = await fetch.json(`/${packageName}`);
+            return packageData.repository;
+        } catch (error) {
+            throw new Error('Failed to fetch NPM package data');
+        }
+    }
+    throw new Error('Invalid NPM URL');
+    */
+}
+
+async function getGitHubDownload(repoURL: string): Promise<string> {
+    return repoURL;
+    /*
+    const regex = /https:\/\/github\.com\/([^\/]+)\/([^\/]+)/;
+    const match = repoURL.match(regex);
+
+    if (match) {
+        const owner = match[1];
+        const repo = match[2];
+        if (owner == null || repo == null) {
+
+        }
+
+        // Use GitHub API to get the default branch
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.statusText}`);
+            }
+            const repoData = await response.json();
+            const defaultBranch = repoData.default_branch || 'main'; // Fallback to 'main' if no default branch found
+            return `https://github.com/${owner}/${repo}/archive/refs/heads/${defaultBranch}.zip`;
+        } 
+        catch (error) {
+            throw new Error(`Failed to fetch default branch: ${error}`);
+        }
+    }
+    throw new Error('Invalid GitHub URL');
+    */
+}
 
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
@@ -42,7 +97,7 @@ export const UploadInjestController = asyncHandler(
         }
 
         let responseMessage: UploadInjestResponseMessages;
-
+        let isNPMLink: boolean = false;
         if (repositoryUrl == undefined && content != undefined) {
             // Confirmed that content exists, decode and extract repository URL.
             const base64Data = content.split(",")[1];
@@ -52,6 +107,27 @@ export const UploadInjestController = asyncHandler(
         }
         else if (content == undefined && repositoryUrl != undefined) {
             // Confirmed that the repoURL exists, download content
+            try { 
+                if (repositoryUrl.includes("npmjs")) {
+                    repositoryUrl = await getNPMDownload(repositoryUrl);
+                    isNPMLink = true;
+                }
+                else if (repositoryUrl.includes("github")) {
+                    repositoryUrl = await getGitHubDownload(repositoryUrl);
+                }
+                else {
+                    responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+                    res.status(424).send(responseMessage);
+                    return;
+                }
+            }
+            catch (error) {
+                console.log(error);
+                console.log("Error in getting the download link");
+                responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+                res.status(424).send(responseMessage);
+                return;
+            }
             const response = await axios.get(repositoryUrl,{ responseType: 'arraybuffer' });
             binaryContent = Buffer.from(response.data, 'binary');
             isExternal = true;
@@ -75,24 +151,39 @@ export const UploadInjestController = asyncHandler(
         }
         
         await unzipper.Open.buffer(binaryContent).then((directory) => directory.extract ({ path: tempUnzippedFileDirectory}));
-        const packageJsonFile = await fs.promises.readFile(path.join(tempUnzippedFileDirectory, "placeholder-main/package.json"), 'utf-8');
+        let nestedFolder = ""; // If everything is in package root, will search for everything there
+        const tempDirectoryListing = await fs.promises.readdir(tempDirectory);
+        if (tempDirectoryListing.length == 1) {
+            nestedFolder = `/${tempDirectoryListing[0]}`
+        }
+        let packageJsonFile; 
+        try {
+            packageJsonFile = await fs.promises.readFile(path.join(tempUnzippedFileDirectory + "nestedFolder", "package.json)"), 'utf-8');
+        }
+        catch (error) {
+            responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+            res.status(424).send(responseMessage);
+            return;
+        }
+        
         const packageJson = JSON.parse(packageJsonFile.toString());
         //ENOENT: no such file or directory, open '/mnt/Shared/Shared Drive/School/Software Engineering/Homework/Phase 2/BE/Data/Packages/.Temp/357/ModuleRegistry-dev/package.json'
 
-        if (getRepoURL) {
-            repositoryUrl = packageJson.repository.url as string;
-        }
+        repositoryUrl = packageJson.repository.url as string;
 
         // Checks if exists
         const queriedPackage = await PackageModel.exists({ repoUrl: repositoryUrl})
+        let standaloneCost: number;
+        let totalCost: number;
         if (queriedPackage !== null) {
             console.log(queriedPackage);
             responseMessage = "Package exists already.";
             res.status(409).send(responseMessage);
+            return;
         }
         else { // Checks if Disqualified
-            const standaloneCost = await CalculateStandaloneCost(repositoryUrl); // No deps
-            const totalCost = await CalculateTotalCost(repositoryUrl); // With deps
+            standaloneCost = await CalculateStandaloneCost(repositoryUrl); // No deps
+            totalCost = await CalculateTotalCost(repositoryUrl); // With deps
             if (totalCost > disqualifiedTotalSizeInGB || standaloneCost > disqualifiedStandaloneSizeInGB) {
                 responseMessage = "Package is not uploaded due to disqualified rating.";
                 res.status(424).send(responseMessage);
@@ -101,100 +192,45 @@ export const UploadInjestController = asyncHandler(
 
         const evaluator = new ModuleEvaluator(DEFAULT_WEIGHTS);
         const builder = new SuperRepoBuilder(DEFAULT_WEIGHTS);
-        let row;
+        let jsonRow;
+        const zipFileExtension = ".zip";
         const repoForEval = await builder.SuperBuild(repositoryUrl ? repositoryUrl : "");
         if (repoForEval && repositoryUrl) {
             await evaluator.Eval(repoForEval);
-            row = repoForEval.NDJSONRow;
+            jsonRow = repoForEval.NDJSONRow;
         }
-
-        // Add values to database here
+        const packageID = await buildMongoDBPackage(
+            {
+                ...jsonRow,
+                GoodPinningPracticeScore: 0,
+                GoodPinningPracticeLatency: 0,
+                PullRequestScore: 0, 
+                PullRequestLatency: 0
+            },
+            repositoryUrl, 
+            packageJson.name, 
+            packageJson.version, 
+            packageJson.licence, 
+            false, 
+            standaloneCost,
+            totalCost) + zipFileExtension;
         
-        const packageReference = new PackageModel({
-            Title: packageJson.name,
-            repoURL: packageJson.repository.url,
-            metadata: {
-                Name: packageJson.name,
-                Version: packageJson.version,
-                License: {
-                    name: packageJson.license
-                },
-                Uploader: packageJson.author,
-                IsExternal: isExternal, 
-                Safety: "unsafe", // Default Value, Do Not See a way to determine this
-                IsSecret: false, // Default
-                Visibility: "public", // Default
-                Availability: 100, // Default
-                PrivelegedGroup: 100 // Default
-            },
-            data: {
-                Content: "PLACEHOLDER", // Since we are not storing content in database
-                JSProgram: "PLACEHOLDER"
-            }, // All Zeros Below are placeholders
-            RampupTime: {
-                rampup_score: 0,
-                rampup_score_latency: 0,
-            },
-            Correctness: {
-                score_correctness: 0,
-                score_correctness_latency: 0,
-            },
-            BusFactor: {
-                score_busFactor: 0,
-                score_busFactor_latency: 0,
-            },
-            Responsiveness: {
-                score_responsiveMaintainer: 0,
-                score_responsiveMaintainer_latency: 0,
-            },
-            LicenseCompatibility: {
-                score_license: 0,
-                score_license_latency: 0,
-            },
-            VersionDependence: {
-                score_versionDependence: 0,
-                score_versionDependence_latency: 0,
-            },
-            MergeRestriction: {
-                score_mergeRestriction: 0,
-                score_mergeRestriction_latency: 0,
-            },
-            IndividualSizeCost: {
-                score_sizeCostStandalone: 0,
-                score_sizeCostStandalone_latency: 0,
-            },
-            TotalSizeCost: {
-                score_sizeCostTotal: 0,
-                score_sizeCostTotal_latency: 0,
-            },
-            GoodPinningPractice: {
-                score_goodPinningPractice: 0,
-                score_goodPinningPracticeLatency: 0,
-            },
-            PullRequest: {
-                score_pullRequest: 0,
-                score_pullRequestLatency: 0,
-            },
-            FinalRating: {
-                netscore: 0,
-                netscore_latency: 0,
-            },
-        }); 
-        const savedpackage = await packageReference.save();
-        const packageID = savedpackage._id.toString()
-
         if (body.debloat == true) {
             // Zip up, and store
-            binaryContent = await debloatUploadedContent(binaryContent.toString('binary')); // Placeholder
-            const zippedContentStream = fs.createWriteStream(path.join(packagesDirectory, packageID));
-            const archive = archiver("zip", { zlib: { level: 9 } });
-            archive.pipe(zippedContentStream);
-            archive.append(binaryContent);
-            archive.finalize();
+            const isSuccessful = await debloatUnzippedContent(tempUnzippedFileDirectory);
+            if (isSuccessful) {
+                zipContents(tempUnzippedFileDirectory, zipFileExtension, path.join(packagesDirectory, packageID));
+            }
+            else if (isNPMLink) { // Ensures uniformity. All should be .zip and NPM gives tar.gz
+                zipContents(tempUnzippedFileDirectory, zipFileExtension, path.join(packagesDirectory, packageID)); 
+            }
+            else {
+                await fs.promises.rename(tempFileZip, path.join(packagesDirectory, packageID));
+            }
         }
         else {
             // Just move the existing zip to Data and rename to the ID.
-            await fs.promises.copyFile(tempFileZip, path.join(packagesDirectory, packageID));
+            await fs.promises.rename(tempFileZip, path.join(packagesDirectory, packageID));
         }
 
         const returnBody: UploadInjestNewPackageResponseBody = {
@@ -206,7 +242,6 @@ export const UploadInjestController = asyncHandler(
             //all fields are optional in data
             data: {},
         }
-        fs.rmSync(tempDirectory, { recursive: true, force: true})
         res.status(200).json(returnBody);
     }
 );
