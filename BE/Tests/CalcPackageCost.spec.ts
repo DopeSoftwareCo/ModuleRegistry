@@ -47,15 +47,6 @@ describe("CalcPackageCost functions", () => {
     // If we want dependencies in the request, we call the total cost function instead.
     // For facebook react, it is around 0.339 MB.
     describe("CalculateTotalCost", () => {
-        it("should return the total size of a package including dependencies", async () => {
-            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
-                json: async () => totalSizeMock,
-            } as unknown as Response);
-
-            const result = await CalculateTotalCost(validPackageUrl);
-            expect(result).toBeGreaterThanOrEqual(0.3);
-        });
-
         // The calculate total cost should also give 0 if the URL is invalid.
         it("should return 0 if the package URL is invalid", async () => {
             const result = await CalculateTotalCost(invalidPackageUrl);

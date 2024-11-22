@@ -1,4 +1,84 @@
+import { NDJSONRow } from "../Providers/ModEval/RepoComponents/NDJSON/NDJSONRow";
 import PackageModel, { Package } from "../Schemas/Package";
+
+type Scores = NDJSONRow & {
+    GoodPinningPracticeScore: number;
+    GoodPinningPracticeLatency: number;
+    PullRequestScore: number;
+    PullRequestLatency: number;
+};
+
+export const buildMongoDBPackage = async (
+    row: Scores,
+    url: string,
+    name: string,
+    version: string,
+    license: string,
+    isExternal: boolean,
+    individualSizeCost: number,
+    totalSizeCost: number
+) => {
+    const pToSave = new PackageModel({
+        repoUrl: url,
+        metadata: {
+            Name: name,
+            Version: version,
+            License: {
+                name: license,
+            },
+            IsExternal: isExternal,
+        },
+        RampupTime: {
+            rampup_score: row.RampUp,
+            rampup_score_latency: row.RampUp_Latency,
+        },
+        Correctness: {
+            score_correctness: row.Correctness,
+            score_correctness_latency: row.Correctness_Latency,
+        },
+        BusFactor: {
+            score_busFactor: row.BusFactor,
+            score_busFactor_latency: row.BusFactor_Latency,
+        },
+        Responsiveness: {
+            score_responsiveMaintainer: row.ResponsiveMaintainer,
+            score_responsiveMaintainer_latency: row.ResponsiveMaintainer_Latency,
+        },
+        LicenseCompatibility: {
+            score_license: row.License,
+            score_license_latency: row.License_Latency,
+        },
+        VersionDependence: {
+            score_versionDependence: row.VersionDependence,
+            score_versionDependence_latency: row.VersionDependence_Latency,
+        },
+        MergeRestriction: {
+            score_mergeRestriction: row.MergeControl,
+            score_mergeRestriction_latency: row.MergeControl_Latency,
+        },
+        IndividualSizeCost: {
+            score_sizeCostStandalone: individualSizeCost,
+            score_sizeCostStandalone_latency: 0,
+        },
+        TotalSizeCost: {
+            score_sizeCostTotal: totalSizeCost,
+            score_sizeCostTotal_latency: 0,
+        },
+        GoodPinningPractice: {
+            score_goodPinningPractice: row.GoodPinningPracticeScore,
+            score_goodPinningPracticeLatency: row.GoodPinningPracticeLatency,
+        },
+        PullRequest: {
+            score_pullRequest: row.PullRequestScore,
+            score_pullRequestLatency: row.PullRequestLatency,
+        },
+        FinalRating: {
+            netscore: row.NetScore,
+            netscore_latency: row.NetScore_Latency,
+        },
+    });
+    await pToSave.save();
+};
 
 export const createRandomPackage = async (version: string) => {
     const newPackage: Package = new PackageModel({

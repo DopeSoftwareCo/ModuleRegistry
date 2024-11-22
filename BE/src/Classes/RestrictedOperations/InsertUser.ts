@@ -1,5 +1,5 @@
 import { Auth0_Database, RegistrationInfo, RequestForUserChanges } from "../../Providers/Auth0/Auth0_DB";
-import { Permission, Role } from "../Users/subdir.const";
+import { PermissionEnum, Role } from "../Users/subdir.const";
 import { RestrictedOp } from "./RestrictedOp";
 
 // ==================== INSERT =====================
@@ -20,6 +20,6 @@ async function RestrictWrapped_INSERT(args: any[]): Promise<string | undefined> 
 export const Restricted_INSERT = new RestrictedOp<string | undefined>(
     [EMPTY_REGISTRATION],
     RestrictWrapped_INSERT,
-    [Permission._111],
+    [PermissionEnum._111],
     [Role.Admin]
 );

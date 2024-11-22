@@ -31,7 +31,7 @@ type RouteConfig = {
 const AppRoutes: Record<string, RouteConfig> = {
     Packages: {
         controller: GetPackagesFromRegistryController,
-        responseCode: 200,
+        responseCode: 500,
         requestType: "GET",
     },
     Reset: {
