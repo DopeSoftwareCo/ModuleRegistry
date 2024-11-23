@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { StyledBaseDiv } from '../../BaseStyledComponents/BaseStyled';
 
 export const AdminDashboardInputs = styled(StyledBaseDiv)`
@@ -22,4 +22,61 @@ export const AdminDashboardInputsContainer = styled(StyledBaseDiv)`
     flex-direction: column;
     gap: 1rem;
     min-width: 300px;
+`;
+
+export const UsersDisplayContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    ${({ theme }) => css`
+        @media screen and (max-width: ${theme.breakpoint}) {
+            flex-direction: column;
+        }
+    `}
+`;
+
+export const UserContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    ${({ theme }) => css`
+        padding: ${theme.padding.small};
+        border: 1px solid ${theme.colors.text};
+        border-radius: ${theme.borderRadius.small};
+    `}
+`;
+export const PossiblePermsRolesContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+`;
+
+export const RolesPermsContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: row;
+    gap: 5rem;
+    ${({ theme }) => css`
+        @media screen and (max-width: ${theme.breakpoint}) {
+            flex-direction: column;
+        }
+    `}
+`;
+
+export const RolePermRow = styled(StyledBaseDiv)`
+    display: flex;
+    justify-content: space-between;
+`;
+
+export const RolesContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+`;
+
+export const PermsContainer = styled(StyledBaseDiv)`
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
 `;

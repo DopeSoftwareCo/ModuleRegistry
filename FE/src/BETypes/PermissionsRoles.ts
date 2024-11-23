@@ -38,3 +38,12 @@ export const ALL_PERMS_ALLOWED: PermissionEnum[] = Object.values(PermissionEnum)
     (value) => typeof value === 'number'
 ) as PermissionEnum[];
 export const ALL_ROLES: Role[] = Object.values(Role).filter((value) => typeof value === 'number') as Role[];
+
+const getEnumKeys = <T extends object>(enumObj: T): string[] =>
+    Object.keys(enumObj).filter((key) => isNaN(Number(key)));
+
+export const roleKeys = getEnumKeys(Role);
+export const permissionKeys = getEnumKeys(PermissionEnum);
+
+export const getEnumValue = <T extends object>(enumObj: T, key: string): T[keyof T] | undefined =>
+    enumObj[key as keyof T];

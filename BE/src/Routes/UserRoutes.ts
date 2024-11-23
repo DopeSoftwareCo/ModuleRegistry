@@ -8,6 +8,7 @@ import { userAddValidationRules } from "../Validation/UserValidationRules/userAd
 import {
     addUserController,
     deleteUserController,
+    getAllUsersController,
     updateUserController,
 } from "../Controllers/UserControllers";
 import { updateUserValidationRules } from "../Validation/UserValidationRules/userUpdate";
@@ -44,3 +45,5 @@ UserRouter.post(
     validateRequest,
     deleteUserController
 );
+// /allusers
+UserRouter.get("/allusers", verifyToken, checkManagementToken, validateRequest, getAllUsersController);

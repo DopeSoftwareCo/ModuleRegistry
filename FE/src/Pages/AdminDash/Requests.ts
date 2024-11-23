@@ -15,6 +15,7 @@ export const addUserRequest = async (
     successSetter: (successMessage: string) => void
 ): Promise<void> => {
     try {
+        console.log(body);
         const response = await fetch(`${GeneralConfig.BACKEND_URL}users/adduser`, {
             method: 'POST',
             headers: {
@@ -99,4 +100,40 @@ export const updateUserRequest = async (
             errorSetter(err.message);
         } else errorSetter('some unknown error curred in updateUserRequest');
     }
+};
+
+export interface UserMetadataFromAPI {
+    permission: PermissionEnum;
+    role: Role;
+}
+
+export interface UserFromAPI {
+    user_id: string;
+    user_metadata: UserMetadataFromAPI;
+    username: string;
+}
+
+export interface AllUsersFromAPI {
+    users: UserFromAPI[];
+}
+
+export const getAllUsers = async (
+    errorSetter: (error: string) => void
+): Promise<AllUsersFromAPI | undefined> => {
+    try {
+        const response = await fetch(`${GeneralConfig.BACKEND_URL}users/allusers`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `${localStorage.getItem('token')}`,
+            },
+        });
+        const users: AllUsersFromAPI = await response.json();
+        return users;
+    } catch (err) {
+        if (err instanceof Error) {
+            errorSetter(err.message);
+        } else errorSetter('Uknown error occured in getAllUsers');
+    }
+    return undefined;
 };
