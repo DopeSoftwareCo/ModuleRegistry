@@ -7,7 +7,7 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
-import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/CalcPackageCost";
+import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/Packages/Scoring/CalcPackageCost";
 import { debloatUnzippedContent, debloatUploadedContent, zipContents } from "../DSinc_Modules/DSinc_PackageHandling";
 import fs from 'fs';
 import axios from 'axios';

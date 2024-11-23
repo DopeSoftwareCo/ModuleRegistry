@@ -1,6 +1,7 @@
 import { NextFunction, Response } from "express";
 import { AddUserRequest, DeleteUserRequest, UpdateUserRequest } from "RequestTypes";
-import { Auth0_Database, RegistrationInfo, RequestForUserChanges } from "../Providers/Auth0/Auth0_DB";
+import { Auth0_Database } from "../Services/AdminUser/Auth0_DB";
+import { RegistrationInfo } from "../Services/AdminUser/types";
 import asyncHandler from "../Middleware/asyncHandler";
 import {
     AddUserResponseMessages,
@@ -40,21 +41,8 @@ export const addUserController = asyncHandler(
 
 export const updateUserController = asyncHandler(
     async (req: UpdateUserRequest, res: Response, next: NextFunction) => {
-        const id = req.body.id;
-        const username = req.body.username;
-        const password = req.body.password;
-        const permission = req.body.permission;
-        const role = req.body.role;
-
-        const changeReq: RequestForUserChanges = {
-            username: username,
-            password: password,
-            permission: permission,
-            role: role,
-        };
-
         let responseMessage: UpdateUserResponseMessages;
-        const result = await Auth0_Database.UPDATE(id, changeReq);
+        const result = await Auth0_Database.UPDATE(req.body);
         const failed = result == undefined;
 
         if (!failed) {

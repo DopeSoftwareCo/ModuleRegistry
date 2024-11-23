@@ -7,46 +7,29 @@ import {
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/ResetSystem";
-import { Restricted_INSERT } from "../Classes/RestrictedOperations/InsertUser";
+import { ResetSystem } from "../Services/SystemReset";
 
 // /reset
 export const ResetControllerDANGER = asyncHandler(
     async (req: SystemResetRequest, res: ResetRegistryResponse, next: NextFunction) => {
-        const perm = req.permission;
-        const role = req.role;
         let responseMessage: ResetRegistryResponseMessages;
-        if (!perm || !role) {
+        if (!req.permission || !req.role) {
             //everyone will have some perm and some role
             responseMessage = "You do not have permission to reset the registry.";
             res.status(401).send(responseMessage);
             return;
         }
-        const result = await Restricted_ResetSystem.Execute([], perm, role);
-        const resultInsert = await Restricted_INSERT.Execute(
-            [
-                {
-                    email: "ece30861defaultadminuser@email.com",
-                    password:
-                        "Y29ycmVjdGhvcnNlYmF0dGVyeXN0YXBsZTEyMyghX18rQCoqKEEnImA7RFJPUCBUQUJMRSBwYWNrYWdlczs=",
-                    permission: 7,
-                    role: 3,
-                    username: "ece30861defaultadminuser",
-                },
-            ],
-            perm,
-            role
-        );
+
+        let result: boolean = true;
+        try {
+            await ResetSystem();
+        } catch {
+            result = false;
+        }
 
         //covering our bases here incase there is some weird failure, while not transparent to the user..
-        const unathorized =
-            result.failedToAuthorize ||
-            resultInsert.failedToAuthorize ||
-            result.badInput ||
-            resultInsert.badInput;
-
         //this type is a union of our return strings
-        if (unathorized) {
+        if (!result) {
             responseMessage = "You do not have permission to reset the registry.";
             res.status(401).send(responseMessage);
             return;
@@ -58,6 +41,7 @@ export const ResetControllerDANGER = asyncHandler(
         }
     }
 );
+
 // /package/{id}
 export const DeletePackageByIDController = asyncHandler(
     async (req: DeletePackageByIDRequest, res: DeletePackageViaIDResponse, next: NextFunction) => {
