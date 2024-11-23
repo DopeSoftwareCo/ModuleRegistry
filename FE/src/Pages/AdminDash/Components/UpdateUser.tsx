@@ -54,7 +54,7 @@ export const UpdateUser = ({ reloadTrigger }: UpdateUserProps) => {
     };
 
     return (
-        <AdminDashboardInputsContainer>
+        <AdminDashboardInputsContainer data-testid="admin-dash-update-user-container">
             <AddUpdateDeleteHeader>Updating User</AddUpdateDeleteHeader>
             <AdminDashboardInputs>
                 <AdminDashboardInputLabel>id</AdminDashboardInputLabel>

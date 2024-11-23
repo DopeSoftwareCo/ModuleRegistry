@@ -39,13 +39,28 @@ const AdminDashboard = () => {
         <StyledBasePageContiner>
             <ButtonsContainer>
                 {action !== AdminActions.ADD && (
-                    <StyledBaseButton onClick={() => setAction(AdminActions.ADD)}>ADD</StyledBaseButton>
+                    <StyledBaseButton
+                        data-testid="dashboard-add-menu-button"
+                        onClick={() => setAction(AdminActions.ADD)}
+                    >
+                        ADD
+                    </StyledBaseButton>
                 )}
                 {action !== AdminActions.UPDATE && (
-                    <StyledBaseButton onClick={() => setAction(AdminActions.UPDATE)}>UPDATE</StyledBaseButton>
+                    <StyledBaseButton
+                        data-testid="dashboard-update-menu-button"
+                        onClick={() => setAction(AdminActions.UPDATE)}
+                    >
+                        UPDATE
+                    </StyledBaseButton>
                 )}
                 {action !== AdminActions.DELETE && (
-                    <StyledBaseButton onClick={() => setAction(AdminActions.DELETE)}>DELETE</StyledBaseButton>
+                    <StyledBaseButton
+                        data-testid="dashboard-delete-menu-button"
+                        onClick={() => setAction(AdminActions.DELETE)}
+                    >
+                        DELETE
+                    </StyledBaseButton>
                 )}
             </ButtonsContainer>
             {action === AdminActions.ADD && <AddUser reloadTrigger={reloadTrigger} />}

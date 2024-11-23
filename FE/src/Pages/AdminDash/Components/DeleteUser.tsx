@@ -26,7 +26,7 @@ export const DeleteUser = ({ reloadTrigger }: DeleteUserProps) => {
         reloadTrigger();
     };
     return (
-        <AdminDashboardInputsContainer>
+        <AdminDashboardInputsContainer data-testid="admin-dash-delete-user-container">
             <AddUpdateDeleteHeader>Deleting User</AddUpdateDeleteHeader>
             <AdminDashboardInputs>
                 <AdminDashboardInputLabel>id</AdminDashboardInputLabel>

@@ -54,7 +54,7 @@ export const AddUser = ({ reloadTrigger }: AddUserProps) => {
     };
 
     return (
-        <AdminDashboardInputsContainer>
+        <AdminDashboardInputsContainer data-testid="add-user-container">
             <AddUpdateDeleteHeader>Adding User</AddUpdateDeleteHeader>
             <AdminDashboardInputs>
                 <AdminDashboardInputLabel>username</AdminDashboardInputLabel>
