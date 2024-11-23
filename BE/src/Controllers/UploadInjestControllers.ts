@@ -7,7 +7,7 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
-import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/CalcPackageCost";
+import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/Packages/Scoring/CalcPackageCost";
 
 // /packages
 export const UploadInjestController = asyncHandler(

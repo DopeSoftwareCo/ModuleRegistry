@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { returnProperInvalidResponse } from "./Auth";
-import { PermissionEnum, Role } from "../Classes/Users/subdir.const";
+import { Permission, Role } from "../Services/AdminUser/UserData";
 
 const hasProperRole = (userRole: Role, requiredRoles: Role[]) =>
     requiredRoles.length === 0 || requiredRoles.includes(userRole);
 
-const hasProperPermission = (userPermission: PermissionEnum, requiredPermissions: PermissionEnum[]) =>
+const hasProperPermission = (userPermission: Permission, requiredPermissions: Permission[]) =>
     requiredPermissions.length === 0 || requiredPermissions.includes(userPermission);
 
 /**
@@ -14,7 +14,7 @@ const hasProperPermission = (userPermission: PermissionEnum, requiredPermissions
  * @param requiredRoles
  * @returns the next function in the chain {@type NextFunction}
  */
-export const permRestrictionMiddleware = (requiredPermissions: PermissionEnum[], requiredRoles: Role[]) => {
+export const permRestrictionMiddleware = (requiredPermissions: Permission[], requiredRoles: Role[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         if (process.env.NODE_ENV !== "dev") {
             if (!req.decodedToken) {

@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { AuthenticationRequestModel, PackageData, PackageMetaData } from "../Models";
-import { PermissionEnum, Role } from "../../Classes/Users/subdir.const";
+import { Permission, Role } from "../../Services/AdminUser/UserData";
 
 declare module "RequestTypes" {
     export type TestRequestBody = {

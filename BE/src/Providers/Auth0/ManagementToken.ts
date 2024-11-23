@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { LogDebug } from "../Utils/Log";
+import { LogDebug } from "../../Utils/Log";
 
 dotenv.config();
 const auth0Domain = process.env.AUTH0_DOMAIN;
