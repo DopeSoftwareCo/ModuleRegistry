@@ -43,8 +43,8 @@ async function getNPMDownload(repoURL: string): Promise<string> {
 }
 
 async function getGitHubDownload(repoURL: string): Promise<string> {
-    return repoURL;
-    /*
+    //return repoURL;
+    ///*
     const regex = /https:\/\/github\.com\/([^\/]+)\/([^\/]+)/;
     const match = repoURL.match(regex);
 
@@ -71,7 +71,7 @@ async function getGitHubDownload(repoURL: string): Promise<string> {
         }
     }
     throw new Error('Invalid GitHub URL');
-    */
+    //*/
 }
 
 const packagesDirectory = path.join(process.cwd(), "Data/Packages");
@@ -143,6 +143,8 @@ export const UploadInjestController = asyncHandler(
                 res.status(424).send(responseMessage);
                 return;
             }
+            console.log("Repo URL: " + repositoryUrl);
+            console.log("Repo Download URL: " + repoDownloadURL);
             const response = await axios.get(repoDownloadURL,{ responseType: 'arraybuffer' });
             binaryContent = Buffer.from(response.data, 'binary');
             isExternal = true;
@@ -189,7 +191,17 @@ export const UploadInjestController = asyncHandler(
         console.log("JSON Parsed");
         if (!isExternal) {
             try {
-                repositoryUrl = packageJson.repository.url as string;
+                repositoryUrl = packageJson.repository.url;
+                if (repositoryUrl == undefined) {
+                    repositoryUrl = packageJson.homepage;
+                    if (repositoryUrl == undefined) {
+                        console.error("No Repo URL Found!");
+                        await cleanUp(tempID);
+                        responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+                        res.status(424).send(responseMessage);
+                        return;
+                    }
+                }
             }
             catch (error) {
                 console.error(error);
@@ -239,9 +251,9 @@ export const UploadInjestController = asyncHandler(
                 PullRequestLatency: 0
             },
             repositoryUrl, 
-            body.Name? body.Name : packageJson.name? packageJson.name : "Unknown", 
-            packageJson.version, 
-            packageJson.license, 
+            body.Name? body.Name : packageJson.name? packageJson.name : "Unknown", // Should never be unknown, but since this is a safety, it is here.
+            packageJson.version? packageJson.version : "1.0.0", 
+            packageJson.license? packageJson.license : "Unknown", 
             isExternal, 
             standaloneCost,
             totalCost) + zipFileExtension;
