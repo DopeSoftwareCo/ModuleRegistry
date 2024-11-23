@@ -24,6 +24,7 @@ const Upload = () => {
     const [base64, setBase64] = useState<undefined | string>(undefined);
     const [url, setUrl] = useState<undefined | string>(undefined);
     const [jsProgram, setJsProgram] = useState('');
+    const [name, setName] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -37,6 +38,7 @@ const Upload = () => {
             (error) => setErr(error),
             (message) => setSuccessMessage(message),
             jsProgram,
+            name,
             base64,
             url
         );
@@ -80,6 +82,9 @@ const Upload = () => {
                 <HiddenFileInput ref={fileInputRef} onChange={handleFileChange} />
                 <InputRow>
                     <StyledBaseTextInput onChange={(e) => setUrl(e.target.value)} placeholder="URL" />
+                    <StyledBaseTextInput onChange={(e) => setName(e.target.value)} placeholder="NAME" />
+                </InputRow>
+                <InputRow>
                     <StyledBaseTextInput
                         onChange={(e) => setJsProgram(e.target.value)}
                         placeholder="JSProgram"
