@@ -1,6 +1,7 @@
 import fs from "fs";
 import { execSync } from "child_process";
 import path from "path";
+import { LogDebug } from "../../Utils/Log";
 
 interface DependencyTree {
     name: string; // Package name
@@ -11,29 +12,28 @@ interface DependencyTree {
 type Dependency = { name: string; version: string };
 type DependencySize = { name: string; version: string; size: number };
 
-export function fetchDependencyTree(packageName: string, packageManager: "npm" | "yarn"): Dependency[] {
-    const command =
-        packageManager === "npm"
-            ? `npm ls ${packageName} --json --depth=Infinity`
-            : `yarn list ${packageName} --json`;
+export const fetchDependencyTree = (
+    packageName: string,
+    packageManager: string,
+    verbose: boolean = true
+): any => {
+    try {
+        const fetching = `Fetching dependency tree for ${packageName} using ${packageManager}...`;
+        verbose ? console.log(fetching) : LogDebug(fetching);
 
-    const result = execSync(command, { encoding: "utf-8" });
-    const parsed: DependencyTree = JSON.parse(result); // Specify the type here
-    const dependencies: Dependency[] = [];
-
-    function traverse(node: DependencyTree) {
-        if (node.dependencies) {
-            for (const [depName, depInfo] of Object.entries(node.dependencies)) {
-                dependencies.push({ name: depName, version: depInfo.version! }); // Ensure version is not undefined
-                traverse(depInfo);
-            }
-        }
+        const command = `${packageManager} ls ${packageName} --json --depth=Infinity`;
+        const result = execSync(command, { encoding: "utf-8" });
+        return JSON.parse(result);
+    } catch (error) {
+        LogDebug(`Skipping ${packageName}: ${error}`);
+        // Returning a default structure for a skipped package
+        return {
+            name: packageName,
+            size: 0, // or estimated size if you want to provide a default
+            dependencies: {},
+        };
     }
-
-    traverse(parsed);
-    return dependencies;
-}
-
+};
 export function calculateZipSize(dependency: Dependency): number {
     const tempDir = path.resolve("temp_zips");
     if (!fs.existsSync(tempDir)) {
@@ -51,7 +51,7 @@ export function calculateZipSize(dependency: Dependency): number {
         const size = fs.statSync(zipPath).size;
         return size;
     } catch (error) {
-        console.error(`Error fetching size for ${packageName}:`, error);
+        LogDebug(`Error fetching size for ${packageName}: ${error}`);
         return 0;
     } finally {
         // Clean up the zip file
@@ -61,21 +61,39 @@ export function calculateZipSize(dependency: Dependency): number {
     }
 }
 
-export function calculateCumulativeSize(packages: string[], packageManager: "npm" | "yarn"): number {
-    const allDependencies = new Map<string, DependencySize>();
+export const calculateCumulativeSize = (
+    packages: string[],
+    packageManager: string,
+    verbose: boolean = true
+): number => {
+    let totalSize = 0;
+    const processedPackages = new Set<string>();
 
-    for (const pkg of packages) {
-        const dependencies = fetchDependencyTree(pkg, packageManager);
-        for (const dep of dependencies) {
-            const key = `${dep.name}@${dep.version}`;
-            if (!allDependencies.has(key)) {
-                const size = calculateZipSize(dep);
-                allDependencies.set(key, { ...dep, size });
-            }
+    packages.forEach((packageName) => {
+        const dependencyTree = fetchDependencyTree(packageName, packageManager, verbose);
+
+        if (!dependencyTree || !dependencyTree.dependencies) {
+            const notFound = `No dependencies found for ${packageName}, skipping.`;
+            verbose ? console.warn(notFound) : LogDebug(notFound);
+            return; // Skip if the dependency tree is invalid
         }
-    }
 
-    const totalSize = Array.from(allDependencies.values()).reduce((sum, { size }) => sum + size, 0);
+        // Helper function to recursively calculate the size
+        const calculateSize = (tree: any) => {
+            if (!tree || processedPackages.has(tree.name)) return 0;
+            processedPackages.add(tree.name);
+
+            let size = tree.size || 0; // Replace with your logic for determining the size
+            if (tree.dependencies) {
+                Object.values(tree.dependencies).forEach((dep: any) => {
+                    size += calculateSize(dep);
+                });
+            }
+            return size;
+        };
+
+        totalSize += calculateSize(dependencyTree);
+    });
 
     return totalSize;
-}
+};
