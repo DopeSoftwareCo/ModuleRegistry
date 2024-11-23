@@ -36,7 +36,7 @@ export interface UserUpdates {
     name?: string;
     email?: string;
     username?: string;
-    user_metadata: {
+    user_metadata?: {
         permission?: number;
         role?: number;
     };
