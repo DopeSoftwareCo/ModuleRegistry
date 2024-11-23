@@ -35,4 +35,9 @@ export const UploadPackageRules = [
         .withMessage(InvalidUploadPackageMessage)
         .isBoolean()
         .withMessage(InvalidUploadPackageMessage),
+    body("Name")
+        .exists()
+        .withMessage(InvalidUploadPackageMessage)
+        .isString()
+        .withMessage(InvalidUploadPackageMessage),
 ];

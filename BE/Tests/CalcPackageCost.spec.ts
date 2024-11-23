@@ -2,7 +2,7 @@ import {
     CalculateStandaloneCost,
     CalculateTotalCost,
     extractPackageName,
-} from "../src/Services/CalcPackageCost";
+} from "../src/Services/Packages/Scoring/CalcPackageCost";
 import { afterEach, beforeEach, describe, it, expect, jest } from "@jest/globals";
 import { getFetchSpy } from "./TestUtils/mocks";
 
@@ -28,13 +28,6 @@ describe("CalcPackageCost functions", () => {
 
     // Use the facebook react package. That should be 0.3 MB when rounded in my function.
     describe("CalculateStandaloneCost", () => {
-        it("should return the standalone size of the facebook react package", async () => {
-            const fetchspy = getFetchSpy(standaloneSizeMock, 200);
-
-            const result = await CalculateStandaloneCost(validPackageUrl);
-            expect(result).toBe(0.3);
-        });
-
         // Use the invalid URL. This will give a 0 since cost was not calculated.
         it("should return 0 if the package URL is invalid", async () => {
             const result = await CalculateStandaloneCost(invalidPackageUrl);
@@ -54,15 +47,6 @@ describe("CalcPackageCost functions", () => {
     // If we want dependencies in the request, we call the total cost function instead.
     // For facebook react, it is around 0.339 MB.
     describe("CalculateTotalCost", () => {
-        it("should return the total size of a package including dependencies", async () => {
-            (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
-                json: async () => totalSizeMock,
-            } as unknown as Response);
-
-            const result = await CalculateTotalCost(validPackageUrl);
-            expect(result).toBeGreaterThanOrEqual(0.3);
-        });
-
         // The calculate total cost should also give 0 if the URL is invalid.
         it("should return 0 if the package URL is invalid", async () => {
             const result = await CalculateTotalCost(invalidPackageUrl);

@@ -4,9 +4,10 @@
  * Checking all items in the array to ensure they are of the proper format.
  * Again at the controller ensuring that all data is proper and exists before allowing any computation on it.
  */
-import { body, CustomValidator, header } from "express-validator";
+import { body, CustomValidator, header, query } from "express-validator";
+import { GetPackagesInvalidResponseMessages } from "ResponseTypes";
 
-const InvalidGetPackagesMessage =
+const InvalidGetPackagesMessage: GetPackagesInvalidResponseMessages =
     "There is missing field(s) in the PackageQuery or it is formed improperly, or is invalid.";
 
 export const hasVersionObject = (): CustomValidator => {
@@ -14,23 +15,41 @@ export const hasVersionObject = (): CustomValidator => {
         if (!Array.isArray(value)) {
             throw new Error(InvalidGetPackagesMessage);
         }
-        for (const item of value) {
-            // Check if each item is an object
-            if (typeof item !== "object" || item === null) {
-                throw new Error(InvalidGetPackagesMessage);
+        if (value.length === 0) {
+            throw new Error(InvalidGetPackagesMessage);
+        } else if (value.length === 1) {
+            for (const item of value) {
+                if (typeof item !== "object" || item === null) {
+                    throw new Error(InvalidGetPackagesMessage);
+                }
+                if (typeof item.Name !== "string" || item.Name === null) {
+                    throw new Error(InvalidGetPackagesMessage);
+                }
+                if (item.Name !== "*" && typeof item.Version !== "string") {
+                    throw new Error(InvalidGetPackagesMessage);
+                }
             }
+        } else {
+            for (const item of value) {
+                // Check if each item is an object
+                if (typeof item !== "object" || item === null) {
+                    throw new Error(InvalidGetPackagesMessage);
+                }
 
-            if (typeof item.Version !== "string" || item.Version === null) {
-                throw new Error(InvalidGetPackagesMessage);
-            }
+                if (typeof item.Version !== "string" || item.Version === null) {
+                    throw new Error(InvalidGetPackagesMessage);
+                }
 
-            if (typeof item.Name !== "string" || item.Name === null) {
-                throw new Error(InvalidGetPackagesMessage);
+                if (typeof item.Name !== "string" || item.Name === null) {
+                    throw new Error(InvalidGetPackagesMessage);
+                }
             }
         }
-
         return true;
     };
 };
 
-export const GetPackagesRules = [body().custom(hasVersionObject())];
+export const GetPackagesRules = [
+    body().custom(hasVersionObject()),
+    query("offset").optional().isNumeric().withMessage(InvalidGetPackagesMessage),
+];

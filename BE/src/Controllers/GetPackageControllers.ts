@@ -23,26 +23,30 @@ import {
     GetSizeCostForPackageResponse,
     GetSizeCostForPackageResponseBody,
 } from "ResponseTypes";
-import { NextFunction } from "express";
+import { NextFunction, response } from "express";
 import PackageModel from "../Schemas/Package";
+import { FetchVersions, SearchVersion } from "../Services/Packages/Versioning/search-functions";
+
+// Setup all of the search-functions to take GetPackagesData[] as input
 
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
     async (req: GetPackagesRequest, res: GetPackagesResponse, next: NextFunction) => {
+        //BEWARE: There is a case where there will be ONE ITEM in the array
+        // This object will be requesting for ALL packages
+        // all responses/requests should be paginated
+        // An example below,
         const requestedPackages = req.body;
-        //hover to see types
-        //your code here
-
-        //^^^^^^^^^^^^^^^^
-        //should return back to here a typed arr like this, this is metadata ab the package
+        /*
         const responseBody: GetPackagesResponseBody = [
-            { Version: "Some version", Name: "Some name", ID: "Some ID" },
-            { Version: "Some version", Name: "Some name", ID: "Some ID" },
-        ];
-        //something to signify too many packages were returned
-        const tooManyreturned = false;
+            //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
+            //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
+        ];*/
+
+        const responseBody: GetPackagesResponseBody = await FetchVersions(requestedPackages);
+
         let responseMessage: GetPackagesInvalidResponseMessages;
-        if (!tooManyreturned) {
+        if (responseBody.length < 100) {
             res.status(200).json(responseBody);
         } else {
             responseMessage = "Too many packages returned.";
@@ -55,9 +59,13 @@ export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         console.log("original", req.originalUrl);
         console.log("packageid requested", req.params.id);
+        const packID = req.params.id;
         //your code here using the id
 
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^
+        const role = req.body.role ? req.body.role : 0;
+        const perm = req.body.perm ? req.body.perm : 0;
+        //const response = User.DownloadPackage.Execute(role, perm, packID);
+
         //return back something that signifies it was not found if that is the case;
         const DNE = false;
         //should return back here something typed as follows
@@ -201,6 +209,7 @@ export const GetPackageRatingsViaIDController = asyncHandler(
 );
 
 // /package/byRegEx
+
 export const GetPackagesViaRegexController = asyncHandler(
     async (req: GetPackagesViaRegexRequest, res: GetPackageViaRegexResponse, next: NextFunction) => {
         const regexStr = req.body.RegEx;

@@ -1,43 +1,47 @@
-import {
-    DeleteAllVersionsByNameRequest,
-    DeletePackageByIDRequest,
-    ResetRegistryRequest,
-    SystemResetRequest,
-} from "RequestTypes";
+import { DeletePackageByIDRequest, SystemResetRequest } from "RequestTypes";
 import asyncHandler from "../Middleware/asyncHandler";
 import {
-    DeletePackageByNameResponse,
-    DeletePackageByNameResponseMessages,
     DeletePackageViaIDResponse,
     DeletePackageViaIDResponseMessages,
     ResetRegistryResponse,
     ResetRegistryResponseMessages,
 } from "ResponseTypes";
 import { NextFunction } from "express";
-import { Restricted_ResetSystem } from "../Classes/RestrictedOperations/ResetSystem";
-import { UnathorizedCall } from "../Classes/RestrictedOperations/RestrictedOp";
-// /reset
+import { ResetSystem } from "../Services/SystemReset";
 
+// /reset
 export const ResetControllerDANGER = asyncHandler(
     async (req: SystemResetRequest, res: ResetRegistryResponse, next: NextFunction) => {
-        const perm = req.body.permission;
-        const role = req.body.role;
-
-        const result = await Restricted_ResetSystem.Execute([], perm, role);
-        const unathorized = result.failedToAuthorize;
-
-        //this type is a union of our return strings
         let responseMessage: ResetRegistryResponseMessages;
-        if (unathorized) {
+        if (!req.permission || !req.role) {
+            //everyone will have some perm and some role
             responseMessage = "You do not have permission to reset the registry.";
             res.status(401).send(responseMessage);
+            return;
+        }
+
+        let result: boolean = true;
+        try {
+            await ResetSystem();
+        } catch {
+            result = false;
+        }
+
+        //covering our bases here incase there is some weird failure, while not transparent to the user..
+        //this type is a union of our return strings
+        if (!result) {
+            responseMessage = "You do not have permission to reset the registry.";
+            res.status(401).send(responseMessage);
+            return;
         } else {
             // This will send a success message EVEN IF bad input is given.
             responseMessage = "Registry is reset.";
             res.status(200).send(responseMessage);
+            return;
         }
     }
 );
+
 // /package/{id}
 export const DeletePackageByIDController = asyncHandler(
     async (req: DeletePackageByIDRequest, res: DeletePackageViaIDResponse, next: NextFunction) => {
