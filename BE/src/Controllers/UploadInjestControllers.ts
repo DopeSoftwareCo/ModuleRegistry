@@ -8,39 +8,16 @@ import {
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/Packages/Scoring/CalcPackageCost";
-import { debloatUnzippedContent, debloatUploadedContent, zipContents } from "../DSinc_Modules/DSinc_PackageHandling";
+import { debloatUnzippedContent, debloatUploadedContent, zipContents } from "../Utils/DSinc_Modules/DSinc_PackageHandling";
 import fs from 'fs';
 import axios from 'axios';
 import path from 'path';
 import unzipper, { Entry } from 'unzipper'
-import { ModuleEvaluator } from "../Providers/ModEval/ModuleEvaluator";
-import { DEFAULT_WEIGHTS } from "../Providers/ModEval/RepoComponents/Metrics_Scores/Weightspec.const";
-import { SuperRepoBuilder } from "../Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
-import { buildMongoDBPackage } from "../Services/MongoDB";
+import { ModuleEvaluator } from "../Providers/RepoEvaluator/ModuleEvaluator";
+import { DEFAULT_WEIGHTS } from "../Providers/RepoEvaluator/RepoComponents/Metrics_Scores/Weightspec.const";
+import { SuperRepoBuilder } from "../Providers/RepoEvaluator/RepoComponents/Builders/SuperRepoBuilder";
+import { buildMongoDBPackage } from "../Services/Packages/MongoDB";
 import fetch from "node-fetch";
-import { clean } from "semver";
-
-async function getNPMDownload(repoURL: string): Promise<string> {
-    return repoURL;
-    /*
-    const regex = /https:\/\/www\.npmjs\.com\/package\/([^\/]+)/;
-    const match = repoURL.match(regex);
-    
-    if (match) {
-        const packageName = match[1];
-        if (packageName == null) {
-            throw new Error ('Failed to fetch NPM package data')
-        }
-        try {
-            const packageData = await fetch.json(`/${packageName}`);
-            return packageData.repository;
-        } catch (error) {
-            throw new Error('Failed to fetch NPM package data');
-        }
-    }
-    throw new Error('Invalid NPM URL');
-    */
-}
 
 async function getGitHubDownload(repoURL: string): Promise<string> {
     //return repoURL;
@@ -90,13 +67,12 @@ async function cleanUp(tempID: string) {
 
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
-        console.error("WELCOME TO UPLOAD!");
+        console.error("Entering Upload Process");
         const body = req.body; 
         let repositoryUrl = body?.URL;
         let content = body?.Content;
         let binaryContent; // Meant to store the non-string encoded version
         let isExternal = false;
-
 
         const disqualifiedStandaloneSizeInGB = 750 // Approximately 1GB
         const disqualifiedTotalSizeInGB = 1000 // Approximately 1GB
@@ -104,14 +80,8 @@ export const UploadInjestController = asyncHandler(
         const tempID = (Math.floor((Math.random() * tempIDCeiling) + 1)).toString();
         const tempFileZip = path.join(tempDirectory, tempID + ".zip");
         const tempUnzippedFileDirectory = path.join(tempDirectory, tempID);
-        const archiver = require("archiver");
-
-        if (!fs.existsSync(tempDirectory)) { // This is where data is downloaded before being examined. 
-            fs.mkdirSync(tempDirectory);
-        }
 
         let responseMessage: UploadInjestResponseMessages;
-        let isNPMLink: boolean = false;
         if (repositoryUrl == undefined && content != undefined) {
             // Confirmed that content exists, decode and extract repository URL.
             const base64Data = content.split(",")[1];
@@ -122,11 +92,7 @@ export const UploadInjestController = asyncHandler(
             // Confirmed that the repoURL exists, download content
             let repoDownloadURL: string;
             try { 
-                if (repositoryUrl.includes("npmjs")) {
-                    repoDownloadURL = await getNPMDownload(repositoryUrl);
-                    isNPMLink = true;
-                }
-                else if (repositoryUrl.includes("github")) {
+                if (repositoryUrl.includes("github")) {
                     repoDownloadURL = await getGitHubDownload(repositoryUrl);
                 }
                 else {
@@ -143,6 +109,9 @@ export const UploadInjestController = asyncHandler(
                 res.status(424).send(responseMessage);
                 return;
             }
+            if (!fs.existsSync(tempDirectory)) { // This is where data is downloaded before being examined. 
+                fs.mkdirSync(tempDirectory);
+            }
             console.log("Repo URL: " + repositoryUrl);
             console.log("Repo Download URL: " + repoDownloadURL);
             const response = await axios.get(repoDownloadURL,{ responseType: 'arraybuffer' });
@@ -150,6 +119,7 @@ export const UploadInjestController = asyncHandler(
             isExternal = true;
         }
         else {
+            await cleanUp(tempID);
             console.error("Should only get here if both content and URL are undefined or they are defined");
             responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
             res.status(424).send(responseMessage);
@@ -159,13 +129,12 @@ export const UploadInjestController = asyncHandler(
         try {
             fs.promises.writeFile(tempFileZip, binaryContent);
         }
-        catch {
-            fs.unlink(tempFileZip, (err) => {
-                if (err) {
-                    console.error("Filesystem error, deleting temp file.")
-                }
-                throw new Error(`Error: ${err}`);
-            });
+        catch (error){
+            await cleanUp(tempID);
+            console.error(`Error: ${error}`);
+            responseMessage = "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+            res.status(424).send(responseMessage);
+            return;
         }
         
         await unzipper.Open.buffer(binaryContent).then((directory) => directory.extract ({ path: tempUnzippedFileDirectory}));
@@ -220,6 +189,7 @@ export const UploadInjestController = asyncHandler(
         let totalCost: number;
         if (queriedPackage !== null) {
             console.log(queriedPackage);
+            await cleanUp(tempID);
             responseMessage = "Package exists already.";
             res.status(409).send(responseMessage);
             return;
@@ -228,6 +198,7 @@ export const UploadInjestController = asyncHandler(
             standaloneCost = await CalculateStandaloneCost(repositoryUrl); // No deps
             totalCost = await CalculateTotalCost(repositoryUrl); // With deps
             if (totalCost > disqualifiedTotalSizeInGB || standaloneCost > disqualifiedStandaloneSizeInGB) {
+                await cleanUp(tempID);
                 responseMessage = "Package is not uploaded due to disqualified rating.";
                 res.status(424).send(responseMessage);
             }
@@ -263,9 +234,6 @@ export const UploadInjestController = asyncHandler(
             if (isSuccessful) {
                 zipContents(tempUnzippedFileDirectory, zipFileExtension, path.join(packagesDirectory, packageID));
             }
-            else if (isNPMLink) { // Ensures uniformity. All should be .zip and NPM gives tar.gz
-                zipContents(tempUnzippedFileDirectory, zipFileExtension, path.join(packagesDirectory, packageID)); 
-            }
             else {
                 await fs.promises.rename(tempFileZip, path.join(packagesDirectory, packageID));
             }
@@ -284,8 +252,8 @@ export const UploadInjestController = asyncHandler(
             //all fields are optional in data
             data: {},
         }
-        res.status(200).json(returnBody);
         await cleanupProcess;
+        res.status(200).json(returnBody);
         return;
     }
 );
