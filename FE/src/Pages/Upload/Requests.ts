@@ -5,6 +5,7 @@ export const uploadFile = async (
     errorSetter: (error: string) => void,
     successSetter: (successMessage: string) => void,
     JSProgram: string,
+    Name?: string,
     base64?: string,
     url?: string
 ) => {
@@ -20,6 +21,7 @@ export const uploadFile = async (
                 ...(url && { URL: url }),
                 debloat,
                 JSProgram,
+                Name,
             }),
         });
 
