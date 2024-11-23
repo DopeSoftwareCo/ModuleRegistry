@@ -75,6 +75,7 @@ async function getGitHubDownload(repoURL: string): Promise<string> {
 
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
+        console.error("WELCOME TO UPLOAD!");
         const body = req.body; 
         let repositoryUrl = body?.URL;
         let content = body?.Content;
