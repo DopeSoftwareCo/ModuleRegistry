@@ -77,7 +77,8 @@ export const buildMongoDBPackage = async (
             netscore_latency: row.NetScore_Latency,
         },
     });
-    await pToSave.save();
+    const savedPackage = await pToSave.save();
+    return savedPackage._id.toString();
 };
 
 export const createRandomPackage = async (version: string) => {
@@ -153,5 +154,6 @@ export const createRandomPackage = async (version: string) => {
             netscore_latency: Math.random(),
         },
     });
-    await newPackage.save();
+    const savedPackage = await newPackage.save();
+    return savedPackage._id.toString();
 };
