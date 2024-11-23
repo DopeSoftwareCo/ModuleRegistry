@@ -22,6 +22,7 @@ export const AdminDashboardInputsContainer = styled(StyledBaseDiv)`
     flex-direction: column;
     gap: 1rem;
     min-width: 300px;
+    align-items: center;
 `;
 
 export const UsersDisplayContainer = styled(StyledBaseDiv)`
@@ -43,7 +44,7 @@ export const UserContainer = styled(StyledBaseDiv)`
     ${({ theme }) => css`
         padding: ${theme.padding.small};
         border: 1px solid ${theme.colors.text};
-        border-radius: ${theme.borderRadius.small};
+        border-radius: ${theme.borderRadius.medium};
     `}
 `;
 export const PossiblePermsRolesContainer = styled(StyledBaseDiv)`
@@ -51,6 +52,11 @@ export const PossiblePermsRolesContainer = styled(StyledBaseDiv)`
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    ${({ theme }) => css`
+        border: 1px solid ${theme.colors.text};
+        padding: ${theme.padding.small};
+        border-radius: ${theme.borderRadius.medium};
+    `}
 `;
 
 export const RolesPermsContainer = styled(StyledBaseDiv)`
@@ -79,4 +85,9 @@ export const PermsContainer = styled(StyledBaseDiv)`
     display: flex;
     flex-direction: column;
     min-width: 100px;
+`;
+
+export const AddUpdateDeleteHeader = styled(StyledBaseDiv)`
+    font-weight: 600;
+    text-transform: uppercase;
 `;

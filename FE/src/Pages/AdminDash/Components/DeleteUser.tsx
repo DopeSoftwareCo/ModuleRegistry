@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StyledBaseButton, StyledBaseTextInput } from '../../../BaseStyledComponents/BaseStyled';
 import {
+    AddUpdateDeleteHeader,
     AdminDashboardInputLabel,
     AdminDashboardInputs,
     AdminDashboardInputsContainer,
@@ -26,6 +27,7 @@ export const DeleteUser = ({ reloadTrigger }: DeleteUserProps) => {
     };
     return (
         <AdminDashboardInputsContainer>
+            <AddUpdateDeleteHeader>Deleting User</AddUpdateDeleteHeader>
             <AdminDashboardInputs>
                 <AdminDashboardInputLabel>id</AdminDashboardInputLabel>
                 <StyledBaseTextInput onChange={(e) => setId(e.target.value)} />

@@ -17,7 +17,7 @@ import {
 export const PossiblePermsRoles = () => {
     return (
         <PossiblePermsRolesContainer>
-            <StyledBaseDiv>UDS (Upload,Download,Search) 000, 001, 011 etc.</StyledBaseDiv>
+            <StyledBaseDiv>UDS (Upload, Download, Search) 000, 001, 011 etc.</StyledBaseDiv>
             <RolesPermsContainer>
                 <RolesContainer>
                     {roleKeys.map((key, idx) => (

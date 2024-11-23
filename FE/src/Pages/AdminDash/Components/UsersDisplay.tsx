@@ -9,14 +9,16 @@ interface UsersDisplayProps {
 export const UsersDisplay = ({ users = [] }: UsersDisplayProps) => {
     return (
         <UsersDisplayContainer>
-            {users.map((user, idx) => (
-                <UserContainer key={idx}>
-                    <StyledBaseDiv>{user.username}</StyledBaseDiv>
-                    <StyledBaseDiv>{user.user_id}</StyledBaseDiv>
-                    <StyledBaseDiv>{user.user_metadata.permission}</StyledBaseDiv>
-                    <StyledBaseDiv>{user.user_metadata.role}</StyledBaseDiv>
-                </UserContainer>
-            ))}
+            {users
+                .filter((user) => !user.username.includes('default'))
+                .map((user, idx) => (
+                    <UserContainer key={idx}>
+                        <StyledBaseDiv>{user.username}</StyledBaseDiv>
+                        <StyledBaseDiv>{user.user_id}</StyledBaseDiv>
+                        <StyledBaseDiv>{user.user_metadata.permission}</StyledBaseDiv>
+                        <StyledBaseDiv>{user.user_metadata.role}</StyledBaseDiv>
+                    </UserContainer>
+                ))}
         </UsersDisplayContainer>
     );
 };

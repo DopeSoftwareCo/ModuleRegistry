@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StyledBaseButton, StyledBaseTextInput } from '../../../BaseStyledComponents/BaseStyled';
 import {
+    AddUpdateDeleteHeader,
     AdminDashboardInputLabel,
     AdminDashboardInputs,
     AdminDashboardInputsContainer,
@@ -54,6 +55,7 @@ export const AddUser = ({ reloadTrigger }: AddUserProps) => {
 
     return (
         <AdminDashboardInputsContainer>
+            <AddUpdateDeleteHeader>Adding User</AddUpdateDeleteHeader>
             <AdminDashboardInputs>
                 <AdminDashboardInputLabel>username</AdminDashboardInputLabel>
                 <StyledBaseTextInput onChange={(e) => setUsername(e.target.value)} />
