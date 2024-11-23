@@ -47,6 +47,52 @@ export const UserContainer = styled(StyledBaseDiv)`
         border-radius: ${theme.borderRadius.medium};
     `}
 `;
+
+export const UserInformationRow = styled(StyledBaseDiv)`
+    display: flex;
+    justify-content: space-between;
+    min-width: 300px;
+`;
+
+export const UserInformationIdentifier = styled(StyledBaseDiv)`
+    font-weight: 600;
+    text-transform: uppercase;
+`;
+
+export const UsersTable = styled.table`
+    ${({ theme }) => css`
+        color: ${theme.colors.text};
+        border: 1px solid ${theme.colors.text};
+        border-collapse: collapse;
+        min-width: 700px;
+    `}
+`;
+
+export const UsersTableHead = styled.thead``;
+
+export const UsersTableBody = styled.tbody``;
+
+export const UsersTableHeadItem = styled.th`
+    ${({ theme }) => css`
+        color: ${theme.colors.text};
+        border: 1px solid ${theme.colors.text};
+        border-collapse: collapse;
+    `}
+`;
+
+export const UsersTableHeadRow = styled.tr``;
+
+export const UsersTableBodyRow = styled.tr``;
+
+export const UsersTableBodyItem = styled.td`
+    ${({ theme }) => css`
+        color: ${theme.colors.text};
+        border: 1px solid ${theme.colors.text};
+        border-collapse: collapse;
+        padding-left: ${theme.padding.small};
+    `}
+`;
+
 export const PossiblePermsRolesContainer = styled(StyledBaseDiv)`
     display: flex;
     flex-direction: column;

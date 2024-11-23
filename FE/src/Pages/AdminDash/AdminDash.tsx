@@ -21,6 +21,7 @@ const AdminDashboard = () => {
     const [users, setUsers] = useState<AllUsersFromAPI | undefined>(undefined);
     const [err, setErr] = useState<undefined | string>(undefined);
     const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
+    const [showHelp, setShowHelp] = useState(false);
     const getUsers = async () => {
         const usersFromAPI = await getAllUsers((errorMessage) => setErr(errorMessage));
         setUsers(usersFromAPI);
@@ -33,8 +34,13 @@ const AdminDashboard = () => {
     const reloadTrigger = () => {
         setTimeout(() => {
             setReloadFlipper((prev) => !prev);
-        }, 2000);
+        }, 5000);
     };
+
+    const handleHelpClick = () => {
+        setShowHelp((curr) => !curr);
+    };
+
     return (
         <StyledBasePageContiner>
             <ButtonsContainer>
@@ -62,12 +68,14 @@ const AdminDashboard = () => {
                         DELETE
                     </StyledBaseButton>
                 )}
+                <StyledBaseButton onClick={handleHelpClick}>Help</StyledBaseButton>
             </ButtonsContainer>
             {action === AdminActions.ADD && <AddUser reloadTrigger={reloadTrigger} />}
             {action === AdminActions.UPDATE && <UpdateUser reloadTrigger={reloadTrigger} />}
             {action === AdminActions.DELETE && <DeleteUser reloadTrigger={reloadTrigger} />}
-            {(action === AdminActions.ADD || action === AdminActions.UPDATE) && <PossiblePermsRoles />}
             <UsersDisplay users={users?.users} />
+            {showHelp && <PossiblePermsRoles />}
+
             <StatusDisplay
                 err={err}
                 setErr={setErr}

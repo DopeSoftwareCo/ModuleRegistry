@@ -80,6 +80,7 @@ export const updateUserRequest = async (
     successSetter: (successMessage: string) => void
 ): Promise<void> => {
     try {
+        console.log(body);
         const response = await fetch(`${GeneralConfig.BACKEND_URL}users/updateuser`, {
             method: 'POST',
             headers: {

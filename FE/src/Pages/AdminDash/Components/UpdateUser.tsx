@@ -38,10 +38,10 @@ export const UpdateUser = ({ reloadTrigger }: UpdateUserProps) => {
 
     const buildUpdateUserRequestBody = () => ({
         id,
-        username,
-        password,
-        permission,
-        role,
+        ...(username ? { username } : {}),
+        ...(password ? { password } : {}),
+        ...(permission ? { permission } : {}),
+        ...(role ? { role } : {}),
     });
 
     const makeUpdateUserRequest = async () => {
