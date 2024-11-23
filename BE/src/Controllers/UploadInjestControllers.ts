@@ -67,7 +67,7 @@ async function cleanUp(tempID: string) {
 
 export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
-        console.error("Entering Upload Process");
+        console.log("Entering Upload Process");
         const body = req.body; 
         let repositoryUrl = body?.URL;
         let content = body?.Content;
