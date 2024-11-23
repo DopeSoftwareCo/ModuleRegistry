@@ -25,7 +25,7 @@ import {
 } from "ResponseTypes";
 import { NextFunction, response } from "express";
 import PackageModel from "../Schemas/Package";
-import { FetchVersions, SearchVersion } from "../Providers/PackageVersioning/search-functions";
+import { FetchVersions, SearchVersion } from "../Services/Packages/Versioning/search-functions";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 

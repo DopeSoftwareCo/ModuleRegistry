@@ -2,7 +2,7 @@ import {
     CalculateStandaloneCost,
     CalculateTotalCost,
     extractPackageName,
-} from "../src/Services/CalcPackageCost";
+} from "../src/Services/Packages/Scoring/CalcPackageCost";
 import { afterEach, beforeEach, describe, it, expect, jest } from "@jest/globals";
 import { getFetchSpy } from "./TestUtils/mocks";
 
