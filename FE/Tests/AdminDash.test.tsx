@@ -3,6 +3,7 @@ import { customRender } from './TestUtils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import AdminDashboard from '../src/Pages/AdminDash/AdminDash';
 import { AllUsersFromAPI, getAllUsers } from '../src/Pages/AdminDash/Requests';
+import { Account } from '../src/Pages/Account/Account';
 
 const allUsersReturnMock: AllUsersFromAPI = {
     users: [
@@ -86,6 +87,15 @@ describe('Admin dash requests', () => {
             expect(user.username).toBe(allUsersReturnMock.users[0].username);
             expect(user.user_metadata.permission).toBe(allUsersReturnMock.users[0].user_metadata.permission);
             expect(user.user_metadata.role).toBe(allUsersReturnMock.users[0].user_metadata.role);
+        });
+    });
+});
+
+describe('Account page', () => {
+    it('Should render', async () => {
+        await act(async () => {
+            const { container } = customRender(<Account />);
+            expect(container).toBeTruthy();
         });
     });
 });

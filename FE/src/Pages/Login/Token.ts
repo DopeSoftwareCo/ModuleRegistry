@@ -7,10 +7,12 @@ import { PermissionEnum, Role } from '../../BETypes/PermissionsRoles';
  * @param token the token returned from the backend {@type string}
  */
 export const decodeAndSetToken = (token: string) => {
-    const decoded = jwtDecode(token.replace('Bearer ', ''));
+    const decoded: JwtPayload & { username: string } = jwtDecode(token.replace('Bearer ', ''));
     if (decoded.exp) {
         localStorage.setItem('tokenExpirationDate', (decoded.exp * 1000).toString());
         localStorage.setItem('token', token);
+        localStorage.setItem('userId', decoded.sub ? decoded.sub : '');
+        localStorage.setItem('username', decoded.username);
     }
 };
 

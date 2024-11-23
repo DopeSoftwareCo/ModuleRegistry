@@ -20,6 +20,7 @@ import {
 } from '../BETypes/PermissionsRoles';
 import { PermRoleError } from '../Pages/PermRoleError/PermRoleError';
 import AdminDashboard from '../Pages/AdminDash/AdminDash';
+import { Account } from '../Pages/Account/Account';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Home = React.lazy(() => import('../Pages/Home/Home'));
@@ -135,6 +136,15 @@ const routes = [
             </ProtectedRoute>
         ),
         label: 'admin',
+    },
+    {
+        path: GeneralConfig.ACCOUNT_URL,
+        element: (
+            <ProtectedRoute validPermissions={ALL_PERMS_ALLOWED} validRoles={ALL_ROLES}>
+                <Account />
+            </ProtectedRoute>
+        ),
+        label: 'account',
     },
     { path: GeneralConfig.AUTH_URL, element: <Login /> },
 ];
