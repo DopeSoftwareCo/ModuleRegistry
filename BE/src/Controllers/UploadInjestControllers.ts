@@ -17,6 +17,7 @@ import { ModuleEvaluator } from "../Providers/ModEval/ModuleEvaluator";
 import { DEFAULT_WEIGHTS } from "../Providers/ModEval/RepoComponents/Metrics_Scores/Weightspec.const";
 import { SuperRepoBuilder } from "../Providers/ModEval/RepoComponents/Builders/SuperRepoBuilder";
 import { buildMongoDBPackage } from "../Services/MongoDB";
+import fetch from "node-fetch";
 
 async function getNPMDownload(repoURL: string): Promise<string> {
     return repoURL;
