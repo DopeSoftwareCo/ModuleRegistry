@@ -25,7 +25,7 @@ import {
 } from "ResponseTypes";
 import { NextFunction, response } from "express";
 import PackageModel from "../Schemas/Package";
-import { FetchVersions, SearchVersion } from "../Providers/PackageVersioning/search-functions";
+import { FetchVersions, SearchVersion } from "../Services/Packages/Versioning/search-functions";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 
@@ -85,33 +85,7 @@ export const GetPackageViaIDController = asyncHandler(
             responseMessage = "Package does not exist.";
             res.status(404).send(responseMessage);
         }
-        /*
-        const foundPackage = await PackageModel.findById(requestedPackageID);
-
-        if (foundPackage == null) {
-            let responseMessage: GetPackageViaIDInvalidResponseMessages;
-            responseMessage = "Package does not exist.";
-            res.status(404).send(responseMessage);
-        }
-        else {
-            const responseBody: GetPackageViaIDResponseBody = {
-                metadata: {
-                    Name: foundPackage?.metadata.Name,
-                    Version: foundPackage?.metadata.Version,
-                    ID: foundPackage.id,
-                },
-                //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-                data: {
-                    Content: foundPackage.data.Content,
-                    URL: foundPackage.repoUrl,
-                    JSProgram: foundPackage.data.JSProgram,
-                },
-            };
-            res.status(200).json(responseBody);
-        } */
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^
-    }
-);
+    });
 
 // /package/{id}/cost
 export const GetPackageSizeCostViaIDController = asyncHandler(

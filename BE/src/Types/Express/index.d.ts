@@ -1,13 +1,13 @@
 import { Request } from "express";
 import mongoose from "mongoose";
-import { PermissionEnum, Role } from "../../Classes/Users/subdir.const";
+import { Permission, Role } from "../../Services/AdminUser/UserData";
 
 declare global {
     namespace Express {
         export interface Request {
             startTime?: Date;
             username?: string;
-            permission?: PermissionEnum;
+            permission?: Permission;
             role?: Role;
             requestedId?: string;
             userID?: string;
