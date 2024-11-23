@@ -9,7 +9,7 @@ import { GetPackagesRules } from "../Validation/PackagesValidationRules/GetPacka
 import { validateRequest } from "../Validation/validator";
 import { checkJwt, verifyToken } from "../Middleware/Auth";
 import { permRestrictionMiddleware } from "../Middleware/PermRestrictor";
-import { SearchPerms } from "../Classes/Users/subdir.const";
+import { SearchPerms } from "../Services/AdminUser/UserData";
 
 export const PackagesRouter = Router();
 

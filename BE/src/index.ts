@@ -12,11 +12,14 @@ import { PackagesRouter } from "./Routes/PackagesRoutes";
 import { ResetRouter } from "./Routes/ResetRoutes";
 import { AuthRouter } from "./Routes/AuthRoutes";
 import mongoose from "mongoose";
-import { RunEvalSubsystemDemo } from "./Providers/ModEval/DevTools/SubsystemDemo";
+import { RunEvalSubsystemDemo } from "./Providers/RepoEvaluator/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
 import { CatchAllRouter } from "./Routes/CatchAll";
+import { Auth0_Database } from "./Services/AdminUser/Auth0_DB";
+import { RegistrationInfo } from "./Services/AdminUser/types";
+import { Role } from "./Services/AdminUser/UserData";
 
 dotenv.config();
 
@@ -99,14 +102,42 @@ const runServer = async () => {
     });
 };
 
-async function RunDemo_ModEval() {
-    console.log("=== Here's an evaluation demo! ===");
-    await RunEvalSubsystemDemo(2);
-}
+/*async function RegisterDevs() {
+    const dorian: RegistrationInfo = {
+        username: "DBJ",
+        email: "Dorian-Bell@dsinc.com",
+        password: ...,
+        permission: 7,
+        role: Role.Admin,
+    };
+
+    const john: RegistrationInfo = {
+        username: "JLeidy",
+        email: "John-Leidy@dsinc.com",
+        password: ...,
+        permission: 7,
+        role: Role.Admin,
+    };
+
+    const JP = {
+        username: "JP",
+        email: "Jorge-PH@dsinc.com",
+        password: ...,
+        permission: 7,
+        role: Role.Admin,
+    };
+
+    await Auth0_Database.INSERT(dorian);
+    await Auth0_Database.INSERT(john);
+    await Auth0_Database.INSERT(JP);
+}*/
 
 async function Execute() {
     GenerateManagementToken();
     await runServer();
+    //await Auth0_Database.RESET();
+    //const allUsers = await Auth0_Database.SELECT_STAR_FROM_ESSENTIAL();
+    //console.log(allUsers);
 }
 
 Execute();
