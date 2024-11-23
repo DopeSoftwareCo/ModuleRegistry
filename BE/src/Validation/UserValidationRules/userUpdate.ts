@@ -1,12 +1,11 @@
 import { body } from "express-validator";
 
 export const updateUserValidationRules = [
-    body("permissions")
-        .custom((value) => {
-            if (!Array.isArray(value)) {
-                throw new Error("Permissions must be an array.");
-            }
-            return true;
-        })
-        .withMessage("permissions should be an array."),
+    body("id")
+        .exists()
+        .withMessage("id must exist to update user.")
+        .isString()
+        .withMessage("id must be a string.")
+        .isLength({ min: 6 })
+        .withMessage("invalid id"),
 ];

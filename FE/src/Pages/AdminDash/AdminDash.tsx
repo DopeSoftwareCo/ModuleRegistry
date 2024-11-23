@@ -48,9 +48,9 @@ const AdminDashboard = () => {
                     <StyledBaseButton onClick={() => setAction(AdminActions.DELETE)}>DELETE</StyledBaseButton>
                 )}
             </ButtonsContainer>
-            {action === AdminActions.ADD && <AddUser />}
-            {action === AdminActions.UPDATE && <UpdateUser />}
-            {action === AdminActions.DELETE && <DeleteUser />}
+            {action === AdminActions.ADD && <AddUser reloadTrigger={reloadTrigger} />}
+            {action === AdminActions.UPDATE && <UpdateUser reloadTrigger={reloadTrigger} />}
+            {action === AdminActions.DELETE && <DeleteUser reloadTrigger={reloadTrigger} />}
             {(action === AdminActions.ADD || action === AdminActions.UPDATE) && <PossiblePermsRoles />}
             <UsersDisplay users={users?.users} />
             <StatusDisplay
