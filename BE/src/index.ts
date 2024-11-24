@@ -103,45 +103,16 @@ const runServer = async () => {
     });
 };
 
-/*async function RegisterDevs() {
-    const dorian: RegistrationInfo = {
-        username: "DBJ",
-        email: "Dorian-Bell@dsinc.com",
-        password: ...,
-        permission: 7,
-        role: Role.Admin,
-    };
-
-    const john: RegistrationInfo = {
-        username: "JLeidy",
-        email: "John-Leidy@dsinc.com",
-        password: ...,
-        permission: 7,
-        role: Role.Admin,
-    };
-
-    const JP = {
-        username: "JP",
-        email: "Jorge-PH@dsinc.com",
-        password: ...,
-        permission: 7,
-        role: Role.Admin,
-    };
-
-    await Auth0_Database.INSERT(dorian);
-    await Auth0_Database.INSERT(john);
-    await Auth0_Database.INSERT(JP);
-}*/
-
-async function Execute() {
-    GenerateManagementToken();
-    await runServer();
-
-    const packages = ["axios", "mongoose"];
+function ManualTestMulticost(packages: string[]) {
     const packageManager = "npm"; // or 'yarn'
     const totalSize = calculateCumulativeSize(packages, packageManager);
 
     console.log(`Total size cost for packages [${packages.join(", ")}]: ${totalSize / 1024} KB`);
+}
+
+async function Execute() {
+    GenerateManagementToken();
+    await runServer();
 }
 
 Execute();
