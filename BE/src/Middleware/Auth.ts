@@ -41,7 +41,12 @@ const processToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split(" ")[1];
     if (token) {
         const decodedToken: jsonwebtoken.TokenType = jsonwebtoken.decode(token) as jsonwebtoken.TokenType;
-        if (decodedToken && decodedToken?.permission && decodedToken?.role && decodedToken?.username) {
+        if (
+            decodedToken &&
+            decodedToken?.metadata.permission &&
+            decodedToken?.metadata.role &&
+            decodedToken?.username
+        ) {
             req.username = decodedToken.username;
             req.permission = decodedToken.metadata.permission;
             req.role = decodedToken.metadata.role;
@@ -50,7 +55,6 @@ const processToken = (req: Request, res: Response, next: NextFunction) => {
             return next();
         }
     }
-
     return returnProperInvalidResponse(req, res);
 };
 
