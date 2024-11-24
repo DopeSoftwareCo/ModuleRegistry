@@ -1,15 +1,11 @@
 import { body } from "express-validator";
 
 export const userDeleteValidationRules = [
-    body("id").exists().withMessage("id must be a string.").isString().withMessage("id must be a string."),
-    body("username")
+    body("id")
         .exists()
-        .withMessage("username must be a string")
+        .withMessage("id must be a string.")
         .isString()
-        .withMessage("username must be a string"),
-    body("email")
-        .exists()
-        .withMessage("email must be a string")
-        .isString()
-        .withMessage("email must be a string"),
+        .withMessage("id must be a string.")
+        .isLength({ min: 6 })
+        .withMessage("Invalid user ID"),
 ];

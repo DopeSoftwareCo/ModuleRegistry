@@ -13,4 +13,6 @@ export const GeneralConfig = {
     RESET_URL: '/reset',
     BACKEND_URL: apiUrl,
     PACKAGES_URL: '/packages',
+    ADMIN_DASH_URL: '/admin',
+    ACCOUNT_URL: '/account',
 };
