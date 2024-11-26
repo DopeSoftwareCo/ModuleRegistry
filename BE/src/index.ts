@@ -21,6 +21,8 @@ import { Auth0_Database } from "./Services/AdminUser/Auth0_DB";
 import { RegistrationInfo } from "./Services/AdminUser/types";
 import { Role } from "./Services/AdminUser/UserData";
 import { calculateCumulativeSize } from "./Services/Packages/Multicost";
+import { FetchVersions, SearchVersion } from "./Services/Packages/Versioning/search-functions";
+import { GetPackagesData } from "RequestTypes";
 
 dotenv.config();
 
@@ -108,6 +110,16 @@ function ManualTestMulticost(packages: string[]) {
     const totalSize = calculateCumulativeSize(packages, packageManager);
 
     console.log(`Total size cost for packages [${packages.join(", ")}]: ${totalSize / 1024} KB`);
+}
+
+async function ManualTestVersionSort() {
+    const req: GetPackagesData[] = [
+        {
+            Name: "JP",
+            Version: "2.0.0-6.0.0",
+        },
+    ];
+    console.log(await FetchVersions(req));
 }
 
 async function Execute() {
