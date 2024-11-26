@@ -15,8 +15,6 @@ import { PackageMetaDataFromAPI } from '../../Models/Models';
 import { getPackagesRequest } from './Requests';
 import { StatusDisplay } from '../../Components/StatusDisplay/StatusDisplay';
 
-// Still need offset and pagination somewhere...
-
 const Packages = () => {
     const [packages, setPackages] = useState<undefined | PackageMetaDataFromAPI[]>(undefined);
     const [queryString, setQueryString] = useState(''); // Input for version query
