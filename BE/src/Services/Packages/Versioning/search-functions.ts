@@ -6,6 +6,20 @@ import { GetPackagesData } from "RequestTypes";
 import semver from "semver";
 import { PackageMetaData } from "../../../Types/Models";
 
+export function SortByVersion(unsorted: Package[], newestFirst: boolean = true): Package[] {
+    if (newestFirst) {
+        // Newest version first
+        return unsorted.sort((left, right) => {
+            return semver.lt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
+        });
+    } else {
+        // Oldest version first
+        return unsorted.sort((left, right) => {
+            return semver.gt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
+        });
+    }
+}
+
 export namespace SearchVersion {
     export async function ByExact(title: string, filter: string): Promise<GetPackagesResponseBody> {
         let result: PackageMetaData[] = [];
@@ -42,11 +56,19 @@ export namespace SearchVersion {
         }
     }
 
-    export async function RetrieveAll(title: string): Promise<GetPackagesResponseBody> {
+    export async function RetrieveAll(
+        title: string,
+        sortByVersion: boolean = true,
+        newestFirst: boolean = true
+    ): Promise<GetPackagesResponseBody> {
         const allVersions = await PackageModel.find(
             { "metadata.Name": title },
             { _id: 1, "metadata.Name": 1, "metadata.Version": 1 }
         ).lean();
+
+        if (sortByVersion) {
+            SortByVersion(allVersions, newestFirst);
+        }
 
         return allVersions.map<PackageMetaData>((doc) => ({
             ID: doc._id.toString(),
