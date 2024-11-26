@@ -3,6 +3,8 @@ import { StyledBaseButton, StyledBaseDiv, StyledBaseTextInput } from '../../Base
 
 export const PackagesInputs = styled(StyledBaseDiv)`
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 1rem;
 `;
 

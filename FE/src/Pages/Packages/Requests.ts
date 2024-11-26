@@ -6,7 +6,6 @@ import { PackageMetaDataFromAPI } from '../../Models/Models';
  * @description - Sends a request to the backend to fetch package data based on a specific version type and request.
  * - This function contains the frontend logic works with the BE /packages endpoint to display the appropriate packages.
  *
- * @param {string} versionType - The type of version request (e.g., 'Exact', 'Bounded Range', 'Carat', 'Tilde').            //OUTDATED.
  * @param {string} request - The version request string (e.g., '1.2.3', '1.2.3-2.1.0', '^1.2.3', '~1.2.0').
  * @param {string} packageName - The name of the package being requested or '*' for all packages.
  * @param errorSetter - A function to handle error messages.
@@ -19,15 +18,10 @@ export const getPackagesRequest = async (
     errorSetter: (error: string) => void
 ): Promise<{ data: PackageMetaDataFromAPI[]; nextOffset?: string } | undefined> => {
     try {
-        // The backend expects an array of objects
-        // If we get just name = * just show that to the backend. Will need to fix this below cuz that still sends a version but can do later.
-        // Need pagination and offset somewhere.
-        const bodyPayload = [
-            {
-                Name: packageName === '*' ? '*' : packageName, // '*' for all packages
-                Version: request.trim(), // Send the raw version string
-            },
-        ];
+        // If the package name is '*', provide an array with a single query whose name is '*'.
+        // Otherwise, send the name and the version request to the backend.
+        const bodyPayload =
+            packageName === '*' ? [{ Name: '*' }] : [{ Name: packageName, Version: request.trim() }];
 
         const response = await fetch(`${GeneralConfig.BACKEND_URL}packages`, {
             method: 'POST',
