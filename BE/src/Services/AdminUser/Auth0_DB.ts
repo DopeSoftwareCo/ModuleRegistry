@@ -60,6 +60,7 @@ export namespace Auth0_Database {
             return true;
         } catch (error) {
             LogDebug(`Failed to delete user with ID ${uid}:`);
+            console.log(error instanceof Error ? error.message : "error unknown");
             return false;
         }
     }
@@ -70,7 +71,7 @@ export namespace Auth0_Database {
         }
 
         try {
-            const updateData: UserUpdates = { user_metadata: {} };
+            const updateData: UserUpdates = {};
             let changeCount = 0;
             // Only include properties that have been provided
             if (request.username) {
@@ -82,11 +83,19 @@ export namespace Auth0_Database {
                 ++changeCount;
             }
             if (request.permission) {
-                updateData.user_metadata.permission = request.permission;
+                if (!updateData.user_metadata) {
+                    updateData.user_metadata = { permission: request.permission };
+                } else {
+                    updateData.user_metadata.permission = request.permission;
+                }
                 ++changeCount;
             }
             if (request.role) {
-                updateData.user_metadata.role = request.role;
+                if (!updateData.user_metadata) {
+                    updateData.user_metadata = { role: request.role };
+                } else {
+                    updateData.user_metadata.role = request.role;
+                }
                 ++changeCount;
             }
 

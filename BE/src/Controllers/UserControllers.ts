@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AddUserRequest, DeleteUserRequest, UpdateUserRequest } from "RequestTypes";
 import { Auth0_Database } from "../Services/AdminUser/Auth0_DB";
 import { RegistrationInfo } from "../Services/AdminUser/types";
@@ -71,3 +71,11 @@ export const deleteUserController = asyncHandler(
         }
     }
 );
+
+export const getAllUsersController = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const users = await Auth0_Database.SELECT_STAR_FROM_ESSENTIAL();
+    if (!users) {
+        res.status(500).send("Error getting all users.");
+    }
+    res.status(200).send({ users });
+});

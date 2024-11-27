@@ -1,4 +1,5 @@
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { PermissionEnum, Role } from '../../BETypes/PermissionsRoles';
 
 /**
  * @author John Leidy
@@ -6,10 +7,12 @@ import { jwtDecode } from 'jwt-decode';
  * @param token the token returned from the backend {@type string}
  */
 export const decodeAndSetToken = (token: string) => {
-    const decoded = jwtDecode(token.replace('Bearer ', ''));
+    const decoded: JwtPayload & { username: string } = jwtDecode(token.replace('Bearer ', ''));
     if (decoded.exp) {
         localStorage.setItem('tokenExpirationDate', (decoded.exp * 1000).toString());
         localStorage.setItem('token', token);
+        localStorage.setItem('userId', decoded.sub ? decoded.sub : '');
+        localStorage.setItem('username', decoded.username);
     }
 };
 
@@ -25,4 +28,12 @@ export const isTokenExpired = () => {
 export const handleTokenExpiration = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExpirationDate');
+};
+
+export const getTokenPermsAndRoles = (token: string): { perm: PermissionEnum; role: Role } | undefined => {
+    const decoded: JwtPayload & { metadata: { permission?: PermissionEnum; role?: Role } } = jwtDecode(token);
+    if (!decoded.metadata.permission || !decoded.metadata.role) {
+        return undefined;
+    }
+    return { perm: decoded.metadata.permission, role: decoded.metadata.role };
 };

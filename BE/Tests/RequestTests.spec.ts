@@ -51,7 +51,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     UploadPackage: {
         controller: UploadInjestController,
-        responseCode: 200,
+        responseCode: 424,
         requestType: "POST",
     },
     GetPackageRating: {
@@ -76,7 +76,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     TestController: {
         controller: TestController,
-        responseCode: 200,
+        responseCode: 500,
         requestType: "GET",
     },
     Track: {

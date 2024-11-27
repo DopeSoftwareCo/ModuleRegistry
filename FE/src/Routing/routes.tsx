@@ -10,6 +10,17 @@ import Cost from '../Pages/Cost/Cost';
 import Upload from '../Pages/Upload/Upload';
 import Reset from '../Pages/Reset/Reset';
 import Packages from '../Pages/Packages/Packages';
+import {
+    ALL_PERMS_ALLOWED,
+    ALL_ROLES,
+    DownloadPerms,
+    Role,
+    SearchPerms,
+    UploadPerms,
+} from '../BETypes/PermissionsRoles';
+import { PermRoleError } from '../Pages/PermRoleError/PermRoleError';
+import AdminDashboard from '../Pages/AdminDash/AdminDash';
+import { Account } from '../Pages/Account/Account';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Home = React.lazy(() => import('../Pages/Home/Home'));
@@ -20,8 +31,17 @@ const routes = [
     {
         path: '/',
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={ALL_PERMS_ALLOWED} validRoles={ALL_ROLES}>
                 <Navigate to="/home" replace />{' '}
+            </ProtectedRoute>
+        ),
+        label: 'none',
+    },
+    {
+        path: '/permroleerror',
+        element: (
+            <ProtectedRoute validPermissions={ALL_PERMS_ALLOWED} validRoles={ALL_ROLES}>
+                <PermRoleError />
             </ProtectedRoute>
         ),
         label: 'none',
@@ -29,7 +49,7 @@ const routes = [
     {
         path: GeneralConfig.HOME_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={SearchPerms} validRoles={ALL_ROLES}>
                 {' '}
                 <Home />{' '}
             </ProtectedRoute>
@@ -39,7 +59,7 @@ const routes = [
     {
         path: GeneralConfig.REGEX_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={SearchPerms} validRoles={ALL_ROLES}>
                 <Regex />
             </ProtectedRoute>
         ),
@@ -48,7 +68,7 @@ const routes = [
     {
         path: GeneralConfig.DOWNLOAD_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={DownloadPerms} validRoles={ALL_ROLES}>
                 <Download />
             </ProtectedRoute>
         ),
@@ -57,7 +77,7 @@ const routes = [
     {
         path: GeneralConfig.UPDATE_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={UploadPerms} validRoles={ALL_ROLES}>
                 <Update />
             </ProtectedRoute>
         ),
@@ -66,7 +86,7 @@ const routes = [
     {
         path: GeneralConfig.RATING_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={SearchPerms} validRoles={ALL_ROLES}>
                 <Rating />
             </ProtectedRoute>
         ),
@@ -75,7 +95,7 @@ const routes = [
     {
         path: GeneralConfig.COST_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={SearchPerms} validRoles={ALL_ROLES}>
                 <Cost />
             </ProtectedRoute>
         ),
@@ -84,7 +104,7 @@ const routes = [
     {
         path: GeneralConfig.UPLOAD_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={UploadPerms} validRoles={ALL_ROLES}>
                 <Upload />
             </ProtectedRoute>
         ),
@@ -93,7 +113,7 @@ const routes = [
     {
         path: GeneralConfig.RESET_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={ALL_PERMS_ALLOWED} validRoles={[Role.Admin]}>
                 <Reset />
             </ProtectedRoute>
         ),
@@ -102,11 +122,29 @@ const routes = [
     {
         path: GeneralConfig.PACKAGES_URL,
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute validPermissions={SearchPerms} validRoles={ALL_ROLES}>
                 <Packages />
             </ProtectedRoute>
         ),
         label: 'packages',
+    },
+    {
+        path: GeneralConfig.ADMIN_DASH_URL,
+        element: (
+            <ProtectedRoute validPermissions={ALL_PERMS_ALLOWED} validRoles={[Role.Admin]}>
+                <AdminDashboard />
+            </ProtectedRoute>
+        ),
+        label: 'admin',
+    },
+    {
+        path: GeneralConfig.ACCOUNT_URL,
+        element: (
+            <ProtectedRoute validPermissions={ALL_PERMS_ALLOWED} validRoles={ALL_ROLES}>
+                <Account />
+            </ProtectedRoute>
+        ),
+        label: 'account',
     },
     { path: GeneralConfig.AUTH_URL, element: <Login /> },
 ];
