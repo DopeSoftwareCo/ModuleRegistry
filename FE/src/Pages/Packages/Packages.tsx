@@ -33,7 +33,7 @@ const Packages = () => {
     return (
         <StyledBasePageContiner>
             <PackagesInputs>
-                <PackagesInput placeholder="Package name" onChange={(e) => setPackageName(e.target.value)}/>
+                <PackagesInput placeholder="Package Name" onChange={(e) => setPackageName(e.target.value)}/>
                 <PackagesInput placeholder="Version Query" onChange={(e) => setQueryString(e.target.value)}/>
                 <PackagesRequestButton data-testid="packages-request-button" onClick={makeRequest}>
                     Find Packages
