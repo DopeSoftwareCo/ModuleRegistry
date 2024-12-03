@@ -136,7 +136,7 @@ export async function RetrievePartitionedVersions(
     requests: GetPackagesData[],
     partitionSize: number = PAGE_SIZE
 ): Promise<VersionPartitons> {
-    const versions = await FetchVersions(requests);
+    const versions: GetPackagesResponseBody = await FetchVersions(requests);
     return DSinc.Array.PartitionArray<PackageMetaData>(versions, partitionSize);
 }
 

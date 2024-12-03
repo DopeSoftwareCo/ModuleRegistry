@@ -23,12 +23,48 @@ import {
     GetSizeCostForPackageResponse,
     GetSizeCostForPackageResponseBody,
 } from "ResponseTypes";
-import { NextFunction, response } from "express";
+import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
-import { FetchVersions, SearchVersion } from "../Services/Packages/Versioning/search-functions";
+import { RetrievePartitionedVersions } from "../Services/Packages/Versioning/search-functions";
 import { getDownloadPackageInformation, GetPackageBase64 } from "../Services/Packages/Download";
+import { VersionPartitons } from "../Services/Packages/Versioning/types";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
+
+export type PageOffset = string | number | undefined;
+export type PageData = {
+    body: GetPackagesResponseBody;
+    nextPageIndex: number;
+};
+
+export function SelectResultPage(pages: VersionPartitons, offset: PageOffset): PageData {
+    try {
+        let index;
+        const last = pages.length - 1;
+
+        if (!offset) {
+            index = 0;
+        } else if (typeof offset === "number") {
+            index = offset;
+        } else {
+            index = parseInt(offset);
+        }
+
+        const adjacent = index + 1;
+        const next = adjacent < last ? adjacent : 0;
+        const page = pages[index];
+
+        return {
+            body: page,
+            nextPageIndex: next,
+        };
+    } catch {
+        return {
+            body: pages[0],
+            nextPageIndex: 0,
+        };
+    }
+}
 
 // /packages
 export const GetPackagesFromRegistryController = asyncHandler(
@@ -38,23 +74,32 @@ export const GetPackagesFromRegistryController = asyncHandler(
         // all responses/requests should be paginated
         // An example below,
         const requestedPackages = req.body;
-        /*
-        const responseBody: GetPackagesResponseBody = [
-            //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
-            //{ Version: "Some version", Name: "Some name", ID: example_PackageID },
-        ];*/
+        const offset: PageOffset =
+            req.query.offset === "undefined" || req.query.offset === "string" || req.query.offset === "number"
+                ? req.query.offset
+                : undefined;
 
-        const responseBody: GetPackagesResponseBody = await FetchVersions(requestedPackages);
+        if (requestedPackages[0].Name === "*") {
+            //FetchEntireDir();
+        }
 
+        const pages: VersionPartitons = await RetrievePartitionedVersions(requestedPackages);
+        const selectedPage = SelectResultPage(pages, offset);
+        const responseBody: GetPackagesResponseBody = selectedPage.body;
         let responseMessage: GetPackagesInvalidResponseMessages;
+
         if (responseBody.length < 100) {
-            res.status(200).json(responseBody);
-        } else {
-            responseMessage = "Too many packages returned.";
-            res.status(413).send(responseMessage);
+            if (responseBody.length < 100) {
+                res.setHeader("offset", selectedPage.nextPageIndex);
+                res.status(200).json(responseBody);
+            } else {
+                responseMessage = "Too many packages returned.";
+                res.status(413).send(responseMessage);
+            }
         }
     }
 );
+
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {

@@ -1,5 +1,5 @@
+import { GetPackagesResponseBody } from "ResponseTypes";
 import { Package } from "../../../Schemas/Package";
-import { PackageMetaData } from "../../../Types/Models";
 
 export enum UpdateType {
     Major = 0,
@@ -27,5 +27,5 @@ export interface CompletePackage extends Package {
 }
 
 export type VersionRangeEndpoints = { oldest: string; newest: string };
-export type VersionPartitons = Array<PackageMetaData[]>;
+export type VersionPartitons = GetPackagesResponseBody[];
 export const PAGE_SIZE = 5;
