@@ -44,11 +44,14 @@ async function getGitHubDownload(repoURL: string): Promise<string> {
             }
             const repoData = await response.json();
             const defaultBranch = repoData.default_branch || "main"; // Fallback to 'main' if no default branch found
+            const defaultBranch = repoData.default_branch || "main"; // Fallback to 'main' if no default branch found
             return `https://github.com/${owner}/${repo}/archive/refs/heads/${defaultBranch}.zip`;
+        } catch (error) {
         } catch (error) {
             throw new Error(`Failed to fetch default branch: ${error}`);
         }
     }
+    throw new Error("Invalid GitHub URL");
     throw new Error("Invalid GitHub URL");
     //*/
 }
@@ -71,6 +74,7 @@ export const UploadInjestController = asyncHandler(
     async (req: UploadInjestPackageRequest, res: UploadInjestNewPackageResponse, next: NextFunction) => {
         console.log("Entering Upload Process");
         const body = req.body;
+        const body = req.body;
         let repositoryUrl = body?.URL;
         let content = body?.Content;
         let binaryContent; // Meant to store the non-string encoded version
@@ -78,7 +82,10 @@ export const UploadInjestController = asyncHandler(
 
         const disqualifiedStandaloneSizeInGB = 750; // Approximately 1GB
         const disqualifiedTotalSizeInGB = 1000; // Approximately 1GB
+        const disqualifiedStandaloneSizeInGB = 750; // Approximately 1GB
+        const disqualifiedTotalSizeInGB = 1000; // Approximately 1GB
         const tempIDCeiling = 1000;
+        const tempID = Math.floor(Math.random() * tempIDCeiling + 1).toString();
         const tempID = Math.floor(Math.random() * tempIDCeiling + 1).toString();
         const tempFileZip = path.join(tempDirectory, tempID + ".zip");
         const tempUnzippedFileDirectory = path.join(tempDirectory, tempID);
@@ -90,21 +97,29 @@ export const UploadInjestController = asyncHandler(
             binaryContent = Buffer.from(base64Data, "base64");
             repositoryUrl = repositoryUrl as unknown as string; // Type casts it from "string | undefined" to "string"
         } else if (content == undefined && repositoryUrl != undefined) {
+        } else if (content == undefined && repositoryUrl != undefined) {
             // Confirmed that the repoURL exists, download content
             let repoDownloadURL: string;
+            try {
             try {
                 if (repositoryUrl.includes("github")) {
                     repoDownloadURL = await getGitHubDownload(repositoryUrl);
                 } else {
+                } else {
                     console.error("Not a valid URL");
+                    responseMessage =
+                        "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
                     responseMessage =
                         "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
                     res.status(424).send(responseMessage);
                     return;
                 }
             } catch (error) {
+            } catch (error) {
                 console.log(error);
                 console.log("Error in getting the download link");
+                responseMessage =
+                    "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
                 responseMessage =
                     "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
                 res.status(424).send(responseMessage);
@@ -118,10 +133,15 @@ export const UploadInjestController = asyncHandler(
             console.log("Repo Download URL: " + repoDownloadURL);
             const response = await axios.get(repoDownloadURL, { responseType: "arraybuffer" });
             binaryContent = Buffer.from(response.data, "binary");
+            const response = await axios.get(repoDownloadURL, { responseType: "arraybuffer" });
+            binaryContent = Buffer.from(response.data, "binary");
             isExternal = true;
+        } else {
         } else {
             await cleanUp(tempID);
             console.error("Should only get here if both content and URL are undefined or they are defined");
+            responseMessage =
+                "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
             responseMessage =
                 "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
             res.status(424).send(responseMessage);
@@ -131,8 +151,11 @@ export const UploadInjestController = asyncHandler(
         try {
             fs.promises.writeFile(tempFileZip, binaryContent);
         } catch (error) {
+        } catch (error) {
             await cleanUp(tempID);
             console.error(`Error: ${error}`);
+            responseMessage =
+                "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
             responseMessage =
                 "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
             res.status(424).send(responseMessage);
@@ -142,7 +165,14 @@ export const UploadInjestController = asyncHandler(
         await unzipper.Open.buffer(binaryContent).then((directory) =>
             directory.extract({ path: tempUnzippedFileDirectory })
         );
+
+        await unzipper.Open.buffer(binaryContent).then((directory) =>
+            directory.extract({ path: tempUnzippedFileDirectory })
+        );
         let nestedFolder = ""; // If everything is in package root, will search for everything there
+        const tempDirectoryListing = await fs.promises.readdir(tempUnzippedFileDirectory, {
+            withFileTypes: true,
+        });
         const tempDirectoryListing = await fs.promises.readdir(tempUnzippedFileDirectory, {
             withFileTypes: true,
         });
@@ -151,7 +181,13 @@ export const UploadInjestController = asyncHandler(
             nestedFolder = `/${tempDirectoryListing[0].name}`;
         }
         let packageJsonFile;
+        let packageJsonFile;
         try {
+            packageJsonFile = await fs.promises.readFile(
+                path.join(tempUnzippedFileDirectory + nestedFolder, "package.json"),
+                "utf-8"
+            );
+        } catch (error) {
             packageJsonFile = await fs.promises.readFile(
                 path.join(tempUnzippedFileDirectory + nestedFolder, "package.json"),
                 "utf-8"
@@ -161,9 +197,12 @@ export const UploadInjestController = asyncHandler(
             await cleanUp(tempID);
             responseMessage =
                 "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+            responseMessage =
+                "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
             res.status(424).send(responseMessage);
             return;
         }
+
 
         const packageJson = JSON.parse(packageJsonFile.toString());
         console.log("JSON Parsed");
@@ -187,6 +226,8 @@ export const UploadInjestController = asyncHandler(
                 await cleanUp(tempID);
                 responseMessage =
                     "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+                responseMessage =
+                    "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
                 res.status(424).send(responseMessage);
                 return;
             }
@@ -194,6 +235,7 @@ export const UploadInjestController = asyncHandler(
         console.log("Repo URL: " + repositoryUrl);
 
         // Checks if exists
+        const queriedPackage = await PackageModel.exists({ repoUrl: repositoryUrl });
         const queriedPackage = await PackageModel.exists({ repoUrl: repositoryUrl });
         let standaloneCost: number;
         let totalCost: number;
@@ -203,6 +245,8 @@ export const UploadInjestController = asyncHandler(
             responseMessage = "Package exists already.";
             res.status(409).send(responseMessage);
             return;
+        } else {
+            // Checks if Disqualified
         } else {
             // Checks if Disqualified
             standaloneCost = await CalculateStandaloneCost(repositoryUrl); // No deps
@@ -240,6 +284,23 @@ export const UploadInjestController = asyncHandler(
                 standaloneCost,
                 totalCost
             )) + zipFileExtension;
+        const packageID =
+            (await buildMongoDBPackage(
+                {
+                    ...jsonRow,
+                    GoodPinningPracticeScore: 0,
+                    GoodPinningPracticeLatency: 0,
+                    PullRequestScore: 0,
+                    PullRequestLatency: 0,
+                },
+                repositoryUrl,
+                body.Name ? body.Name : packageJson.name ? packageJson.name : "Unknown", // Should never be unknown, but since this is a safety, it is here.
+                packageJson.version ? packageJson.version : "1.0.0",
+                packageJson.license ? packageJson.license : "Unknown",
+                isExternal,
+                standaloneCost,
+                totalCost
+            )) + zipFileExtension;
         if (body.debloat == true) {
             // Zip up, and store
             const isSuccessful = await debloatUnzippedContent(tempUnzippedFileDirectory);
@@ -250,8 +311,15 @@ export const UploadInjestController = asyncHandler(
                     path.join(packagesDirectory, packageID)
                 );
             } else {
+                zipContents(
+                    tempUnzippedFileDirectory,
+                    zipFileExtension,
+                    path.join(packagesDirectory, packageID)
+                );
+            } else {
                 await fs.promises.rename(tempFileZip, path.join(packagesDirectory, packageID));
             }
+        } else {
         } else {
             // Just move the existing zip to Data and rename to the ID.
             await fs.promises.rename(tempFileZip, path.join(packagesDirectory, packageID));
@@ -265,6 +333,7 @@ export const UploadInjestController = asyncHandler(
             },
             //all fields are optional in data
             data: {},
+        };
         };
         await cleanupProcess;
         res.status(200).json(returnBody);
