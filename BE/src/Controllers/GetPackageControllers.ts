@@ -26,6 +26,7 @@ import {
 import { NextFunction, response } from "express";
 import PackageModel from "../Schemas/Package";
 import { FetchVersions, SearchVersion } from "../Services/Packages/Versioning/search-functions";
+import { getDownloadPackageInformation, GetPackageBase64 } from "../Services/Packages/Download";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 
@@ -47,9 +48,11 @@ export const GetPackagesFromRegistryController = asyncHandler(
 
         let responseMessage: GetPackagesInvalidResponseMessages;
         if (responseBody.length < 100) {
+            console.log(`/packages: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else {
             responseMessage = "Too many packages returned.";
+            console.log(`/packages: ${responseMessage}`);
             res.status(413).send(responseMessage);
         }
     }
@@ -57,35 +60,31 @@ export const GetPackagesFromRegistryController = asyncHandler(
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
-        console.log("original", req.originalUrl);
-        console.log("packageid requested", req.params.id);
         const packID = req.params.id;
         //your code here using the id
 
-        const role = req.body.role ? req.body.role : 0;
-        const perm = req.body.perm ? req.body.perm : 0;
-        //const response = User.DownloadPackage.Execute(role, perm, packID);
+        const result = GetPackageBase64(packID);
 
-        //return back something that signifies it was not found if that is the case;
-        const DNE = false;
+        const downloadMetadata = await getDownloadPackageInformation(packID);
         //should return back here something typed as follows
         const responseBody: GetPackageViaIDResponseBody = {
-            metadata: {
-                Name: "package name",
-                Version: "version",
-                ID: "id",
-            },
+            metadata: downloadMetadata,
             //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-            data: {},
+            data: {
+                Content: result,
+            },
         };
         let responseMessage: GetPackageViaIDInvalidResponseMessages;
-        if (!DNE) {
+        if (result) {
+            console.log(`/packages/{id}: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else {
             responseMessage = "Package does not exist.";
+            console.log(`/packages/{id}: ${responseMessage}`);
             res.status(404).send(responseMessage);
         }
-    });
+    }
+);
 
 // /package/{id}/cost
 export const GetPackageSizeCostViaIDController = asyncHandler(
@@ -99,6 +98,7 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
         // If the package does not exist, return not found code.
         if (!pack) {
             const responseMessage: GetSizeCostForPackageInvalidResponses = "Package does not exist.";
+            console.log(`/package/{id}/cost: ${responseMessage}`);
             return res.status(404).send(responseMessage);
         }
 
@@ -124,10 +124,12 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
         };
 
         if (!choked) {
+            console.log(`/package/{id}/cost: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else if (choked) {
             const responseMessage: GetSizeCostForPackageInvalidResponses =
                 "The package rating system choked on at least one of the metrics.";
+            console.log(`/package/{id}/cost: ${responseMessage}`);
             res.status(500).send(responseMessage);
         }
     }
@@ -139,13 +141,13 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         const requestedPackageID = req.requestedId;
 
         const pack = await PackageModel.findById(requestedPackageID);
-        console.log(pack);
 
         let DNE = false;
 
         if (!pack) {
             DNE = true;
             const responseMessage: GetRatingsForPackageInvalidResponses = "Package does not exist.";
+            console.log("/package/{id}/rate", responseMessage);
             res.status(404).send(responseMessage);
             return;
         }
@@ -173,10 +175,12 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         const Choked = false;
 
         if (!Choked) {
+            console.log(`/package/{id}/rate: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else if (Choked) {
             const responseMessage: GetRatingsForPackageInvalidResponses =
                 "The package rating system choked on at least one of the metrics.";
+            console.log(`/package/{id}/rate: ${responseMessage}`);
             res.status(500).send(responseMessage);
         }
     }
@@ -197,6 +201,7 @@ export const GetPackagesViaRegexController = asyncHandler(
             if (packages.length === 0) {
                 const responseMessage: GetPackageViaRegexInvalidResponseMessages =
                     "No package found under this regex.";
+                console.log(`/package/byRegex: ${responseMessage}`);
                 return res.status(404).send(responseMessage);
             }
 
@@ -211,7 +216,10 @@ export const GetPackagesViaRegexController = asyncHandler(
             res.status(200).json(responseBody);
         } catch (err) {
             console.error("Error in GetPackagesViaRegexController:", err);
-            next(err);
+            const responseMessage: GetPackageViaRegexInvalidResponseMessages =
+                "No package found under this regex.";
+            console.log(`/package/byRegex: ${responseMessage}`);
+            return res.status(404).send(responseMessage);
         }
     }
 );
