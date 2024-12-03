@@ -23,6 +23,7 @@ import { Role } from "./Services/AdminUser/UserData";
 import { calculateCumulativeSize } from "./Services/Packages/Multicost";
 import { FetchVersions, SearchVersion } from "./Services/Packages/Versioning/search-functions";
 import { GetPackagesData } from "RequestTypes";
+import { ensureUploadFoldersExist } from "./Utils/EnsureDirectories";
 
 dotenv.config();
 
@@ -124,6 +125,7 @@ async function ManualTestVersionSort() {
 
 async function Execute() {
     GenerateManagementToken();
+    ensureUploadFoldersExist();
     await runServer();
 }
 
