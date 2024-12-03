@@ -21,6 +21,7 @@ export const UpdatePackageViaIDController = asyncHandler(
 
         if (pack?.metadata.Name == undefined) {
             responseMessage = "Package does not exist.";
+            console.log(`/pacakge/{id} : ${responseMessage}`);
             res.status(404).send(responseMessage);
             return;
         }
@@ -47,6 +48,7 @@ export const UpdatePackageViaIDController = asyncHandler(
         } else {
             responseMessage =
                 "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+            console.log(`/pacakge/{id} : ${responseMessage}`);
             res.status(424).send(responseMessage);
             return;
         }
@@ -54,6 +56,7 @@ export const UpdatePackageViaIDController = asyncHandler(
         if (newData.metadata.Name == "no name" || newData.metadata.Version == "no version") {
             responseMessage =
                 "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+            console.log(`/pacakge/{id} : ${responseMessage}`);
             res.status(424).send(responseMessage);
             return;
         }
@@ -74,6 +77,7 @@ export const UpdatePackageViaIDController = asyncHandler(
         await fs.promises.rename(tempFile, path.join(packagesDirectory, packageIDToUpdate!) + ".zip");
 
         responseMessage = "Version is updated.";
+        console.log(`/pacakge/{id} : ${responseMessage}`);
         res.status(200).send(responseMessage);
     }
 );
