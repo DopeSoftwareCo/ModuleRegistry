@@ -26,6 +26,7 @@ import {
 import { NextFunction, response } from "express";
 import PackageModel from "../Schemas/Package";
 import { FetchVersions, SearchVersion } from "../Services/Packages/Versioning/search-functions";
+import { getDownloadPackageInformation, GetPackageBase64 } from "../Services/Packages/Download";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 
@@ -57,35 +58,29 @@ export const GetPackagesFromRegistryController = asyncHandler(
 // /package/{id}
 export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
-        console.log("original", req.originalUrl);
-        console.log("packageid requested", req.params.id);
         const packID = req.params.id;
         //your code here using the id
 
-        const role = req.body.role ? req.body.role : 0;
-        const perm = req.body.perm ? req.body.perm : 0;
-        //const response = User.DownloadPackage.Execute(role, perm, packID);
+        const result = GetPackageBase64(packID);
 
-        //return back something that signifies it was not found if that is the case;
-        const DNE = false;
+        const downloadMetadata = await getDownloadPackageInformation(packID);
         //should return back here something typed as follows
         const responseBody: GetPackageViaIDResponseBody = {
-            metadata: {
-                Name: "package name",
-                Version: "version",
-                ID: "id",
-            },
+            metadata: downloadMetadata,
             //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
-            data: {},
+            data: {
+                Content: result,
+            },
         };
         let responseMessage: GetPackageViaIDInvalidResponseMessages;
-        if (!DNE) {
+        if (result) {
             res.status(200).json(responseBody);
         } else {
             responseMessage = "Package does not exist.";
             res.status(404).send(responseMessage);
         }
-    });
+    }
+);
 
 // /package/{id}/cost
 export const GetPackageSizeCostViaIDController = asyncHandler(
