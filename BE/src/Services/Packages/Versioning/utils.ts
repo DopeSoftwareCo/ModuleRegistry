@@ -1,4 +1,6 @@
+import { Package } from "../../../Schemas/Package";
 import { UpdateType, VersionRangeEndpoints } from "./types";
+import * as semver from "semver";
 
 export const versionFormat = "(\\d+)\\.(\\d+)\\.(\\d+)"; // Matches three groups of numbers.
 export const versionFormatRegex = `^[~^]?${versionFormat}(-${versionFormat})?$`; // Allows optional prefix and range.
@@ -64,4 +66,18 @@ export function TokenizeVersion(
 ): { major: string; minor: string; patch: string } | undefined {
     const tokens = version.split(".");
     return tokens.length === 3 ? { major: tokens[0], minor: tokens[1], patch: tokens[2] } : undefined;
+}
+
+export function SortByVersion(unsorted: Package[], newestFirst: boolean = true): Package[] {
+    if (newestFirst) {
+        // Newest version first
+        return unsorted.sort((left, right) => {
+            return semver.lt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
+        });
+    } else {
+        // Oldest version first
+        return unsorted.sort((left, right) => {
+            return semver.gt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
+        });
+    }
 }
