@@ -116,6 +116,7 @@ export const UploadInjestController = asyncHandler(
                     console.error("Not a valid URL");
                     responseMessage =
                         "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+                    console.log(`/pacakge : ${responseMessage}`);
                     res.status(424).send(responseMessage);
                     return;
                 }
@@ -124,6 +125,11 @@ export const UploadInjestController = asyncHandler(
                 console.log("Error in getting the download link");
                 responseMessage =
                     "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+                console.log(
+                    `/pacakge : ${responseMessage} -> ${
+                        error instanceof Error ? error.message : "Unkown error in upload"
+                    }`
+                );
                 res.status(424).send(responseMessage);
                 return;
             }
@@ -137,6 +143,7 @@ export const UploadInjestController = asyncHandler(
             console.error("Should only get here if both content and URL are undefined or they are defined");
             responseMessage =
                 "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+            console.log(`/pacakge : ${responseMessage}`);
             res.status(424).send(responseMessage);
             return;
         }
@@ -148,6 +155,11 @@ export const UploadInjestController = asyncHandler(
             console.error(`Error: ${error}`);
             responseMessage =
                 "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+            console.log(
+                `/pacakge : ${responseMessage} -> ${
+                    error instanceof Error ? error.message : "Unkown error in upload"
+                }`
+            );
             res.status(424).send(responseMessage);
             return;
         }
@@ -174,6 +186,11 @@ export const UploadInjestController = asyncHandler(
             await cleanUp(tempID);
             responseMessage =
                 "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+            console.log(
+                `/pacakge : ${responseMessage} -> ${
+                    error instanceof Error ? error.message : "Unkown error in upload"
+                }`
+            );
             res.status(424).send(responseMessage);
             return;
         }
@@ -192,6 +209,11 @@ export const UploadInjestController = asyncHandler(
                 await cleanUp(tempID);
                 responseMessage =
                     "There is missing field(s) in the PackageData or it is formed improperly (e.g. Content and URL are both set)";
+                console.log(
+                    `/pacakge : ${responseMessage} -> ${
+                        error instanceof Error ? error.message : "Unkown error in upload"
+                    }`
+                );
                 res.status(424).send(responseMessage);
                 return;
             }
@@ -206,6 +228,7 @@ export const UploadInjestController = asyncHandler(
             console.log(queriedPackage);
             await cleanUp(tempID);
             responseMessage = "Package exists already.";
+            console.log(`/pacakge : ${responseMessage}`);
             res.status(409).send(responseMessage);
             return;
         } else {
@@ -215,6 +238,7 @@ export const UploadInjestController = asyncHandler(
             if (totalCost > disqualifiedTotalSizeInGB || standaloneCost > disqualifiedStandaloneSizeInGB) {
                 await cleanUp(tempID);
                 responseMessage = "Package is not uploaded due to disqualified rating.";
+                console.log(`/pacakge : ${responseMessage}`);
                 res.status(424).send(responseMessage);
             }
         }
@@ -272,6 +296,7 @@ export const UploadInjestController = asyncHandler(
             data: {},
         };
         await cleanupProcess;
+        console.log(`/pacakge : ${JSON.stringify(returnBody)}`);
         res.status(200).json(returnBody);
         return;
     }

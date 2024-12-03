@@ -16,6 +16,7 @@ export const ResetControllerDANGER = asyncHandler(
         if (!req.permission || !req.role) {
             //everyone will have some perm and some role
             responseMessage = "You do not have permission to reset the registry.";
+            console.log(`Reset Controller: ${responseMessage}`);
             res.status(401).send(responseMessage);
             return;
         }
@@ -31,11 +32,13 @@ export const ResetControllerDANGER = asyncHandler(
         //this type is a union of our return strings
         if (!result) {
             responseMessage = "You do not have permission to reset the registry.";
+            console.log(`Reset Controller: ${responseMessage}`);
             res.status(401).send(responseMessage);
             return;
         } else {
             // This will send a success message EVEN IF bad input is given.
             responseMessage = "Registry is reset.";
+            console.log(`Reset Controller: ${responseMessage}`);
             res.status(200).send(responseMessage);
             return;
         }
@@ -55,9 +58,11 @@ export const DeletePackageByIDController = asyncHandler(
         let responseMessage: DeletePackageViaIDResponseMessages;
         if (!DNE) {
             responseMessage = "Package is deleted.";
+            console.log(`DeleteByID Controller: ${responseMessage}`);
             res.status(200).send(responseMessage);
         } else {
             responseMessage = "Package does not exist.";
+            console.log(`DeleteByID Controller: ${responseMessage}`);
             res.status(404).send(responseMessage);
         }
     }

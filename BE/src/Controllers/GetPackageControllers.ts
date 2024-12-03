@@ -48,9 +48,11 @@ export const GetPackagesFromRegistryController = asyncHandler(
 
         let responseMessage: GetPackagesInvalidResponseMessages;
         if (responseBody.length < 100) {
+            console.log(`/packages: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else {
             responseMessage = "Too many packages returned.";
+            console.log(`/packages: ${responseMessage}`);
             res.status(413).send(responseMessage);
         }
     }
@@ -74,9 +76,11 @@ export const GetPackageViaIDController = asyncHandler(
         };
         let responseMessage: GetPackageViaIDInvalidResponseMessages;
         if (result) {
+            console.log(`/packages/{id}: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else {
             responseMessage = "Package does not exist.";
+            console.log(`/packages/{id}: ${responseMessage}`);
             res.status(404).send(responseMessage);
         }
     }
@@ -94,6 +98,7 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
         // If the package does not exist, return not found code.
         if (!pack) {
             const responseMessage: GetSizeCostForPackageInvalidResponses = "Package does not exist.";
+            console.log(`/package/{id}/cost: ${responseMessage}`);
             return res.status(404).send(responseMessage);
         }
 
@@ -119,10 +124,12 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
         };
 
         if (!choked) {
+            console.log(`/package/{id}/cost: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else if (choked) {
             const responseMessage: GetSizeCostForPackageInvalidResponses =
                 "The package rating system choked on at least one of the metrics.";
+            console.log(`/package/{id}/cost: ${responseMessage}`);
             res.status(500).send(responseMessage);
         }
     }
@@ -134,13 +141,13 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         const requestedPackageID = req.requestedId;
 
         const pack = await PackageModel.findById(requestedPackageID);
-        console.log(pack);
 
         let DNE = false;
 
         if (!pack) {
             DNE = true;
             const responseMessage: GetRatingsForPackageInvalidResponses = "Package does not exist.";
+            console.log("/package/{id}/rate", responseMessage);
             res.status(404).send(responseMessage);
             return;
         }
@@ -168,10 +175,12 @@ export const GetPackageRatingsViaIDController = asyncHandler(
         const Choked = false;
 
         if (!Choked) {
+            console.log(`/package/{id}/rate: ${JSON.stringify(responseBody)}`);
             res.status(200).json(responseBody);
         } else if (Choked) {
             const responseMessage: GetRatingsForPackageInvalidResponses =
                 "The package rating system choked on at least one of the metrics.";
+            console.log(`/package/{id}/rate: ${responseMessage}`);
             res.status(500).send(responseMessage);
         }
     }
@@ -192,6 +201,7 @@ export const GetPackagesViaRegexController = asyncHandler(
             if (packages.length === 0) {
                 const responseMessage: GetPackageViaRegexInvalidResponseMessages =
                     "No package found under this regex.";
+                console.log(`/package/byRegex: ${responseMessage}`);
                 return res.status(404).send(responseMessage);
             }
 
@@ -206,7 +216,10 @@ export const GetPackagesViaRegexController = asyncHandler(
             res.status(200).json(responseBody);
         } catch (err) {
             console.error("Error in GetPackagesViaRegexController:", err);
-            next(err);
+            const responseMessage: GetPackageViaRegexInvalidResponseMessages =
+                "No package found under this regex.";
+            console.log(`/package/byRegex: ${responseMessage}`);
+            return res.status(404).send(responseMessage);
         }
     }
 );
