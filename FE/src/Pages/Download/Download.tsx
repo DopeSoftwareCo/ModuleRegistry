@@ -35,8 +35,16 @@ const Download = () => {
     return (
         <StyledBasePageContiner>
             <DownloadInputs>
-                <StyledBaseTextInput placeholder="ID" onChange={(e) => setId(e.target.value)} />
-                <StyledBaseButton data-testid="download-search-button" onClick={makeRequest}>
+                <StyledBaseTextInput
+                    aria-label="ID Input for package download"
+                    placeholder="ID"
+                    onChange={(e) => setId(e.target.value)}
+                />
+                <StyledBaseButton
+                    aria-label="Get package fitting id"
+                    data-testid="download-search-button"
+                    onClick={makeRequest}
+                >
                     Get Package
                 </StyledBaseButton>
             </DownloadInputs>
