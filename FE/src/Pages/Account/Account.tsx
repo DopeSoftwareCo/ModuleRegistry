@@ -24,7 +24,9 @@ export const Account = () => {
     };
     return (
         <StyledBasePageContiner>
-            <StyledBaseButton onClick={deleteSelf}>Delete Self</StyledBaseButton>
+            <StyledBaseButton aria-label="Delete self" onClick={deleteSelf}>
+                Delete Self
+            </StyledBaseButton>
             <StatusDisplay
                 err={err}
                 setErr={setErr}

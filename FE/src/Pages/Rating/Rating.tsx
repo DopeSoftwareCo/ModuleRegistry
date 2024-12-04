@@ -29,8 +29,13 @@ const Rating = () => {
                     onChange={(e) => {
                         setSearchID(e.target.value);
                     }}
+                    aria-label="ID Input"
                 />
-                <RatingRequestButton data-testid="ratings-request-button" onClick={makeRequest}>
+                <RatingRequestButton
+                    aria-label="Submit rating button"
+                    data-testid="ratings-request-button"
+                    onClick={makeRequest}
+                >
                     Get Rating
                 </RatingRequestButton>
             </Inputs>
@@ -44,8 +49,10 @@ const Rating = () => {
                 {ratings &&
                     Object.entries(ratings).map(([ratingName, ratingValue], idx) => (
                         <StyledBaseKeyValueRow key={idx}>
-                            <RatingName data-testid={ratingName}>{ratingName}</RatingName>
-                            <RatingValue>{ratingValue}</RatingValue>
+                            <RatingName aria-label={ratingName} data-testid={ratingName}>
+                                {ratingName}
+                            </RatingName>
+                            <RatingValue aria-label={ratingValue}>{ratingValue}</RatingValue>
                         </StyledBaseKeyValueRow>
                     ))}
             </StyledBaseKeyValuePairsContainer>
