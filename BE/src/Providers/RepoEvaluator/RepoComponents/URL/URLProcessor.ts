@@ -1,6 +1,6 @@
-import { AsyncLoops } from "../../../../Utils/DSinc_Modules/DSinc_LoopsMaps";
+import * as AsyncLoops from "../../../../Utils/DSinc/AsyncLoop";
 import { RetrieveGitHubURL } from "../../DevTools/URLValidation";
-import { RepoURL, I_URLProcessor } from "./URLProcessor.interface";
+import { RepoURL } from "./URLProcessor.interface";
 import { NullableArray } from "../../Essential_Interfaces/NullableArray";
 
 export class URLProcessor {

@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { ensureUploadFoldersExist, packagesDirectory } from "../../Utils/EnsureDirectories";
+import { ensureUploadFoldersExist, packagesDirectory } from "../../Utils/FileDir";
 import PackageModel from "../../Schemas/Package";
 
 export const GetPackageBase64 = (id: string) => {

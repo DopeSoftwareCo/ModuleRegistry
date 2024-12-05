@@ -12,18 +12,14 @@ import { PackagesRouter } from "./Routes/PackagesRoutes";
 import { ResetRouter } from "./Routes/ResetRoutes";
 import { AuthRouter } from "./Routes/AuthRoutes";
 import mongoose from "mongoose";
-import { RunEvalSubsystemDemo } from "./Providers/RepoEvaluator/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
 import { CatchAllRouter } from "./Routes/CatchAll";
-import { Auth0_Database } from "./Services/AdminUser/Auth0_DB";
-import { RegistrationInfo } from "./Services/AdminUser/types";
-import { Role } from "./Services/AdminUser/UserData";
-import { calculateCumulativeSize } from "./Services/Packages/Multicost";
+import { calculateCumulativeSize } from "./Services/Packages/Cost/Multicost";
 import { FetchVersions, SearchVersion } from "./Services/Packages/Versioning/search-functions";
 import { GetPackagesData } from "RequestTypes";
-import { ensureUploadFoldersExist } from "./Utils/EnsureDirectories";
+import { ensureUploadFoldersExist } from "./Utils/FileDir";
 
 dotenv.config();
 
@@ -127,6 +123,7 @@ async function Execute() {
     GenerateManagementToken();
     ensureUploadFoldersExist();
     await runServer();
+    ManualTestVersionSort();
 }
 
 Execute();

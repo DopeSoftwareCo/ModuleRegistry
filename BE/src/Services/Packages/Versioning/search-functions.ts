@@ -5,7 +5,7 @@ import { GetRangeEndpoints, IncrementVersion, SortByVersion, VersionType_RegExp 
 import { GetPackagesData } from "RequestTypes";
 import semver from "semver";
 import { PackageMetaData } from "../../../Types/Models";
-import { DSinc } from "../../../Utils/dsinc";
+import { PartitionArray } from "../../../Utils/DSinc/Array";
 
 export namespace SearchVersion {
     export async function ProcureAllVersionsWithPartition(
@@ -29,7 +29,7 @@ export namespace SearchVersion {
             Version: doc.metadata.Version,
         }));
 
-        return DSinc.Array.PartitionArray<PackageMetaData>(sortedPackages, pageSize);
+        return PartitionArray<PackageMetaData>(sortedPackages, pageSize);
     }
 
     export async function RetrieveAll(
@@ -137,7 +137,7 @@ export async function RetrievePartitionedVersions(
     partitionSize: number = PAGE_SIZE
 ): Promise<VersionPartitons> {
     const versions: GetPackagesResponseBody = await FetchVersions(requests);
-    return DSinc.Array.PartitionArray<PackageMetaData>(versions, partitionSize);
+    return PartitionArray<PackageMetaData>(versions, partitionSize);
 }
 
 export async function FetchVersions(requests: GetPackagesData[]): Promise<GetPackagesResponseBody> {
