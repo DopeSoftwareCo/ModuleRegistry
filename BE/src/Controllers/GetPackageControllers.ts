@@ -62,11 +62,14 @@ export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         const packID = req.params.id;
         //your code here using the id
-
+        console.log(`/package/id    requested ID: ${packID}`);
+        console.log("Getting package base64 in getpackage via id");
         const result = GetPackageBase64(packID);
-
+        console.log("obtained base 64");
         const downloadMetadata = await getDownloadPackageInformation(packID);
+        console.log("Getting metadata");
         //should return back here something typed as follows
+        console.log("Building response");
         const responseBody: GetPackageViaIDResponseBody = {
             metadata: downloadMetadata,
             //data is a partial... so we can leave it empty as such if necessary, shouldnt be as we return a 404 if the package does not exist.
@@ -91,9 +94,15 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
     async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
         const dependencyCostRequested = req.query.dependency;
-
+        console.log(`/package/id/cost   id requested: ${requestedPackageID}`);
         // Request the package by ID.
         const pack = await PackageModel.findById(requestedPackageID);
+
+        if (!requestedPackageID) {
+            const responseMessage: GetSizeCostForPackageInvalidResponses =
+                "There is missing field(s) in the PackageID";
+            return res.status(400).send(responseMessage);
+        }
 
         // If the package does not exist, return not found code.
         if (!pack) {
@@ -119,8 +128,10 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
         // If dependencies are requested, add the standaloneCost field via spread. We would have total cost be the cost with deps.
         // otherwise, only show the totalCost field (which is really the standalone cost of the package without dependencies).
         const responseBody: GetSizeCostForPackageResponseBody = {
-            ...(dependencyCostRequested ? { standaloneCost } : {}),
-            totalCost: totalCost,
+            [requestedPackageID]: {
+                ...(dependencyCostRequested ? { standaloneCost } : {}),
+                totalCost: totalCost,
+            },
         };
 
         if (!choked) {
@@ -139,6 +150,8 @@ export const GetPackageSizeCostViaIDController = asyncHandler(
 export const GetPackageRatingsViaIDController = asyncHandler(
     async (req: GetPackageRatingsRequest, res: GetRatingsForPackageResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
+
+        console.log(`/package/id/rate   id requested: ${requestedPackageID}`);
 
         const pack = await PackageModel.findById(requestedPackageID);
 
