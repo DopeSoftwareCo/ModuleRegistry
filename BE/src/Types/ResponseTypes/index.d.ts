@@ -47,7 +47,7 @@ declare module "ResponseTypes" {
 
     export type UpdatePackageViaIDResponseMessages =
         | "Version is updated."
-        | "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
+        | "There is missing field(s) in the PackageID or it is formed improperly, or is invalid."
         | "Package does not exist.";
 
     export interface UpdatePackageViaIDResponse extends Response {}

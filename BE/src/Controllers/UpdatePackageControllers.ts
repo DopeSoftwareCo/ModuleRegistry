@@ -12,11 +12,12 @@ export const UpdatePackageViaIDController = asyncHandler(
     async (req: UpdatePackageContentRequest, res: UpdatePackageViaIDResponse, next: NextFunction) => {
         //the id requested
         const packageIDToUpdate = req.requestedId;
+        console.log(`/package/id  requested id: ${packageIDToUpdate}`);
         //the body with the data to use for update, find the type associated to see what fields the user can give us for updating
         const newData = req.body;
 
         const pack = await PackageModel.findById(packageIDToUpdate);
-
+        console.log(`found pack? ${pack ? true : false}`);
         let responseMessage: UpdatePackageViaIDResponseMessages;
 
         if (pack?.metadata.Name == undefined) {
@@ -43,11 +44,15 @@ export const UpdatePackageViaIDController = asyncHandler(
         }
 
         if (content != undefined) {
-            const base64Data = content.split(",")[1]; // Remove the file header
-            binaryContent = Buffer.from(base64Data, "base64");
+            if (content.includes(",")) {
+                const base64Data = content.split(",")[1]; // Remove the file header
+                binaryContent = Buffer.from(base64Data, "base64");
+            } else {
+                binaryContent = Buffer.from(content, "base64");
+            }
         } else {
             responseMessage =
-                "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+                "There is missing field(s) in the PackageID or it is formed improperly, or is invalid.";
             console.log(`/pacakge/{id} : ${responseMessage}`);
             res.status(424).send(responseMessage);
             return;
@@ -55,7 +60,7 @@ export const UpdatePackageViaIDController = asyncHandler(
 
         if (newData.metadata.Name == "no name" || newData.metadata.Version == "no version") {
             responseMessage =
-                "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid.";
+                "There is missing field(s) in the PackageID or it is formed improperly, or is invalid.";
             console.log(`/pacakge/{id} : ${responseMessage}`);
             res.status(424).send(responseMessage);
             return;
