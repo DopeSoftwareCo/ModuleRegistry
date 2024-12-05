@@ -25,16 +25,8 @@ export const UploadPackageRules = [
             return true;
         })
         .withMessage(InvalidUploadPackageMessage),
-    body("JSProgram")
-        .exists()
-        .withMessage(InvalidUploadPackageMessage)
-        .isString()
-        .withMessage(InvalidUploadPackageMessage),
-    body("debloat")
-        .exists()
-        .withMessage(InvalidUploadPackageMessage)
-        .isBoolean()
-        .withMessage(InvalidUploadPackageMessage),
+    body("JSProgram").optional().isString().withMessage(InvalidUploadPackageMessage),
+    body("debloat").optional().isBoolean().withMessage(InvalidUploadPackageMessage),
     body("Name")
         .exists()
         .withMessage(InvalidUploadPackageMessage)
