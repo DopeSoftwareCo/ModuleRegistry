@@ -258,23 +258,22 @@ export const UploadInjestController = asyncHandler(
             await evaluator.Eval(repoForEval);
             jsonRow = repoForEval.NDJSONRow;
         }
-        const mongoPackageID =
-            (await buildMongoDBPackage(
-                {
-                    ...jsonRow,
-                    GoodPinningPracticeScore: 0,
-                    GoodPinningPracticeLatency: 0,
-                    PullRequestScore: 0,
-                    PullRequestLatency: 0,
-                },
-                repositoryUrl,
-                body.Name ? body.Name : packageJson.name ? packageJson.name : "Unknown", // Should never be unknown, but since this is a safety, it is here.
-                packageJson.version ? packageJson.version : "1.0.0",
-                packageJson.license ? packageJson.license : "Unknown",
-                isExternal,
-                standaloneCost,
-                totalCost
-            )) + zipFileExtension;
+        const mongoPackageID = await buildMongoDBPackage(
+            {
+                ...jsonRow,
+                GoodPinningPracticeScore: 0,
+                GoodPinningPracticeLatency: 0,
+                PullRequestScore: 0,
+                PullRequestLatency: 0,
+            },
+            repositoryUrl,
+            body.Name ? body.Name : packageJson.name ? packageJson.name : "Unknown", // Should never be unknown, but since this is a safety, it is here.
+            packageJson.version ? packageJson.version : "1.0.0",
+            packageJson.license ? packageJson.license : "Unknown",
+            isExternal,
+            standaloneCost,
+            totalCost
+        );
         const packageID = `${mongoPackageID}${zipFileExtension}`;
         if (body.debloat == true) {
             // Zip up, and store
