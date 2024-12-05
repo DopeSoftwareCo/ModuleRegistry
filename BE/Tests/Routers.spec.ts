@@ -13,7 +13,7 @@ const AppRouters = {
     Packages: { router: PackagesRouter, path: "", type: "post" },
     Reset: { router: ResetRouter, path: "", type: "delete" },
     GetPackageWithID: { router: PackageRouter, path: "/someid", type: "get" },
-    UpdatePackage: { router: PackageRouter, path: "/someid", type: "put" },
+    UpdatePackage: { router: PackageRouter, path: "/someid", type: "post" },
     UploadPackage: { router: PackageRouter, path: "", type: "post" },
     GetPackageRating: { router: PackageRouter, path: "/someid/rate", type: "get" },
     Authenitcation: { router: AuthRouter, path: "", type: "put" },

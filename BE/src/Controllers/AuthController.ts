@@ -18,12 +18,15 @@ export const Authcontroller = asyncHandler(
         const unsupported = false;
         let responseMessage: AuthenticateInvalidResponses;
         if (!invalidUserPass && !unsupported) {
+            console.log(`Auth controller: Returning token`);
             res.status(200).send(token);
         } else if (invalidUserPass) {
             responseMessage = "The user or password is invalid.";
+            console.log(`Auth controller: ${responseMessage}`);
             res.status(401).send(responseMessage);
         } else if (unsupported) {
             responseMessage = "The system does not support authentication.";
+            console.log(`Auth controller: ${responseMessage}`);
             res.status(501).send(responseMessage);
         }
     }

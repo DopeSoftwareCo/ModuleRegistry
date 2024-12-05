@@ -3,8 +3,8 @@ dotenv.config();
 
 import mongoose from "mongoose";
 import { Auth0_Database } from "./AdminUser/Auth0_DB";
-const MAIN_DB = "SWEdb";
-const MAIN_COLLECTION = "Packages";
+import * as fs from "fs/promises";
+import * as path from "path";
 
 export async function ClearAllPackages() {
     try {
@@ -27,6 +27,30 @@ export async function ClearAllPackages() {
         throw error;
     }
 }
+
+export const removePackages = async () => {
+    try {
+        const directory = "../../Data/Packages";
+        const files = await fs.readdir(directory);
+
+        for (const file of files) {
+            const filePath = path.join(directory, file);
+            const stat = await fs.lstat(filePath);
+            if (stat.isFile()) {
+                await fs.unlink(filePath);
+                console.log(`Deleted file: ${filePath}`);
+            }
+            if (stat.isDirectory()) {
+                await fs.rmdir(filePath, { recursive: true });
+                console.log(`Deleted folder: ${filePath}`);
+            }
+        }
+
+        console.log(`All files in ${directory} have been removed.`);
+    } catch (error) {
+        console.error(`Error while removing files: ${error}`);
+    }
+};
 
 export async function ResetSystem(): Promise<void> {
     if (!process.env.MONGODB_URL) {

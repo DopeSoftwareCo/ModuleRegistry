@@ -13,12 +13,12 @@ import {
     CostValue,
     CheckboxContainer,
 } from './CostStyle';
-import { PackageCost } from '../../../../BE/src/Types/Models';
 import { costRequest } from './Requests';
 import { StatusDisplay } from '../../Components/StatusDisplay/StatusDisplay';
+import { PackageCostFromAPI } from '../../Models/Models';
 
 const Cost = () => {
-    const [costData, setCostData] = useState<PackageCost | undefined>(undefined);
+    const [costData, setCostData] = useState<PackageCostFromAPI | undefined>(undefined);
     const [searchID, setSearchID] = useState('');
     const [includeDependencies, setIncludeDependencies] = useState(false);
     const [err, setErr] = useState<string | undefined>(undefined);
@@ -40,6 +40,7 @@ const Cost = () => {
                         onChange={(e) => {
                             setSearchID(e.target.value);
                         }}
+                        aria-label="ID Input"
                     />
                     <CheckboxContainer>
                         <label>
@@ -47,12 +48,17 @@ const Cost = () => {
                                 type="checkbox"
                                 checked={includeDependencies}
                                 onChange={(e) => setIncludeDependencies(e.target.checked)}
+                                aria-label="Include dependencies checkbox"
                             />
                             Include Dependencies
                         </label>
                     </CheckboxContainer>
                 </IDContainer>
-                <CostRequestButton data-testid="cost-request-button" onClick={makeRequest}>
+                <CostRequestButton
+                    aria-label="Submit cost request"
+                    data-testid="cost-request-button"
+                    onClick={makeRequest}
+                >
                     Get Cost
                 </CostRequestButton>
             </Inputs>
@@ -63,18 +69,30 @@ const Cost = () => {
                 setSuccess={setSuccessMessage}
             />
             <StyledBaseKeyValuePairsContainer>
-                {costData && (
-                    <StyledBaseKeyValueRow>
-                        <CostLabel data-testid="standalone-cost">Standalone Cost</CostLabel>
-                        <CostValue>{costData.standaloneCost} MB</CostValue>
-                    </StyledBaseKeyValueRow>
-                )}
-                {costData && includeDependencies && (
-                    <StyledBaseKeyValueRow>
-                        <CostLabel data-testid="total-cost">Total Cost</CostLabel>
-                        <CostValue>{costData.totalCost} MB</CostValue>
-                    </StyledBaseKeyValueRow>
-                )}
+                {costData &&
+                    Object.entries(costData).map(([id, costEntry]) => (
+                        <StyledBaseKeyValuePairsContainer>
+                            <CostLabel>{id}</CostLabel>
+                            <StyledBaseKeyValueRow key={id}>
+                                <CostLabel aria-label="Standalone cost label" data-testid="standalone-cost">
+                                    Standalone
+                                </CostLabel>
+                                <CostValue aria-label="Standalone cost value">
+                                    {costEntry.standaloneCost} MB
+                                </CostValue>
+                            </StyledBaseKeyValueRow>
+                            {includeDependencies && (
+                                <StyledBaseKeyValueRow key={id}>
+                                    <CostLabel aria-label="total cost label" data-testid="total-cost">
+                                        Total
+                                    </CostLabel>
+                                    <CostValue aria-label="total cost value">
+                                        {costEntry.totalCost} MB
+                                    </CostValue>
+                                </StyledBaseKeyValueRow>
+                            )}
+                        </StyledBaseKeyValuePairsContainer>
+                    ))}
             </StyledBaseKeyValuePairsContainer>
         </StyledBasePageContiner>
     );

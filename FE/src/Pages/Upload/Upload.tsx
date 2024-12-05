@@ -79,27 +79,48 @@ const Upload = () => {
     return (
         <StyledBasePageContiner>
             <FileUploadContainer>
-                <HiddenFileInput ref={fileInputRef} onChange={handleFileChange} />
+                <HiddenFileInput
+                    aria-label="Hidden file upload ref"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                />
                 <InputRow>
-                    <StyledBaseTextInput onChange={(e) => setUrl(e.target.value)} placeholder="URL" />
-                    <StyledBaseTextInput onChange={(e) => setName(e.target.value)} placeholder="NAME" />
+                    <StyledBaseTextInput
+                        aria-label="URL Input"
+                        onChange={(e) => setUrl(e.target.value)}
+                        placeholder="URL"
+                    />
+                    <StyledBaseTextInput
+                        aria-label="NAME input"
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="NAME"
+                    />
                 </InputRow>
                 <InputRow>
                     <StyledBaseTextInput
                         onChange={(e) => setJsProgram(e.target.value)}
                         placeholder="JSProgram"
+                        aria-label="JSProgram input"
                     />
                 </InputRow>
                 <InputRow>
-                    <FileInputButton onClick={handleChooseClick}>File</FileInputButton>
+                    <FileInputButton aria-label="Add file button" onClick={handleChooseClick}>
+                        File
+                    </FileInputButton>
                     <DebloatCheckTextRow>
-                        <DebloatCheck onChange={handleCheckChange} />
+                        <DebloatCheck aria-label="Debloat checkbox" onChange={handleCheckChange} />
                         debloat
                     </DebloatCheckTextRow>
                 </InputRow>
-                <FileNameDisplay>{fileName}</FileNameDisplay>
-                <StyledBaseButton onClick={handleClearClick}>Clear</StyledBaseButton>
-                <StyledBaseButton data-testid="upload-button" onClick={handleUploadClick}>
+                <FileNameDisplay aria-label="Filename label">{fileName}</FileNameDisplay>
+                <StyledBaseButton aria-label="clear form button" onClick={handleClearClick}>
+                    Clear
+                </StyledBaseButton>
+                <StyledBaseButton
+                    aria-label="submit upload request"
+                    data-testid="upload-button"
+                    onClick={handleUploadClick}
+                >
                     Upload
                 </StyledBaseButton>
                 <StatusDisplay

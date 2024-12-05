@@ -41,7 +41,7 @@ export const UploadInformationContainer = styled(StyledBaseDiv)`
 
 export const PackageName = styled(StyledBaseDiv)`
     ${({ theme }) => css`
-        color: ${theme.colors.accentOrange};
+        color: ${theme.colors.text};
     `}
 `;
 

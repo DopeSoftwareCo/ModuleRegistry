@@ -57,26 +57,37 @@ export const UpdateUser = ({ reloadTrigger }: UpdateUserProps) => {
         <AdminDashboardInputsContainer data-testid="admin-dash-update-user-container">
             <AddUpdateDeleteHeader>Updating User</AddUpdateDeleteHeader>
             <AdminDashboardInputs>
-                <AdminDashboardInputLabel>id</AdminDashboardInputLabel>
-                <StyledBaseTextInput onChange={(e) => setId(e.target.value)} />
+                <AdminDashboardInputLabel id="id">id</AdminDashboardInputLabel>
+                <StyledBaseTextInput aria-labelledby="id" onChange={(e) => setId(e.target.value)} />
             </AdminDashboardInputs>
             <AdminDashboardInputs>
-                <AdminDashboardInputLabel>username</AdminDashboardInputLabel>
-                <StyledBaseTextInput onChange={(e) => setUsername(e.target.value)} />
+                <AdminDashboardInputLabel id="username">username</AdminDashboardInputLabel>
+                <StyledBaseTextInput
+                    aria-labelledby="username"
+                    onChange={(e) => setUsername(e.target.value)}
+                />
             </AdminDashboardInputs>
             <AdminDashboardInputs>
-                <AdminDashboardInputLabel>password</AdminDashboardInputLabel>
-                <StyledBaseTextInput onChange={(e) => setPassword(e.target.value)} />
+                <AdminDashboardInputLabel id="password">password</AdminDashboardInputLabel>
+                <StyledBaseTextInput
+                    aria-labelledby="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                />
             </AdminDashboardInputs>
             <AdminDashboardInputs>
-                <AdminDashboardInputLabel>permission</AdminDashboardInputLabel>
-                <StyledBaseTextInput onChange={(e) => permissionRoleOnChange(e, setPermission)} />
+                <AdminDashboardInputLabel id="permission">permission</AdminDashboardInputLabel>
+                <StyledBaseTextInput
+                    aria-labelledby="permission"
+                    onChange={(e) => permissionRoleOnChange(e, setPermission)}
+                />
             </AdminDashboardInputs>
             <AdminDashboardInputs>
-                <AdminDashboardInputLabel>role</AdminDashboardInputLabel>
-                <StyledBaseTextInput onChange={(e) => permissionRoleOnChange(e, setRole)} />
+                <AdminDashboardInputLabel id="role">role</AdminDashboardInputLabel>
+                <StyledBaseTextInput aria-label="role" onChange={(e) => permissionRoleOnChange(e, setRole)} />
             </AdminDashboardInputs>
-            <StyledBaseButton onClick={makeUpdateUserRequest}>Update User</StyledBaseButton>
+            <StyledBaseButton aria-label="update user" onClick={makeUpdateUserRequest}>
+                Update User
+            </StyledBaseButton>
             <StatusDisplay
                 err={err}
                 setErr={setErr}
