@@ -120,6 +120,18 @@ export namespace SearchVersion {
     }
 }
 
+const searchByName = async (name: string): Promise<GetPackagesResponseBody> => {
+    const result = await PackageModel.find({ "metadata.Name": name });
+    if (result) {
+        return result.map((foundP) => ({
+            Version: foundP.metadata.Version,
+            Name: foundP.metadata.Name,
+            ID: foundP._id.toString(),
+        }));
+    }
+    return [];
+};
+
 export async function FetchVersions(requests: GetPackagesData[]): Promise<GetPackagesResponseBody> {
     let versions: GetPackagesResponseBody = [];
 
@@ -138,21 +150,29 @@ export async function ProcessSingleVersionRequest(
 ): Promise<GetPackagesResponseBody> {
     let result: GetPackagesResponseBody = [];
     const title = request.Name;
-    const filter = request.Version.trim();
-    const proceed = VersionType_RegExp.test(filter);
+    //ternary bc i don't want it to be undefined or possibly a string
+    const hasVersion = request.Version ? true : false;
 
-    if (proceed) {
-        const symbol = filter[0];
+    if (hasVersion) {
+        const filter = request.Version.trim();
+        const proceed = VersionType_RegExp.test(filter);
+        if (proceed && hasVersion) {
+            const symbol = filter[0];
 
-        if (symbol === "~") {
-            result = await SearchVersion.ByTilde(title, filter);
-        } else if (symbol === "^") {
-            result = await SearchVersion.ByCaret(title, filter);
-        } else if (filter.includes("-")) {
-            result = await SearchVersion.BySimpleRange(title, filter);
-        } else {
-            result = await SearchVersion.ByExact(title, filter);
+            if (symbol === "~") {
+                result = await SearchVersion.ByTilde(title, filter);
+            } else if (symbol === "^") {
+                result = await SearchVersion.ByCaret(title, filter);
+            } else if (filter.includes("-")) {
+                result = await SearchVersion.BySimpleRange(title, filter);
+            } else {
+                result = await SearchVersion.ByExact(title, filter);
+            }
         }
+    }
+
+    if (!hasVersion) {
+        result = await searchByName(title);
     }
 
     return result;
