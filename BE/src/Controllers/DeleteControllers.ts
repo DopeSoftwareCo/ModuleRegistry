@@ -13,7 +13,7 @@ import { ResetSystem } from "../Services/SystemReset";
 export const ResetControllerDANGER = asyncHandler(
     async (req: SystemResetRequest, res: ResetRegistryResponse, next: NextFunction) => {
         let responseMessage: ResetRegistryResponseMessages;
-        if (!req.permission || !req.role) {
+        if ((!req.permission || !req.role) && process.env.NODE_ENV !== "dev") {
             //everyone will have some perm and some role
             responseMessage = "You do not have permission to reset the registry.";
             console.log(`Reset Controller: ${responseMessage}`);
