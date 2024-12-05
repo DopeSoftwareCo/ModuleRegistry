@@ -31,8 +31,16 @@ const Regex = () => {
     return (
         <StyledBasePageContiner>
             <RegexInputs>
-                <RegexInput placeholder="REGEX" onChange={(e) => setRegexSearchString(e.target.value)} />
-                <RegexSearchButton data-testid="regex-search-button" onClick={makeRequest}>
+                <RegexInput
+                    aria-label="Regex string input"
+                    placeholder="REGEX"
+                    onChange={(e) => setRegexSearchString(e.target.value)}
+                />
+                <RegexSearchButton
+                    aria-label="Find packages fitting regex"
+                    data-testid="regex-search-button"
+                    onClick={makeRequest}
+                >
                     Find Packages
                 </RegexSearchButton>
             </RegexInputs>

@@ -40,6 +40,7 @@ const Cost = () => {
                         onChange={(e) => {
                             setSearchID(e.target.value);
                         }}
+                        aria-label="ID Input"
                     />
                     <CheckboxContainer>
                         <label>
@@ -47,12 +48,17 @@ const Cost = () => {
                                 type="checkbox"
                                 checked={includeDependencies}
                                 onChange={(e) => setIncludeDependencies(e.target.checked)}
+                                aria-label="Include dependencies checkbox"
                             />
                             Include Dependencies
                         </label>
                     </CheckboxContainer>
                 </IDContainer>
-                <CostRequestButton data-testid="cost-request-button" onClick={makeRequest}>
+                <CostRequestButton
+                    aria-label="Submit cost request"
+                    data-testid="cost-request-button"
+                    onClick={makeRequest}
+                >
                     Get Cost
                 </CostRequestButton>
             </Inputs>
@@ -65,14 +71,18 @@ const Cost = () => {
             <StyledBaseKeyValuePairsContainer>
                 {costData && (
                     <StyledBaseKeyValueRow>
-                        <CostLabel data-testid="standalone-cost">Standalone Cost</CostLabel>
-                        <CostValue>{costData.standaloneCost} MB</CostValue>
+                        <CostLabel aria-label="Standalone cost label" data-testid="standalone-cost">
+                            Standalone Cost
+                        </CostLabel>
+                        <CostValue aria-label="Standalone cost value">{costData.standaloneCost} MB</CostValue>
                     </StyledBaseKeyValueRow>
                 )}
                 {costData && includeDependencies && (
                     <StyledBaseKeyValueRow>
-                        <CostLabel data-testid="total-cost">Total Cost</CostLabel>
-                        <CostValue>{costData.totalCost} MB</CostValue>
+                        <CostLabel aria-label="Totalcost label" data-testid="total-cost">
+                            Total Cost
+                        </CostLabel>
+                        <CostValue aria-label="Total cost value">{costData.totalCost} MB</CostValue>
                     </StyledBaseKeyValueRow>
                 )}
             </StyledBaseKeyValuePairsContainer>

@@ -80,6 +80,7 @@ export const MobileMenu = () => {
                                 setClicked(!clicked);
                                 navigateTo(option.path);
                             }}
+                            aria-label={option.label}
                         >
                             {option.label}
                         </CardItem>
@@ -91,6 +92,7 @@ export const MobileMenu = () => {
                             setClicked(!clicked);
                             scrollTo(item.id);
                         }}
+                        aria-label={item.label}
                     >
                         {item.label}
                     </CardItem>
