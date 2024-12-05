@@ -25,18 +25,11 @@ export const hasVersionObject = (): CustomValidator => {
                 if (typeof item.Name !== "string" || item.Name === null) {
                     throw new Error(InvalidGetPackagesMessage);
                 }
-                if (item.Name !== "*" && typeof item.Version !== "string") {
-                    throw new Error(InvalidGetPackagesMessage);
-                }
             }
         } else {
             for (const item of value) {
                 // Check if each item is an object
                 if (typeof item !== "object" || item === null) {
-                    throw new Error(InvalidGetPackagesMessage);
-                }
-
-                if (typeof item.Version !== "string" || item.Version === null) {
                     throw new Error(InvalidGetPackagesMessage);
                 }
 
