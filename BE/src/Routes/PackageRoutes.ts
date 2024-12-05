@@ -38,7 +38,7 @@ PackageRouter.get(
     GetPackageViaIDController
 );
 // /package/{id}
-PackageRouter.put(
+PackageRouter.post(
     "/:id",
     verifyToken,
     UpdatePackageRules,
