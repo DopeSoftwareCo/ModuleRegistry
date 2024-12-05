@@ -1,5 +1,6 @@
 import { GeneralConfig } from '../../Config/config';
 import { PackageCost } from '../../../../BE/src/Types/Models';
+import { PackageCostFromAPI } from '../../Models/Models';
 
 /**
  * @author Jorge Puga Hernandez
@@ -12,13 +13,13 @@ import { PackageCost } from '../../../../BE/src/Types/Models';
  * @param {boolean} dependency - Indicates whether the cost information should include dependencies or not.
  * @param errorSetter - A function that will handle error messages.
  *
- * @returns {Promise<PackageCost | undefined>} - PackageCost object if successful, otherwise undefined.
+ * @returns {Promise<PackageCostFromAPI | undefined>} - PackageCost object if successful, otherwise undefined.
  */
 export const costRequest = async (
     id: string,
     dependency: boolean,
     errorSetter: (error: string) => void
-): Promise<PackageCost | undefined> => {
+): Promise<PackageCostFromAPI | undefined> => {
     try {
         const response = await fetch(
             `${GeneralConfig.BACKEND_URL}package/${id}/cost?dependency=${dependency}`,

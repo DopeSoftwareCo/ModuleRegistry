@@ -173,3 +173,11 @@ export interface Package {
 }
 
 export type Packages = Package[];
+
+export interface PackageCostFromAPI {
+    //if dep=true in path means standaloneCost is required
+    [key: string]: {
+        standaloneCost?: number;
+        totalCost: number;
+    };
+}
