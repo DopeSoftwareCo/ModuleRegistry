@@ -48,8 +48,10 @@ export interface PackageRating {
 
 export interface PackageCost {
     //if dep=true in path means standaloneCost is required
-    standaloneCost?: number;
-    totalCost: number;
+    [key: string]: {
+        standaloneCost?: number;
+        totalCost: number;
+    };
 }
 
 export type HistoryActions = "CREATE" | "UPDATE" | "DOWNLOAD" | "RATE";
