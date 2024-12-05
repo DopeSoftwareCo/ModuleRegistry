@@ -103,9 +103,15 @@ export const UploadInjestController = asyncHandler(
         let responseMessage: UploadInjestResponseMessages;
         if (repositoryUrl == undefined && content != undefined) {
             // Confirmed that content exists, decode and extract repository URL.
-            const base64Data = content.split(",")[1];
-            binaryContent = Buffer.from(base64Data, "base64");
-            repositoryUrl = repositoryUrl as unknown as string; // Type casts it from "string | undefined" to "string"
+            let base64Data = content;
+            if (content.includes(",")) {
+                const base64Data = content.split(",")[1];
+                binaryContent = Buffer.from(base64Data, "base64");
+                repositoryUrl = repositoryUrl as unknown as string; // Type casts it from "string | undefined" to "string"
+            } else {
+                binaryContent = Buffer.from(base64Data, "base64");
+                repositoryUrl = repositoryUrl as unknown as string;
+            }
         } else if (content == undefined && repositoryUrl != undefined) {
             // Confirmed that the repoURL exists, download content
             let repoDownloadURL: string;
