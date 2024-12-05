@@ -17,6 +17,7 @@ describe("GQL", () => {
 
     it("Should make request", async () => {
         const s = getFetchSpy({ res: "string" }, 200);
+        process.env.GITHUB_TOKEN = "token";
         const res = await SendRequestToGQL("");
         expect(res).toEqual({ res: "string" });
     });
