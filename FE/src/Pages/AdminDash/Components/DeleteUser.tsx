@@ -29,10 +29,12 @@ export const DeleteUser = ({ reloadTrigger }: DeleteUserProps) => {
         <AdminDashboardInputsContainer data-testid="admin-dash-delete-user-container">
             <AddUpdateDeleteHeader>Deleting User</AddUpdateDeleteHeader>
             <AdminDashboardInputs>
-                <AdminDashboardInputLabel>id</AdminDashboardInputLabel>
-                <StyledBaseTextInput onChange={(e) => setId(e.target.value)} />
+                <AdminDashboardInputLabel id="id">id</AdminDashboardInputLabel>
+                <StyledBaseTextInput aria-labelledby="id" onChange={(e) => setId(e.target.value)} />
             </AdminDashboardInputs>
-            <StyledBaseButton onClick={makeDeleteUserRequest}>Delete User</StyledBaseButton>
+            <StyledBaseButton aria-label="Delete User" onClick={makeDeleteUserRequest}>
+                Delete User
+            </StyledBaseButton>
             <StatusDisplay
                 err={err}
                 setErr={setErr}

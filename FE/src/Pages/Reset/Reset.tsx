@@ -15,7 +15,11 @@ const Reset = () => {
     };
     return (
         <ResetContainer>
-            <StyledBaseButton data-testid="reset-button" onClick={handleResetButtonClick}>
+            <StyledBaseButton
+                aria-label="Reset button DANGER"
+                data-testid="reset-button"
+                onClick={handleResetButtonClick}
+            >
                 Reset
             </StyledBaseButton>{' '}
             <StatusDisplay

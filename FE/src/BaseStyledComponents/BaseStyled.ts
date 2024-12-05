@@ -44,6 +44,14 @@ export const StyledBaseDiv = styled.div`
     `}
 `;
 
+export const StyledBaseLabel = styled.label`
+    ${({ theme }) => css`
+        transition: ${theme.animationTime.short} background ease;
+        background: ${theme.colors.background};
+        color: ${theme.colors.text};
+    `}
+`;
+
 export const StyledBaseA = styled.a`
     ${({ theme }) => css`
         transition: ${theme.animationTime.short} background ease;

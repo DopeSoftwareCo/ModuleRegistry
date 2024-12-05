@@ -85,29 +85,58 @@ const Update = () => {
     return (
         <StyledBasePageContiner>
             <FileUploadContainer>
-                <HiddenFileInput ref={fileInputRef} onChange={handleFileChange} />
-                <StyledBaseTextInput placeholder="ID" onChange={(e) => setID(e.target.value)} />
+                <HiddenFileInput
+                    aria-label="Hidden file input"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                />
+                <StyledBaseTextInput
+                    aria-label="ID text box"
+                    placeholder="ID"
+                    onChange={(e) => setID(e.target.value)}
+                />
                 <InputRow>
-                    <StyledBaseTextInput onChange={(e) => setUrl(e.target.value)} placeholder="URL" />
+                    <StyledBaseTextInput
+                        aria-label="Url text box"
+                        onChange={(e) => setUrl(e.target.value)}
+                        placeholder="URL"
+                    />
                     <StyledBaseTextInput
                         onChange={(e) => setJsProgram(e.target.value)}
                         placeholder="JSProgram"
+                        aria-label="JSProgram text box"
                     />
                 </InputRow>
                 <InputRow>
-                    <StyledBaseTextInput placeholder="Name" onChange={(e) => setName(e.target.value)} />
-                    <StyledBaseTextInput placeholder="Version" onChange={(e) => setVersion(e.target.value)} />
+                    <StyledBaseTextInput
+                        aria-label="Name text box"
+                        placeholder="Name"
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <StyledBaseTextInput
+                        aria-label="Version text box"
+                        placeholder="Version"
+                        onChange={(e) => setVersion(e.target.value)}
+                    />
                 </InputRow>
                 <InputRow>
-                    <FileInputButton onClick={handleChooseClick}>File</FileInputButton>
+                    <FileInputButton aria-label="File input button" onClick={handleChooseClick}>
+                        File
+                    </FileInputButton>
                     <DebloatCheckTextRow>
-                        <DebloatCheck onChange={handleCheckChange} />
+                        <DebloatCheck aria-label="Debloat checkbox" onChange={handleCheckChange} />
                         debloat
                     </DebloatCheckTextRow>
                 </InputRow>
                 <FileNameDisplay>{fileName}</FileNameDisplay>
-                <StyledBaseButton onClick={handleClearClick}>Clear</StyledBaseButton>
-                <StyledBaseButton data-testid="update-button" onClick={handleUploadClick}>
+                <StyledBaseButton aria-label="Clear form" onClick={handleClearClick}>
+                    Clear
+                </StyledBaseButton>
+                <StyledBaseButton
+                    aria-label="Submit update request"
+                    data-testid="update-button"
+                    onClick={handleUploadClick}
+                >
                     Update
                 </StyledBaseButton>
                 <StatusDisplay
