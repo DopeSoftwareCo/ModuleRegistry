@@ -252,7 +252,7 @@ export const UploadInjestController = asyncHandler(
             await evaluator.Eval(repoForEval);
             jsonRow = repoForEval.NDJSONRow;
         }
-        const packageID =
+        const mongoPackageID =
             (await buildMongoDBPackage(
                 {
                     ...jsonRow,
@@ -269,6 +269,7 @@ export const UploadInjestController = asyncHandler(
                 standaloneCost,
                 totalCost
             )) + zipFileExtension;
+        const packageID = `${mongoPackageID}${zipFileExtension}`;
         if (body.debloat == true) {
             // Zip up, and store
             const isSuccessful = await debloatUnzippedContent(tempUnzippedFileDirectory);
@@ -290,7 +291,7 @@ export const UploadInjestController = asyncHandler(
             metadata: {
                 Name: packageJson.name,
                 Version: packageJson.version,
-                ID: packageID,
+                ID: mongoPackageID,
             },
             //all fields are optional in data
             data: {},
