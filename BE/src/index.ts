@@ -17,9 +17,9 @@ import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
 import { CatchAllRouter } from "./Routes/CatchAll";
 import { calculateCumulativeSize } from "./Services/Packages/Cost/Multicost";
-import { FetchVersions, SearchVersion } from "./Services/Packages/Versioning/search-functions";
 import { GetPackagesData } from "RequestTypes";
 import { ensureUploadFoldersExist } from "./Utils/FileDir";
+import { ProcessPackageSearch } from "./Services/Packages/Versioning/search-functions";
 
 dotenv.config();
 
@@ -116,7 +116,7 @@ async function ManualTestVersionSort() {
             Version: "2.0.0-6.0.0",
         },
     ];
-    console.log(await FetchVersions(req));
+    console.log(await ProcessPackageSearch(req, 50, true));
 }
 
 async function Execute() {

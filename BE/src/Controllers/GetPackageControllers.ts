@@ -25,9 +25,9 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
-import { RetrievePartitionedVersions } from "../Services/Packages/Versioning/search-functions";
 import { getDownloadPackageInformation, GetPackageBase64 } from "../Services/Packages/Download";
 import { VersionPartitons } from "../Services/Packages/Versioning/types";
+import { ProcessPackageSearch } from "../Services/Packages/Versioning/search-functions";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 
@@ -50,6 +50,7 @@ export function SelectResultPage(pages: VersionPartitons, offset: PageOffset): P
             index = parseInt(offset);
         }
 
+        // Use a round-robin approach to page indexing, since there is no option to return undefined / null
         const adjacent = index + 1;
         const next = adjacent < last ? adjacent : 0;
         const page = pages[index];
@@ -60,6 +61,7 @@ export function SelectResultPage(pages: VersionPartitons, offset: PageOffset): P
         };
     } catch {
         return {
+            // If any error occurs, return page 0
             body: pages[0],
             nextPageIndex: 0,
         };
@@ -79,11 +81,8 @@ export const GetPackagesFromRegistryController = asyncHandler(
                 ? req.query.offset
                 : undefined;
 
-        if (requestedPackages[0].Name === "*") {
-            //FetchEntireDir();
-        }
-
-        const pages: VersionPartitons = await RetrievePartitionedVersions(requestedPackages);
+        const result = await ProcessPackageSearch(requestedPackages);
+        const pages: VersionPartitons = result.dataPartitions;
         const selectedPage = SelectResultPage(pages, offset);
         const responseBody: GetPackagesResponseBody = selectedPage.body;
         let responseMessage: GetPackagesInvalidResponseMessages;

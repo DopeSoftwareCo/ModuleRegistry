@@ -1,4 +1,5 @@
 import { Package } from "../../../Schemas/Package";
+import { PackageMetaData } from "../../../Types/Models";
 import { UpdateType, VersionRangeEndpoints } from "./types";
 import * as semver from "semver";
 
@@ -69,15 +70,22 @@ export function TokenizeVersion(
 }
 
 export function SortByVersion(unsorted: Package[], newestFirst: boolean = true): Package[] {
-    if (newestFirst) {
-        // Newest version first
-        return unsorted.sort((left, right) => {
-            return semver.lt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
-        });
-    } else {
-        // Oldest version first
-        return unsorted.sort((left, right) => {
-            return semver.gt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
-        });
-    }
+    const yes = newestFirst ? 1 : -1;
+    const no = yes * -1;
+
+    return unsorted.sort((left, right) => {
+        return semver.lt(left.metadata.Version, right.metadata.Version) ? yes : no;
+    });
+}
+
+export function SortByVersion_Metadata(
+    unsorted: PackageMetaData[],
+    newestFirst: boolean = true
+): PackageMetaData[] {
+    const yes = newestFirst ? 1 : -1;
+    const no = yes * -1;
+
+    return unsorted.sort((left, right) => {
+        return semver.lt(left.Version, right.Version) ? yes : no;
+    });
 }

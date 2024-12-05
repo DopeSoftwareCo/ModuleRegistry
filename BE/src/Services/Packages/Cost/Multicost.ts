@@ -1,7 +1,7 @@
 import fs from "fs";
 import { execSync } from "child_process";
 import path from "path";
-import { LogDebug } from "../../Utils/Log";
+import { LogDebug } from "../../../Utils/Log";
 
 export interface DependencyTree {
     name: string; // Package name
