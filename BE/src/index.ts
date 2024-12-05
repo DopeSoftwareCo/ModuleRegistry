@@ -109,6 +109,10 @@ function ManualTestMulticost(packages: string[]) {
     console.log(`Total size cost for packages [${packages.join(", ")}]: ${totalSize / 1024} KB`);
 }
 
+function AddPackages() {
+    //Upload
+}
+
 async function ManualTestVersionSort() {
     const req: GetPackagesData[] = [
         {
