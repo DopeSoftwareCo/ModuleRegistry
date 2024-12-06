@@ -26,7 +26,7 @@ export function IncrementVersion(current: string, updateType: UpdateType): strin
     let minor = parseInt(tokens.minor);
     let patch = parseInt(tokens.patch);
 
-    if (!major || !minor || !patch) {
+    if (isNaN(major) || isNaN(minor) || isNaN(patch)) {
         return undefined;
     }
 

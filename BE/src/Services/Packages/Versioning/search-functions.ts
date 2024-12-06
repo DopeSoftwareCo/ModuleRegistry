@@ -29,7 +29,6 @@ export async function ProcessPackageSearch(
     }
 
     const packages = await CombineSearchRequestResults(requests, sortByVersion, newestFirst);
-    console.log(packages);
     const partitioned = PartitionArray(packages, partitionSize);
 
     return {
@@ -46,9 +45,6 @@ export async function CombineSearchRequestResults(
 
     const response = requests.map((req) => ExecuteSearchRequest(req));
     const arrays = await Promise.all(response);
-
-    console.log("CombineSearchRequestResults");
-    console.log(arrays);
 
     arrays.forEach((arr) => {
         versions.push(...arr);
@@ -100,9 +96,6 @@ export namespace SearchPackages {
             let result: GetPackagesResponseBody = [];
             const proceed = VersionType_RegExp.test(filter);
 
-            console.log("Proceed?");
-            console.log(proceed);
-
             if (proceed) {
                 const symbol = filter[0];
 
@@ -111,7 +104,6 @@ export namespace SearchPackages {
                 } else if (symbol === "^") {
                     result = await ByCaret(title, filter);
                 } else if (filter.includes("-")) {
-                    console.log("Ok ... Sending to bounded range handler");
                     result = await BySimpleRange(title, filter);
                 } else {
                     result = await ByExact(title, filter);
@@ -149,12 +141,8 @@ export namespace SearchPackages {
                         semver.lte(version, rangeEndpoints.newest)
                     );
                 });
-
-                console.log("Matching versions:");
-                console.log(matchingVersions);
                 return matchingVersions;
             } catch {
-                console.log("An error occurred in BySimpleRange");
                 return [];
             }
         }
@@ -167,6 +155,7 @@ export namespace SearchPackages {
                 const cleanFilter = filter.substring(1);
                 const oldest = cleanFilter;
                 const newest = IncrementVersion(cleanFilter, UpdateType.Minor);
+
                 if (!newest) return [];
 
                 const matchingVersions: PackageMetaData[] = versionsOfThis.filter((iteration) => {
