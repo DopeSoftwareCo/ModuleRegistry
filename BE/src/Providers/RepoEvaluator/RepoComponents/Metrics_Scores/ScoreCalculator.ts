@@ -1,4 +1,4 @@
-import * as DSincMath from "../../../../Utils/DSinc_Modules/DSinc_Math";
+import * as DSincMath from "../../../../Utils/DSinc/Math";
 import { Repository } from "../Repository";
 import { functionTimer } from "../../Assets/ScoringFunctions/function-timer";
 import { Metric } from "./Metric";
