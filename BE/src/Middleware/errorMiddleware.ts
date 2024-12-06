@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError } from "../Utils/CustomError";
+import { CustomError } from "../Utils/DSinc/ErrorHandling";
 
 /**
  * @author John Leidy

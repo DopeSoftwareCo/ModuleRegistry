@@ -5,9 +5,9 @@ import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
 import * as fs from "fs";
 import * as path from "path";
-import { debloatZippedContent } from "../Utils/DSinc_Modules/DSinc_PackageHandling";
+import { debloatZippedContent } from "../Services/Packages/PackageZipHandling";
 
-// /package/{id}
+// /package/{id}cle
 export const UpdatePackageViaIDController = asyncHandler(
     async (req: UpdatePackageContentRequest, res: UpdatePackageViaIDResponse, next: NextFunction) => {
         //the id requested

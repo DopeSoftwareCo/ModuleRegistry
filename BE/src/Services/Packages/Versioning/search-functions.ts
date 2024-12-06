@@ -1,62 +1,76 @@
 import PackageModel, { Package } from "../../../Schemas/Package";
 import { GetPackagesResponseBody } from "ResponseTypes";
-import { UpdateType } from "./types";
-import { GetRangeEndpoints, IncrementVersion, VersionType_RegExp } from "./utils";
+import { PAGE_SIZE, SearchResult, UpdateType } from "./types";
+import {
+    GetRangeEndpoints,
+    IncrementVersion,
+    SortByVersion,
+    SortByVersion_Metadata,
+    VersionType_RegExp,
+} from "./utils";
 import { GetPackagesData } from "RequestTypes";
 import semver from "semver";
 import { PackageMetaData } from "../../../Types/Models";
+import { PartitionArray } from "../../../Utils/DSinc/Array";
+import { FetchAllPackages } from "../BasicFunctionality/FetchAll";
 
-export function SortByVersion(unsorted: Package[], newestFirst: boolean = true): Package[] {
-    if (newestFirst) {
-        // Newest version first
-        return unsorted.sort((left, right) => {
-            return semver.lt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
-        });
-    } else {
-        // Oldest version first
-        return unsorted.sort((left, right) => {
-            return semver.gt(left.metadata.Version, right.metadata.Version) ? 1 : -1;
-        });
+export async function ProcessPackageSearch(
+    requests: GetPackagesData[],
+    partitionSize: number = PAGE_SIZE,
+    sortByVersion: boolean = true,
+    newestFirst: boolean = true
+): Promise<SearchResult> {
+    if (requests.length == 1 && requests[0].Name === "*") {
+        const fetchResult = await FetchAllPackages(10000, partitionSize);
+        return {
+            dataPartitions: fetchResult.chunks,
+            fetchAllResult: fetchResult,
+        };
     }
+
+    const packages = await CombineSearchRequestResults(requests, sortByVersion, newestFirst);
+    const partitioned = PartitionArray(packages, partitionSize);
+
+    return {
+        dataPartitions: partitioned,
+    };
 }
 
-export namespace SearchVersion {
-    export async function ByExact(title: string, filter: string): Promise<GetPackagesResponseBody> {
-        let result: PackageMetaData[] = [];
-        const matches = await PackageModel.find<Package>(
-            { "metadata.Name": title, "metadata.Version": filter },
-            { _id: 1, "metadata.Name": 1, "metadata.Version": 1 }
-        );
+export async function CombineSearchRequestResults(
+    requests: GetPackagesData[],
+    sortByVersion: boolean = true,
+    newestFirst: boolean = true
+): Promise<GetPackagesResponseBody> {
+    let versions: GetPackagesResponseBody = [];
 
-        if (matches.length > 0) {
-            result = matches.map((match) => ({
-                ID: match._id.toString(),
-                Name: match.metadata.Name,
-                Version: match.metadata.Version,
-            }));
-        }
-        return result;
+    const response = requests.map((req) => ExecuteSearchRequest(req));
+    const arrays = await Promise.all(response);
+
+    arrays.forEach((arr) => {
+        versions.push(...arr);
+    });
+
+    if (sortByVersion) {
+        SortByVersion_Metadata(versions, newestFirst);
     }
 
-    export async function BySimpleRange(title: string, filter: string): Promise<GetPackagesResponseBody> {
-        const rangeEndpoints = GetRangeEndpoints(filter);
-        if (!rangeEndpoints) return [];
-        try {
-            const allVersions = await RetrieveAll(title);
-            const matches: PackageMetaData[] = allVersions.filter((iteration) => {
-                const version = iteration.Version;
-                return (
-                    semver.gte(version, rangeEndpoints.oldest) && semver.lte(version, rangeEndpoints.newest)
-                );
-            });
+    return versions;
+}
 
-            return matches;
-        } catch {
-            return [];
-        }
+export async function ExecuteSearchRequest(request: GetPackagesData): Promise<GetPackagesResponseBody> {
+    const title = request.Name;
+    const hasVersion = request.Version != undefined;
+
+    if (!hasVersion) {
+        return await SearchPackages.ByName(title);
     }
 
-    export async function RetrieveAll(
+    const filter = request.Version.trim();
+    return await SearchPackages.LimitVersions.Any(title, filter);
+}
+
+export namespace SearchPackages {
+    export async function ByName(
         title: string,
         sortByVersion: boolean = true,
         newestFirst: boolean = true
@@ -77,103 +91,103 @@ export namespace SearchVersion {
         }));
     }
 
-    export async function ByTilde(title: string, filter: string): Promise<GetPackagesResponseBody> {
-        try {
-            const allVersions = await RetrieveAll(title);
-            if (allVersions.length < 1) return [];
+    export namespace LimitVersions {
+        export async function Any(title: string, filter: string): Promise<GetPackagesResponseBody> {
+            let result: GetPackagesResponseBody = [];
+            const proceed = VersionType_RegExp.test(filter);
 
-            const cleanFilter = filter.substring(1);
-            const oldest = cleanFilter;
-            const newest = IncrementVersion(cleanFilter, UpdateType.Minor);
-            if (!newest) return [];
+            if (proceed) {
+                const symbol = filter[0];
 
-            const matches: PackageMetaData[] = allVersions.filter((iteration) => {
-                const version = iteration.Version;
-                return semver.gte(version, oldest) && semver.lt(version, newest);
-            });
-
-            return matches;
-        } catch {
-            return [];
+                if (symbol === "~") {
+                    result = await ByTilde(title, filter);
+                } else if (symbol === "^") {
+                    result = await ByCaret(title, filter);
+                } else if (filter.includes("-")) {
+                    result = await BySimpleRange(title, filter);
+                } else {
+                    result = await ByExact(title, filter);
+                }
+            }
+            return result;
         }
-    }
 
-    export async function ByCaret(title: string, filter: string): Promise<GetPackagesResponseBody> {
-        try {
-            const allVersions = await RetrieveAll(title);
-            if (allVersions.length < 1) return [];
+        export async function ByExact(title: string, filter: string): Promise<GetPackagesResponseBody> {
+            let result: PackageMetaData[] = [];
+            const matches = await PackageModel.find<Package>(
+                { "metadata.Name": title, "metadata.Version": filter },
+                { _id: 1, "metadata.Name": 1, "metadata.Version": 1 }
+            );
 
-            const cleanFilter = filter.substring(1);
-            const oldest = cleanFilter;
-            const newest = IncrementVersion(cleanFilter, UpdateType.Major);
-            if (!newest) return [];
-
-            const matches: PackageMetaData[] = allVersions.filter((iteration) => {
-                const version = iteration.Version;
-                return semver.gte(version, oldest) && semver.lt(version, newest);
-            });
-
-            return matches;
-        } catch {
-            return [];
+            if (matches.length > 0) {
+                result = matches.map((match) => ({
+                    ID: match._id.toString(),
+                    Name: match.metadata.Name,
+                    Version: match.metadata.Version,
+                }));
+            }
+            return result;
         }
-    }
-}
 
-const searchByName = async (name: string): Promise<GetPackagesResponseBody> => {
-    const result = await PackageModel.find({ "metadata.Name": name });
-    if (result) {
-        return result.map((foundP) => ({
-            Version: foundP.metadata.Version,
-            Name: foundP.metadata.Name,
-            ID: foundP._id.toString(),
-        }));
-    }
-    return [];
-};
+        export async function BySimpleRange(title: string, filter: string): Promise<GetPackagesResponseBody> {
+            const rangeEndpoints = GetRangeEndpoints(filter);
+            if (!rangeEndpoints) return [];
+            try {
+                const versionsOfThis = await ByName(title);
+                const matchingVersions: PackageMetaData[] = versionsOfThis.filter((iteration) => {
+                    const version = iteration.Version;
+                    return (
+                        semver.gte(version, rangeEndpoints.oldest) &&
+                        semver.lte(version, rangeEndpoints.newest)
+                    );
+                });
+                return matchingVersions;
+            } catch {
+                return [];
+            }
+        }
 
-export async function FetchVersions(requests: GetPackagesData[]): Promise<GetPackagesResponseBody> {
-    let versions: GetPackagesResponseBody = [];
+        export async function ByTilde(title: string, filter: string): Promise<GetPackagesResponseBody> {
+            try {
+                const versionsOfThis = await ByName(title);
+                if (versionsOfThis.length < 1) return [];
 
-    const response = requests.map((req) => ProcessSingleVersionRequest(req));
-    const arrays = await Promise.all(response);
+                const cleanFilter = filter.substring(1);
+                const oldest = cleanFilter;
+                const newest = IncrementVersion(cleanFilter, UpdateType.Minor);
 
-    arrays.forEach((arr) => {
-        versions.push(...arr);
-    });
+                if (!newest) return [];
 
-    return versions;
-}
+                const matchingVersions: PackageMetaData[] = versionsOfThis.filter((iteration) => {
+                    const version = iteration.Version;
+                    return semver.gte(version, oldest) && semver.lt(version, newest);
+                });
 
-export async function ProcessSingleVersionRequest(
-    request: GetPackagesData
-): Promise<GetPackagesResponseBody> {
-    let result: GetPackagesResponseBody = [];
-    const title = request.Name;
-    //ternary bc i don't want it to be undefined or possibly a string
-    const hasVersion = request.Version ? true : false;
+                return matchingVersions;
+            } catch {
+                return [];
+            }
+        }
 
-    if (hasVersion) {
-        const filter = request.Version.trim();
-        const proceed = VersionType_RegExp.test(filter);
-        if (proceed && hasVersion) {
-            const symbol = filter[0];
+        export async function ByCaret(title: string, filter: string): Promise<GetPackagesResponseBody> {
+            try {
+                const versionsOfThis = await ByName(title);
+                if (versionsOfThis.length < 1) return [];
 
-            if (symbol === "~") {
-                result = await SearchVersion.ByTilde(title, filter);
-            } else if (symbol === "^") {
-                result = await SearchVersion.ByCaret(title, filter);
-            } else if (filter.includes("-")) {
-                result = await SearchVersion.BySimpleRange(title, filter);
-            } else {
-                result = await SearchVersion.ByExact(title, filter);
+                const cleanFilter = filter.substring(1);
+                const oldest = cleanFilter;
+                const newest = IncrementVersion(cleanFilter, UpdateType.Major);
+                if (!newest) return [];
+
+                const matchingVersions: PackageMetaData[] = versionsOfThis.filter((iteration) => {
+                    const version = iteration.Version;
+                    return semver.gte(version, oldest) && semver.lt(version, newest);
+                });
+
+                return matchingVersions;
+            } catch {
+                return [];
             }
         }
     }
-
-    if (!hasVersion) {
-        result = await searchByName(title);
-    }
-
-    return result;
 }
