@@ -16,12 +16,7 @@ import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
 import { CatchAllRouter } from "./Routes/CatchAll";
-import { calculateCumulativeSize } from "./Services/Packages/Cost/Multicost";
-import { GetPackagesData } from "RequestTypes";
 import { ensureUploadFoldersExist } from "./Utils/FileDir";
-import { ProcessPackageSearch } from "./Services/Packages/Versioning/search-functions";
-import PackageModel, { Package } from "./Schemas/Package";
-import { FetchAllPackages } from "./Services/Packages/BasicFunctionality/FetchAll";
 
 dotenv.config();
 
@@ -104,44 +99,10 @@ const runServer = async () => {
     });
 };
 
-function ManualTestMulticost(packages: string[]) {
-    const packageManager = "npm"; // or 'yarn'
-    const totalSize = calculateCumulativeSize(packages, packageManager);
-
-    console.log(`Total size cost for packages [${packages.join(", ")}]: ${totalSize / 1024} KB`);
-}
-
-async function ManualTestVersionSort() {
-    const req: GetPackagesData[] = [
-        {
-            Name: "dsinc",
-            Version: "11.0.0-18.0.0",
-        },
-        {
-            Name: "dsinc",
-            Version: "~8.4.0",
-        },
-    ];
-    const result = await ProcessPackageSearch(req, 5, true);
-    console.log(result.dataPartitions);
-}
-
-async function ManualTestFetchAll() {
-    const result = await FetchAllPackages(10000, 20);
-    const pages = result.chunks;
-
-    pages.forEach((page) => {
-        console.log(page);
-    });
-}
-
 async function Execute() {
     GenerateManagementToken();
     ensureUploadFoldersExist();
     await runServer();
-
-    // awit ManualTestVersionSort();
-    // await ManualTestFetchAll();
 }
 
 Execute();

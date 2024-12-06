@@ -13,6 +13,18 @@ import { CustomError } from "../Utils/DSinc/ErrorHandling";
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof CustomError) {
         const { statusCode, errors, logging } = err;
+        console.log("AN ERROR OCCURED");
+        console.log(
+            JSON.stringify(
+                {
+                    code: err.statusCode,
+                    errors: err.errors,
+                },
+                null,
+                2
+            )
+        );
+        console.log(err);
         if (logging) {
             console.error(
                 JSON.stringify(
