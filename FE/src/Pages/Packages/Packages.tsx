@@ -10,35 +10,95 @@ import {
     PackagesRequestButton,
     PackagesResultName,
     PackagesResultVersion,
+    RequestRow,
+    RemoveButton,
+    ButtonsRow,
 } from './PackagesStyle';
 import { PackageMetaDataFromAPI } from '../../Models/Models';
 import { getPackagesRequest } from './Requests';
 import { StatusDisplay } from '../../Components/StatusDisplay/StatusDisplay';
 
 const Packages = () => {
-    const [packages, setPackages] = useState<undefined | PackageMetaDataFromAPI[]>(undefined);
-    const [queryString, setQueryString] = useState(''); // Input for version query
-    const [packageName, setPackageName] = useState(''); // Input for package name
+    const [requests, setRequests] = useState<{ Name: string; Version?: string }[]>([
+        { Name: '', Version: '' },
+    ]);
+    const [packages, setPackages] = useState<PackageMetaDataFromAPI[]>([]);
     const [err, setErr] = useState<string | undefined>(undefined);
     const [successMessage, setSuccessMessage] = useState<string | undefined>(undefined);
+
+    // Adds a new request row. Each row contains a name and version field.
+    const handleAddRequest = () => {
+        setRequests((prev) => [...prev, { Name: '', Version: '' }]);
+    };
+
+    // Updates the name or version field for a specific request.
+    const handleUpdateRequest = (index: number, field: 'Name' | 'Version', value: string) => {
+        setRequests((prev) =>
+            prev.map((req, i) => (i === index ? { ...req, [field]: value } : req))
+        );
+    };
+
+    // Handle the deletion of a request using its index.
+    const handleDeleteRequest = (index: number) => {
+        setRequests((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    // Handle the logic behind the user making a request.
     const makeRequest = async () => {
-        const result = await getPackagesRequest(queryString, packageName, (err) => {
+        // Clear the previous results/messages when making new requests.
+        setPackages([]);
+        setErr(undefined);
+        setSuccessMessage(undefined);
+
+        // Filter out empty requests.
+        const filteredRequests = requests
+            .filter((req) => req.Name.trim())
+            .map(({ Name, Version }) => (Version ? { Name, Version } : { Name }));
+
+        // If the request length is 0, tell the user to give us something.
+        if (filteredRequests.length === 0) {
+            setErr('Please provide at least one package name.');
+            return;
+        }
+
+        const result = await getPackagesRequest(filteredRequests, (err) => {
             setErr(err);
         });
+
         if (result) {
             setPackages(result.data);
+            setSuccessMessage('Packages fetched successfully!');
         }
     };
 
     return (
         <StyledBasePageContiner>
+            <h2>Add Requests for Package Version Fetch</h2>
             <PackagesInputs>
-                <PackagesInput placeholder="Package Name" onChange={(e) => setPackageName(e.target.value)}/>
-                <PackagesInput placeholder="Version Query" onChange={(e) => setQueryString(e.target.value)}/>
-                <PackagesRequestButton data-testid="packages-request-button" onClick={makeRequest}>
-                    Find Packages
-                </PackagesRequestButton>
+                {requests.map((req, index) => (
+                    <RequestRow key={index}>
+                        <PackagesInput
+                            placeholder="Package Name"
+                            value={req.Name}
+                            onChange={(e) => handleUpdateRequest(index, 'Name', e.target.value)}
+                        />
+                        <PackagesInput
+                            placeholder="Version (optional)"
+                            value={req.Version || ''}
+                            onChange={(e) => handleUpdateRequest(index, 'Version', e.target.value)}
+                        />
+                        {requests.length > 1 && (
+                            <RemoveButton onClick={() => handleDeleteRequest(index)}>
+                                Remove
+                            </RemoveButton>
+                        )}
+                    </RequestRow>
+                ))}
             </PackagesInputs>
+            <ButtonsRow>
+                <PackagesRequestButton onClick={handleAddRequest}>Add Request</PackagesRequestButton>
+                <PackagesRequestButton onClick={makeRequest}>Find Packages</PackagesRequestButton>
+            </ButtonsRow>
             <StatusDisplay
                 err={err}
                 setErr={setErr}
@@ -46,13 +106,12 @@ const Packages = () => {
                 setSuccess={setSuccessMessage}
             />
             <StyledBaseKeyValuePairsContainer>
-                {packages &&
-                    packages.map((pack, idx) => (
-                        <StyledBaseKeyValueRow key={idx} data-testid={pack.ID}>
-                            <PackagesResultName>{pack.Name}</PackagesResultName>
-                            <PackagesResultVersion>{pack.Version}</PackagesResultVersion>
-                        </StyledBaseKeyValueRow>
-                    ))}
+                {packages.map((pack, idx) => (
+                    <StyledBaseKeyValueRow key={idx} data-testid={pack.ID}>
+                        <PackagesResultName>{pack.Name}</PackagesResultName>
+                        <PackagesResultVersion>{pack.Version}</PackagesResultVersion>
+                    </StyledBaseKeyValueRow>
+                ))}
             </StyledBaseKeyValuePairsContainer>
         </StyledBasePageContiner>
     );
