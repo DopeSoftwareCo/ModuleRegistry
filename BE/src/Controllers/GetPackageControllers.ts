@@ -137,7 +137,7 @@ export const GetPackageViaIDController = asyncHandler(
 export const GetPackageSizeCostViaIDController = asyncHandler(
     async (req: GetPackageSizeCostRequest, res: GetSizeCostForPackageResponse, next: NextFunction) => {
         const requestedPackageID = req.requestedId;
-        const dependencyCostRequested = req.query.dependency;
+        const dependencyCostRequested = req.query.dependency === "true";
         console.log(`/package/id/cost   id requested: ${requestedPackageID}`);
         // Request the package by ID.
         const pack = await PackageModel.findById(requestedPackageID);
