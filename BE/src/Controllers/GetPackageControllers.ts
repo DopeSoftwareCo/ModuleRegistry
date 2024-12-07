@@ -104,9 +104,11 @@ export const GetPackageViaIDController = asyncHandler(
     async (req: GetPackageViaIdRequest, res: GetPackageViaIDResponse, next: NextFunction) => {
         const packID = req.params.id;
         //your code here using the id
+        console.log("mime?  ", req.headers["includemime"]);
+        const includeMIME = req.headers["includemime"] ? true : false;
         console.log(`/package/id    requested ID: ${packID}`);
         console.log("Getting package base64 in getpackage via id");
-        const result = GetPackageBase64(packID);
+        const result = GetPackageBase64(packID, includeMIME);
         console.log("obtained base 64");
         const downloadMetadata = await getDownloadPackageInformation(packID);
         console.log("Getting metadata");
