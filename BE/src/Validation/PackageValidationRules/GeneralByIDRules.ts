@@ -11,11 +11,5 @@ const invalidByIdMessage =
     "There is missing field(s) in the PackageID or it is formed improperly, or is invalid.";
 
 export const GeneralViaIDRuleset = [
-    param("id")
-        .exists()
-        .withMessage(invalidByIdMessage)
-        .isString()
-        .withMessage(invalidByIdMessage)
-        .custom(isMongoDbID)
-        .withMessage(invalidByIdMessage),
+    param("id").exists().withMessage(invalidByIdMessage).isString().withMessage(invalidByIdMessage),
 ];
