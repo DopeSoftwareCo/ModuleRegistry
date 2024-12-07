@@ -27,7 +27,6 @@ export async function ProcessPackageSearch(
             fetchAllResult: fetchResult,
         };
     }
-
     const packages = await CombineSearchRequestResults(requests, sortByVersion, newestFirst);
     const partitioned = PartitionArray(packages, partitionSize);
 
