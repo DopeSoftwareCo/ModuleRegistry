@@ -24,12 +24,5 @@ export const UpdatePackageRules = [
         .exists()
         .withMessage(InvalidUploadPackageMessage)
         .isObject()
-        .withMessage(InvalidUploadPackageMessage)
-        .custom((data) => {
-            console.log("validting data for update...", data);
-            if (Object.keys(data).length > 1) {
-                throw new Error(InvalidUploadPackageMessage);
-            }
-        })
         .withMessage(InvalidUploadPackageMessage),
 ];
