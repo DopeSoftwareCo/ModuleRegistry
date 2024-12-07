@@ -314,6 +314,7 @@ export const UploadInjestController = asyncHandler(
             console.log("Row set");
         }
         console.log("Building mongo package...");
+        const anyBody = body as any;
         const mongoPackageID = await buildMongoDBPackage(
             {
                 ...jsonRow,
@@ -324,7 +325,7 @@ export const UploadInjestController = asyncHandler(
             },
             repositoryUrl,
             body.Name ? body.Name : packageJson.name ? packageJson.name : "Unknown", // Should never be unknown, but since this is a safety, it is here.
-            packageJson.version ? packageJson.version : "1.0.0",
+            anyBody.Version ? anyBody.Version : packageJson.Version ? packageJson.version : "1.0.0",
             packageJson.license ? packageJson.license : "Unknown",
             isExternal,
             standaloneCost,
