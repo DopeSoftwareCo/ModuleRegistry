@@ -31,9 +31,5 @@ export const UpdatePackageRules = [
         .withMessage(InvalidUploadPackageMessage)
         .isString()
         .withMessage(InvalidUploadPackageMessage),
-    body("data.JSProgram")
-        .exists()
-        .withMessage(InvalidUploadPackageMessage)
-        .isString()
-        .withMessage(InvalidUploadPackageMessage),
+    body("data.JSProgram").optional().isString().withMessage(InvalidUploadPackageMessage),
 ];
