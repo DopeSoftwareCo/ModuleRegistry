@@ -325,7 +325,7 @@ export const UploadInjestController = asyncHandler(
             },
             repositoryUrl,
             body.Name ? body.Name : packageJson.name ? packageJson.name : "Unknown", // Should never be unknown, but since this is a safety, it is here.
-            anyBody.Version ? anyBody.Version : packageJson.Version ? packageJson.version : "1.0.0",
+            anyBody?.Version ? anyBody?.Version : packageJson.Version ? packageJson.version : "1.0.0",
             packageJson.license ? packageJson.license : "Unknown",
             isExternal,
             standaloneCost,
@@ -363,8 +363,8 @@ export const UploadInjestController = asyncHandler(
         console.log("building return body...");
         const returnBody: UploadInjestNewPackageResponseBody = {
             metadata: {
-                Name: packageJson.name,
-                Version: packageJson.version,
+                Name: body.Name,
+                Version: anyBody?.Version ? anyBody?.Version : packageJson.version,
                 ID: mongoPackageID,
             },
             //all fields are optional in data
