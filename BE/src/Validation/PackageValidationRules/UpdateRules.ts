@@ -21,13 +21,15 @@ export const UpdatePackageRules = [
         .isString()
         .withMessage(InvalidUploadPackageMessage),
     body("data")
+        .exists()
+        .withMessage(InvalidUploadPackageMessage)
+        .isObject()
+        .withMessage(InvalidUploadPackageMessage)
         .custom((data) => {
-            const fields = ["Content", "URL", "JSProgram", "debloat"];
-            const providedFields = fields.filter((field) => data?.hasOwnProperty(field));
-            if (providedFields.length > 1) {
+            console.log("validting data for update...", data);
+            if (Object.keys(data).length > 1) {
                 throw new Error(InvalidUploadPackageMessage);
             }
-            return true;
         })
         .withMessage(InvalidUploadPackageMessage),
 ];
