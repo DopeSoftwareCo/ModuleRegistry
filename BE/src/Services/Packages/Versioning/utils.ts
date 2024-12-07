@@ -86,6 +86,7 @@ export function SortByVersion_Metadata(
     const no = yes * -1;
 
     return unsorted.sort((left, right) => {
+        console.log(`Versions compare: ${left.Version} ${right.Version}`);
         return semver.lt(left.Version, right.Version) ? yes : no;
     });
 }
