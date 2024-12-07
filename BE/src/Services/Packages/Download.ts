@@ -2,14 +2,14 @@ import { readFileSync } from "fs";
 import { ensureUploadFoldersExist, packagesDirectory } from "../../Utils/FileDir";
 import PackageModel from "../../Schemas/Package";
 
-export const GetPackageBase64 = (id: string) => {
+export const GetPackageBase64 = (id: string, includeMIME: boolean) => {
     ensureUploadFoldersExist();
     try {
         const repoPath = `${packagesDirectory}/${id}.zip`;
         const fileBuffer = readFileSync(repoPath);
         const base64String = fileBuffer.toString("base64");
         const mimeType = "application/zip";
-        return `data:${mimeType};base64,${base64String}`;
+        return includeMIME ? `data:${mimeType};base64,${base64String}` : base64String;
     } catch (err) {
         console.log(err instanceof Error ? err.message : "Unkown error occured in GetPackageBase64");
         return undefined;
