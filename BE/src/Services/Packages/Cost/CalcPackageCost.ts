@@ -11,13 +11,18 @@ import fetch from "node-fetch";
  */
 export async function CalculateStandaloneCost(packageUrl: string): Promise<number> {
     const packageName = extractPackageName(packageUrl);
+    console.log(`Package name in calculate standalone cost: ${packageName}`);
     if (!packageName) {
+        console.log(`Returning 0 in standalone for: ${packageName}`);
         return 0;
     }
 
     try {
         return await getStandaloneCost(packageName);
-    } catch {
+    } catch (error) {
+        console.log(
+            error instanceof Error ? error.message : "unknown error occured obtaining standalone cost"
+        );
         return 0;
     }
 }
@@ -33,13 +38,16 @@ export async function CalculateStandaloneCost(packageUrl: string): Promise<numbe
  */
 export async function CalculateTotalCost(packageUrl: string): Promise<number> {
     const packageName = extractPackageName(packageUrl);
+    console.log(`Package name in calculate total cost: ${packageName}`);
     if (!packageName) {
+        console.log(`Returning 0 in total for: ${packageName}`);
         return 0;
     }
 
     try {
         return await getTotalCost(packageName);
-    } catch {
+    } catch (error) {
+        console.log(error instanceof Error ? error.message : "unknown error occured obtaining total cost");
         return 0;
     }
 }
@@ -52,6 +60,7 @@ export async function CalculateTotalCost(packageUrl: string): Promise<number> {
  * @returns - A promise that resolves to the standalone size in megabytes (MB).
  */
 async function getStandaloneCost(packageName: string): Promise<number> {
+    console.log(`Getting standalone cost from external resource for: ${packageName}`);
     const phobiaUrl = `https://packagephobia.com/v2/api.json?p=${packageName}`;
     const response = await fetch(phobiaUrl);
     const data = await response.json();
@@ -68,6 +77,7 @@ async function getStandaloneCost(packageName: string): Promise<number> {
  * @returns - A promise that resolves to the total size in megabytes (MB).
  */
 async function getTotalCost(packageName: string): Promise<number> {
+    console.log(`Getting total cost from external resource for: ${packageName}`);
     const phobiaUrl = `https://packagephobia.com/v2/api.json?p=${packageName}`;
     const response = await fetch(phobiaUrl);
     const data = await response.json();
