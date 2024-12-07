@@ -1,9 +1,9 @@
 import { RepoURL } from "../URL/URLProcessor.interface";
 import { URLProcessor } from "../URL/URLProcessor";
 import { AsyncBuilder } from "../../Abstract_Builders";
-import { IsType_RepoURL } from "../../../../Utils/DSinc_Modules/CustomTypeGuards/ModEval_Guards";
-import { AsyncLoops } from "../../../../Utils/DSinc_Modules/DSinc_LoopsMaps";
+import { IsType_RepoURL } from "../../DevTools/ModEval_Guards";
 import { RepoID } from "./RepoID";
+import * as AsyncLoop from "../../../../Utils/DSinc/AsyncLoop";
 
 export class RepoID_Builder extends AsyncBuilder<RepoID> {
     constructor(trackCreations: boolean = false) {
@@ -16,7 +16,7 @@ export class RepoID_Builder extends AsyncBuilder<RepoID> {
         }
 
         let creations = Array<RepoID>();
-        await AsyncLoops.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
+        await AsyncLoop.DiscardUndefined_StoreForEach<RepoURL, RepoID>(
             repoURLs,
             creations,
             this.Build.bind(this),

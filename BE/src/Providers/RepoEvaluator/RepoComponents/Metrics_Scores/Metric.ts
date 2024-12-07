@@ -1,6 +1,6 @@
 import { MetricName } from "./Metric.const";
 import { WeightSpec } from "./WeightSpec";
-import { ToPositive } from "../../../../Utils/DSinc_Modules/DSinc_Math";
+import { ToPositive } from "../../../../Utils/DSinc/Math";
 
 const PRECISIONDEFAULT_SCORE = 2;
 const PRECISIONDEFAULT_RAW = 2;

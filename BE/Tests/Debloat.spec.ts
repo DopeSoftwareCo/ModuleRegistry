@@ -5,7 +5,7 @@ import {
     debloatUnzippedContent,
     debloatZippedContent,
     zipContents,
-} from "../src/Utils/DSinc_Modules/DSinc_PackageHandling";
+} from "../src/Services/Packages/PackageZipHandling";
 /**
  * Requires the DebloatTestFiles folder to run tests
  */

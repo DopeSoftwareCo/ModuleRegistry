@@ -1,4 +1,7 @@
+import { Package } from "../../../Schemas/Package";
+import { PackageMetaData } from "../../../Types/Models";
 import { UpdateType, VersionRangeEndpoints } from "./types";
+import * as semver from "semver";
 
 export const versionFormat = "(\\d+)\\.(\\d+)\\.(\\d+)"; // Matches three groups of numbers.
 export const versionFormatRegex = `^[~^]?${versionFormat}(-${versionFormat})?$`; // Allows optional prefix and range.
@@ -23,7 +26,7 @@ export function IncrementVersion(current: string, updateType: UpdateType): strin
     let minor = parseInt(tokens.minor);
     let patch = parseInt(tokens.patch);
 
-    if (!major || !minor || !patch) {
+    if (isNaN(major) || isNaN(minor) || isNaN(patch)) {
         return undefined;
     }
 
@@ -64,4 +67,26 @@ export function TokenizeVersion(
 ): { major: string; minor: string; patch: string } | undefined {
     const tokens = version.split(".");
     return tokens.length === 3 ? { major: tokens[0], minor: tokens[1], patch: tokens[2] } : undefined;
+}
+
+export function SortByVersion(unsorted: Package[], newestFirst: boolean = true): Package[] {
+    const yes = newestFirst ? 1 : -1;
+    const no = yes * -1;
+
+    return unsorted.sort((left, right) => {
+        return semver.lt(left.metadata.Version, right.metadata.Version) ? yes : no;
+    });
+}
+
+export function SortByVersion_Metadata(
+    unsorted: PackageMetaData[],
+    newestFirst: boolean = true
+): PackageMetaData[] {
+    const yes = newestFirst ? 1 : -1;
+    const no = yes * -1;
+
+    return unsorted.sort((left, right) => {
+        console.log(`Versions compare: ${left.Version} ${right.Version}`);
+        return semver.lt(left.Version, right.Version) ? yes : no;
+    });
 }

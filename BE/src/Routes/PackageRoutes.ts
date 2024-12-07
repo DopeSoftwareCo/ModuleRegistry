@@ -37,6 +37,8 @@ PackageRouter.get(
     appendMongoDBid,
     GetPackageViaIDController
 );
+// /package/byRegex
+PackageRouter.post("/byRegex", verifyToken, ByRegexRules, validateRequest, GetPackagesViaRegexController);
 // /package/{id}
 PackageRouter.post(
     "/:id",
@@ -73,5 +75,3 @@ PackageRouter.get(
     appendMongoDBid,
     GetPackageSizeCostViaIDController
 );
-// /package/byRegex
-PackageRouter.post("/byRegex", verifyToken, ByRegexRules, validateRequest, GetPackagesViaRegexController);

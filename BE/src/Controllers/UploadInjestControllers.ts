@@ -7,12 +7,12 @@ import {
 } from "ResponseTypes";
 import { NextFunction } from "express";
 import PackageModel from "../Schemas/Package";
-import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/Packages/Scoring/CalcPackageCost";
+import { CalculateStandaloneCost, CalculateTotalCost } from "../Services/Packages/Cost/CalcPackageCost";
 import {
     debloatUnzippedContent,
     debloatUploadedContent,
     zipContents,
-} from "../Utils/DSinc_Modules/DSinc_PackageHandling";
+} from "../Services/Packages/PackageZipHandling";
 import fs from "fs";
 import axios from "axios";
 import path from "path";
@@ -22,7 +22,7 @@ import { DEFAULT_WEIGHTS } from "../Providers/RepoEvaluator/RepoComponents/Metri
 import { SuperRepoBuilder } from "../Providers/RepoEvaluator/RepoComponents/Builders/SuperRepoBuilder";
 import { buildMongoDBPackage } from "../Services/Packages/MongoDB";
 import fetch from "node-fetch";
-import { ensureUploadFoldersExist } from "../Utils/EnsureDirectories";
+import { ensureUploadFoldersExist } from "../Utils/FileDir";
 
 async function getGitHubDownload(repoURL: string): Promise<string> {
     //return repoURL;

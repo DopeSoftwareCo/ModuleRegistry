@@ -12,18 +12,11 @@ import { PackagesRouter } from "./Routes/PackagesRoutes";
 import { ResetRouter } from "./Routes/ResetRoutes";
 import { AuthRouter } from "./Routes/AuthRoutes";
 import mongoose from "mongoose";
-import { RunEvalSubsystemDemo } from "./Providers/RepoEvaluator/DevTools/SubsystemDemo";
 import { TracksRouter } from "./Routes/TrackRoutes";
 import { UserRouter } from "./Routes/UserRoutes";
 import { GenerateManagementToken } from "./Middleware/ManagementToken";
 import { CatchAllRouter } from "./Routes/CatchAll";
-import { Auth0_Database } from "./Services/AdminUser/Auth0_DB";
-import { RegistrationInfo } from "./Services/AdminUser/types";
-import { Role } from "./Services/AdminUser/UserData";
-import { calculateCumulativeSize } from "./Services/Packages/Multicost";
-import { FetchVersions, SearchVersion } from "./Services/Packages/Versioning/search-functions";
-import { GetPackagesData } from "RequestTypes";
-import { ensureUploadFoldersExist } from "./Utils/EnsureDirectories";
+import { ensureUploadFoldersExist } from "./Utils/FileDir";
 
 dotenv.config();
 
@@ -105,23 +98,6 @@ const runServer = async () => {
         console.log(chalk.greenBright.bold(`[server]: Server is running at http://localhost:${port}`));
     });
 };
-
-function ManualTestMulticost(packages: string[]) {
-    const packageManager = "npm"; // or 'yarn'
-    const totalSize = calculateCumulativeSize(packages, packageManager);
-
-    console.log(`Total size cost for packages [${packages.join(", ")}]: ${totalSize / 1024} KB`);
-}
-
-async function ManualTestVersionSort() {
-    const req: GetPackagesData[] = [
-        {
-            Name: "JP",
-            Version: "2.0.0-6.0.0",
-        },
-    ];
-    console.log(await FetchVersions(req));
-}
 
 async function Execute() {
     GenerateManagementToken();

@@ -1,4 +1,6 @@
+import { GetPackagesResponseBody } from "ResponseTypes";
 import { Package } from "../../../Schemas/Package";
+import { PackageMetaData } from "../../../Types/Models";
 
 export enum UpdateType {
     Major = 0,
@@ -26,3 +28,24 @@ export interface CompletePackage extends Package {
 }
 
 export type VersionRangeEndpoints = { oldest: string; newest: string };
+export type VersionPartitons = GetPackagesResponseBody[];
+export const PAGE_SIZE = 5;
+
+export type ChunkOfPackages = PackageMetaData[];
+
+export type FetchAllResult = {
+    data: ChunkOfPackages;
+    totalFetched: number;
+    isComplete: boolean;
+};
+
+export type PartitionedFetchAllResult = {
+    chunks: ChunkOfPackages[];
+    totalFetched: number;
+    isComplete: boolean;
+};
+
+export interface SearchResult {
+    dataPartitions: ChunkOfPackages[];
+    fetchAllResult?: PartitionedFetchAllResult;
+}
