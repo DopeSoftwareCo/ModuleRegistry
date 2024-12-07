@@ -157,3 +157,16 @@ export const createRandomPackage = async (version: string) => {
     const savedPackage = await newPackage.save();
     return savedPackage._id.toString();
 };
+
+export const limitRegexNumbers = (input: string) => {
+    const maxDigits = 3;
+    const regex = /\d+/g;
+
+    return input.replace(regex, (match) => {
+        if (match.length > maxDigits) {
+            const lowestDigit = Math.min(...match.split("").map(Number));
+            return String(lowestDigit).repeat(maxDigits);
+        }
+        return match;
+    });
+};
