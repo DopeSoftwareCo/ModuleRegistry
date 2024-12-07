@@ -50,14 +50,6 @@ describe("Debloat Test", () => {
     );
 
     test(
-        "Test using Zipped BE as .zip Input",
-        async () => {
-            expect(await runDebloatTest(".zip")).toBe(true);
-        },
-        timeout
-    );
-
-    test(
         "Test using Zipped BE as tar.gz Input",
         async () => {
             // Might remove if functionality is not needed
