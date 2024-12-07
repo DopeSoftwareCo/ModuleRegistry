@@ -20,12 +20,14 @@ export const UpdatePackageRules = [
         .withMessage(InvalidUploadPackageMessage)
         .isString()
         .withMessage(InvalidUploadPackageMessage),
-    body("data").custom((data) => {
-        const fields = ["Content", "URL", "JSProgram", "debloat"];
-        const providedFields = fields.filter((field) => data?.hasOwnProperty(field));
-        if (providedFields.length > 1) {
-            throw new Error(InvalidUploadPackageMessage);
-        }
-        return true;
-    }),
+    body("data")
+        .custom((data) => {
+            const fields = ["Content", "URL", "JSProgram", "debloat"];
+            const providedFields = fields.filter((field) => data?.hasOwnProperty(field));
+            if (providedFields.length > 1) {
+                throw new Error(InvalidUploadPackageMessage);
+            }
+            return true;
+        })
+        .withMessage(InvalidUploadPackageMessage),
 ];
