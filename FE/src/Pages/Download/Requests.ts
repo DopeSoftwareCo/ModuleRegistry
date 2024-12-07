@@ -54,6 +54,7 @@ export const getPackageByIDRequest = async (
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `${localStorage.getItem('token')}`,
+                includemime: 'true',
             },
         });
 
