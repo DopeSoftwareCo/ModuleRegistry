@@ -39,7 +39,13 @@ async function getGitHubDownload(repoURL: string): Promise<string> {
         // Use GitHub API to get the default branch
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
         try {
-            const response = await fetch(apiUrl);
+            const response = await fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+                    Accept: "application/vnd.github.v3+json", // Optional: for proper GitHub API versioning
+                },
+            });
             if (!response.ok) {
                 throw new Error(`GitHub API error: ${response.statusText}`);
             }
