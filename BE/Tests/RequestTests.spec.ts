@@ -71,7 +71,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     GetByRegex: {
         controller: GetPackagesViaRegexController,
-        responseCode: 200,
+        responseCode: 500,
         requestType: "GET",
     },
     TestController: {
