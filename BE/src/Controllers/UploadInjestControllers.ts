@@ -24,7 +24,7 @@ import { buildMongoDBPackage } from "../Services/Packages/MongoDB";
 import fetch from "node-fetch";
 import { ensureUploadFoldersExist } from "../Utils/FileDir";
 
-async function getGitHubDownload(repoURL: string): Promise<string> {
+export async function getGitHubDownload(repoURL: string): Promise<string> {
     //return repoURL;
     ///*
     const regex = /https:\/\/github\.com\/([^\/]+)\/([^\/]+)/;

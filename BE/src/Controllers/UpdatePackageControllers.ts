@@ -6,6 +6,8 @@ import PackageModel from "../Schemas/Package";
 import * as fs from "fs";
 import * as path from "path";
 import { debloatZippedContent } from "../Services/Packages/PackageZipHandling";
+import axios from "axios";
+import { getGitHubDownload } from "./UploadInjestControllers";
 
 // /package/{id}cle
 export const UpdatePackageViaIDController = asyncHandler(
@@ -29,6 +31,7 @@ export const UpdatePackageViaIDController = asyncHandler(
 
         const body = req.body;
         let content = body.data.Content;
+        let url = body.data.URL;
         let binaryContent; // Meant to store the non-string encoded version
 
         const packagesDirectory = path.join(process.cwd(), "Data/Packages");
@@ -47,15 +50,21 @@ export const UpdatePackageViaIDController = asyncHandler(
             if (content.includes(",")) {
                 const base64Data = content.split(",")[1]; // Remove the file header
                 binaryContent = Buffer.from(base64Data, "base64");
+                await fs.promises.writeFile(tempFile, binaryContent);
             } else {
                 binaryContent = Buffer.from(content, "base64");
+                await fs.promises.writeFile(tempFile, binaryContent);
             }
+        } else if (url !== undefined) {
+            const repoDownloadURL = await getGitHubDownload(pack.repoUrl);
+            const response = await axios.get(repoDownloadURL, { responseType: "arraybuffer" });
+            binaryContent = Buffer.from(response.data, "binary");
+            await fs.promises.writeFile(tempFile, binaryContent);
         } else {
             responseMessage =
                 "There is missing field(s) in the PackageID or it is formed improperly, or is invalid.";
             console.log(`/pacakge/{id} : ${responseMessage}`);
             res.status(424).send(responseMessage);
-            return;
         }
 
         if (newData.metadata.Name == "no name" || newData.metadata.Version == "no version") {
@@ -65,8 +74,6 @@ export const UpdatePackageViaIDController = asyncHandler(
             res.status(424).send(responseMessage);
             return;
         }
-
-        await fs.promises.writeFile(tempFile, binaryContent);
 
         if (body.data.debloat == true) {
             await debloatZippedContent(tempFile);
