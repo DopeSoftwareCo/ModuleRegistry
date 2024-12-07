@@ -13,11 +13,7 @@ import { isMongoDbID } from "../Validation/PackageValidationRules/GeneralByIDRul
 export const appendMongoDBid = (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     if (!isMongoDbID(id)) {
-        return res
-            .status(400)
-            .send(
-                "There is missing field(s) in the PackageID/AuthenticationToken or it is formed improperly, or the AuthenticationToken is invalid."
-            );
+        return res.status(404).send("Package does not exist.");
     }
     req.requestedId = id;
     next();
