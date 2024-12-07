@@ -28,6 +28,7 @@ import PackageModel from "../Schemas/Package";
 import { getDownloadPackageInformation, GetPackageBase64 } from "../Services/Packages/Download";
 import { VersionPartitons } from "../Services/Packages/Versioning/types";
 import { ProcessPackageSearch } from "../Services/Packages/Versioning/search-functions";
+import { limitRegexNumbers } from "../Services/Packages/MongoDB";
 
 // Setup all of the search-functions to take GetPackagesData[] as input
 
@@ -56,13 +57,13 @@ export function SelectResultPage(pages: VersionPartitons, offset: PageOffset): P
         const page = pages[index];
 
         return {
-            body: page,
+            body: page ? page : [],
             nextPageIndex: next,
         };
     } catch {
         return {
             // If any error occurs, return page 0
-            body: pages[0],
+            body: pages[0] ? pages[0] : [],
             nextPageIndex: 0,
         };
     }
@@ -244,7 +245,7 @@ export const GetPackageRatingsViaIDController = asyncHandler(
 
 export const GetPackagesViaRegexController = asyncHandler(
     async (req: GetPackagesViaRegexRequest, res: GetPackageViaRegexResponse, next: NextFunction) => {
-        const regexStr = req.body.RegEx;
+        const regexStr = limitRegexNumbers(req.body.RegEx);
         const regex = new RegExp(regexStr, "i"); // case-insensitive regex
 
         try {
