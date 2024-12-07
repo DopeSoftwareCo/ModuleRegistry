@@ -63,11 +63,6 @@ async function getStandaloneCost(packageName: string): Promise<number> {
     console.log(`Getting standalone cost from external resource for: ${packageName}`);
     const phobiaUrl = `https://packagephobia.com/v2/api.json?p=${packageName}`;
     const response = await fetch(phobiaUrl);
-    try {
-        console.log(await response.text());
-    } catch {
-        console.log("could not convert standalone response to text");
-    }
     const data = await response.json();
 
     const bytesInMB = data.publish.bytes / (1024 * 1024);
@@ -85,11 +80,6 @@ async function getTotalCost(packageName: string): Promise<number> {
     console.log(`Getting total cost from external resource for: ${packageName}`);
     const phobiaUrl = `https://packagephobia.com/v2/api.json?p=${packageName}`;
     const response = await fetch(phobiaUrl);
-    try {
-        console.log(await response.text());
-    } catch {
-        console.log("could not convert total response to text");
-    }
     const data = await response.json();
 
     const bytesInMB = data.install.bytes / (1024 * 1024);
