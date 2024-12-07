@@ -372,7 +372,7 @@ export const UploadInjestController = asyncHandler(
         };
         console.log("return body built., sending response....");
         console.log(`/pacakge : ${JSON.stringify(returnBody)}`);
-        res.status(200).json(returnBody);
+        res.status(201).json(returnBody);
         return;
     }
 );
