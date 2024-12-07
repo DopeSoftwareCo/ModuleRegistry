@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PackageComponent, PackageComponentProps } from '../PackageComponent/PackageComponent';
-import { PackagesContainer } from './PackagesComponentStyle';
+import { NoPackagesYet, PackagesContainer } from './PackagesComponentStyle';
 import { StatusDisplay } from '../StatusDisplay/StatusDisplay';
 import { getAllPackagesRequest } from './Requests';
 
@@ -21,11 +21,17 @@ export const PackagesComponent = () => {
         makeRequest();
     }, []);
 
+    const packagesExist = () => {
+        return packages !== undefined && packages?.length > 0;
+    };
+
     return (
         <PackagesContainer>
-            {packages?.map((p, idx) => (
-                <PackageComponent key={idx} {...p} />
-            ))}
+            {packagesExist() ? (
+                packages?.map((p, idx) => <PackageComponent key={idx} {...p} />)
+            ) : (
+                <NoPackagesYet>Welcome! There are no packages in the registry yet.</NoPackagesYet>
+            )}
             <StatusDisplay
                 err={reqErr}
                 setErr={setReqErr}

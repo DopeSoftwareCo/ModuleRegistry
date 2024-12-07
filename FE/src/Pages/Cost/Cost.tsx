@@ -70,10 +70,10 @@ const Cost = () => {
             />
             <StyledBaseKeyValuePairsContainer>
                 {costData &&
-                    Object.entries(costData).map(([id, costEntry]) => (
-                        <StyledBaseKeyValuePairsContainer>
+                    Object.entries(costData).map(([id, costEntry], idx) => (
+                        <StyledBaseKeyValuePairsContainer key={idx}>
                             <CostLabel>{id}</CostLabel>
-                            <StyledBaseKeyValueRow key={id}>
+                            <StyledBaseKeyValueRow>
                                 <CostLabel aria-label="Standalone cost label" data-testid="standalone-cost">
                                     Standalone
                                 </CostLabel>
@@ -82,7 +82,7 @@ const Cost = () => {
                                 </CostValue>
                             </StyledBaseKeyValueRow>
                             {includeDependencies && (
-                                <StyledBaseKeyValueRow key={id}>
+                                <StyledBaseKeyValueRow>
                                     <CostLabel aria-label="total cost label" data-testid="total-cost">
                                         Total
                                     </CostLabel>
