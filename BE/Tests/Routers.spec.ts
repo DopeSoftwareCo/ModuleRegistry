@@ -49,7 +49,7 @@ describe("Request tests", () => {
                     response = await SuperTest(app).get(router.path);
                     break;
             }
-            expect(response.status).not.toBe(404);
+            expect(response.status).not.toBe(500);
         });
     });
 });
