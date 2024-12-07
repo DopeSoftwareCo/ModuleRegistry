@@ -60,6 +60,7 @@ export async function CalculateTotalCost(packageUrl: string): Promise<number> {
  * @returns - A promise that resolves to the standalone size in megabytes (MB).
  */
 async function getStandaloneCost(packageName: string): Promise<number> {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     console.log(`Getting standalone cost from external resource for: ${packageName}`);
     const phobiaUrl = `https://packagephobia.com/v2/api.json?p=${packageName}`;
     const response = await fetch(phobiaUrl);
@@ -78,6 +79,7 @@ async function getStandaloneCost(packageName: string): Promise<number> {
  */
 async function getTotalCost(packageName: string): Promise<number> {
     console.log(`Getting total cost from external resource for: ${packageName}`);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     const phobiaUrl = `https://packagephobia.com/v2/api.json?p=${packageName}`;
     const response = await fetch(phobiaUrl);
     const data = await response.json();
