@@ -25,17 +25,4 @@ export const UpdatePackageRules = [
         .withMessage(InvalidUploadPackageMessage)
         .isObject()
         .withMessage(InvalidUploadPackageMessage),
-    body("data").custom((value) => {
-        if (typeof value === "object") {
-            console.log("Data is an object, ensuring only proper keys.");
-            const keys = Object.keys(value);
-            const validKeys = ["Content", "URL", "debloat", "JSProgram"];
-            keys.forEach((key) => {
-                if (!validKeys.includes(key)) {
-                    throw Error(InvalidUploadPackageMessage);
-                }
-            });
-        }
-        return true;
-    }),
 ];
