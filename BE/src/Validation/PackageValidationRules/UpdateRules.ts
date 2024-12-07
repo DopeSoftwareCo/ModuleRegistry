@@ -20,11 +20,7 @@ export const UpdatePackageRules = [
         .withMessage(InvalidUploadPackageMessage)
         .isString()
         .withMessage(InvalidUploadPackageMessage),
-    body("data.debloat")
-        .exists()
-        .withMessage(InvalidUploadPackageMessage)
-        .isBoolean()
-        .withMessage(InvalidUploadPackageMessage),
+    body("data.debloat").optional().isBoolean().withMessage(InvalidUploadPackageMessage),
     body("data.URL")
         .exists()
         .withMessage(InvalidUploadPackageMessage)
@@ -35,9 +31,5 @@ export const UpdatePackageRules = [
         .withMessage(InvalidUploadPackageMessage)
         .isString()
         .withMessage(InvalidUploadPackageMessage),
-    body("data.JSProgram")
-        .exists()
-        .withMessage(InvalidUploadPackageMessage)
-        .isString()
-        .withMessage(InvalidUploadPackageMessage),
+    body("data.JSProgram").optional().isString().withMessage(InvalidUploadPackageMessage),
 ];
