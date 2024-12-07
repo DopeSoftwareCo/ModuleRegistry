@@ -94,7 +94,7 @@ async function getTotalCost(packageName: string): Promise<number> {
  * @returns - The extracted package name or null if the URL format is invalid.
  */
 export function extractPackageName(url: string): string | null {
-    const match = url.match(/github\.com\/[^/]+\/([^/]+)/);
+    const match = (url.includes(".git") ? url.split(".git")[0] : url).match(/github\.com\/[^/]+\/([^/]+)/);
     if (match) {
         return match[1];
     } else {
