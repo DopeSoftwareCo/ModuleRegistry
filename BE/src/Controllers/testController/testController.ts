@@ -5,7 +5,6 @@ import PackageModel from "../../Schemas/Package";
 import { createRandomPackage } from "../../Services/Packages/MongoDB";
 
 export const TestController = asyncHandler(async (req: TestRequest, res: Response, next: NextFunction) => {
-    await createRandomPackage("1.1.1");
     //trigger merge
     const packages = await PackageModel.find();
     res.status(200).json({ packages });
