@@ -29,7 +29,7 @@ export interface CompletePackage extends Package {
 
 export type VersionRangeEndpoints = { oldest: string; newest: string };
 export type VersionPartitons = GetPackagesResponseBody[];
-export const PAGE_SIZE = 5;
+export const PAGE_SIZE = 20;
 
 export type ChunkOfPackages = PackageMetaData[];
 

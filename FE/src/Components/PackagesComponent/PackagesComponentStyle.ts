@@ -7,3 +7,5 @@ export const PackagesContainer = styled(StyledBaseDiv)`
     gap: 4rem;
     margin-bottom: 100px;
 `;
+
+export const NoPackagesYet = styled(StyledBaseDiv)``;

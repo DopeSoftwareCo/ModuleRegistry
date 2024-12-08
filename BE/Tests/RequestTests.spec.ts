@@ -76,7 +76,7 @@ const AppRoutes: Record<string, RouteConfig> = {
     },
     TestController: {
         controller: TestController,
-        responseCode: 500,
+        responseCode: 200,
         requestType: "GET",
     },
     Track: {

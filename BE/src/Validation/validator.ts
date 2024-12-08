@@ -18,8 +18,6 @@ export const validateRequest = (req: Request, res: Response, next: NextFunction)
     const result = validationResult(req);
     console.log("validating request...");
     if (!result.isEmpty()) {
-        console.log(req.body);
-        console.log(result);
         //we are only returning one validation error message... so no matter the number ofmessages we can return the first if it exists
         const errsStrArr = result.array();
         if (errsStrArr.length > 0) {
