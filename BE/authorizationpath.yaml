@@ -1,0 +1,259 @@
+openapi: 3.0.3
+info:
+    title: Module Registry User Management API Extension
+    version: 1.0.0
+    description: API for managing users. You may try the requests from the yaml itself on swagger!
+
+servers:
+    - url: https://moduleregistry.onrender.com
+      description: Module Registry on
+
+paths:
+    /authenticate:
+        put:
+            summary: Authenticate a user.
+            description: Validates the user's credentials and returns an authentication token if successful.
+            tags:
+                - Authenticate (Base schema)
+            requestBody:
+                description: JSON object containing user credentials and secret.
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthenticateRequest'
+                        example:
+                            User:
+                                name: 'ece30861defaultadminuser'
+                                isAdmin: true
+                            Secret:
+                                password: 'correcthorsebatterystaple123(!__+@**(A''"`;DROP TABLE packages;'
+
+            responses:
+                '200':
+                    description: Bearer token
+                '400':
+                    description: Bad request, validation failed.
+                '401':
+                    description: The user or password is invalid.
+                '501':
+                    description: The system does not support authentication.
+
+    /users/adduser:
+        post:
+            summary: Add a new user.
+            description: Adds a user to the system.
+            tags:
+                - Users
+            parameters:
+                - name: Authorization
+                  in: header
+                  required: true
+                  description: Bearer token for authenticating the user.
+                  schema:
+                      type: string
+            requestBody:
+                description: User data to be added.
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserAddRequest'
+                        example:
+                            username: jleidytest
+                            email: jleidytest@email.com
+                            password: 123E!-fE2@
+                            permission: 7
+                            role: 3
+            responses:
+                '201':
+                    description: 'User added.'
+                '400':
+                    description: Validation errors or bad request. (varying responses using express-validator)
+                '500':
+                    description: Adding user failed.
+
+    /users/updateuser:
+        post:
+            summary: Update an existing user.
+            description: Updates user information.
+            tags:
+                - Users
+            parameters:
+                - name: Authorization
+                  in: header
+                  required: true
+                  description: Bearer token for authenticating the user.
+                  schema:
+                      type: string
+            requestBody:
+                description: User data to update.
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserUpdateRequest'
+                        example:
+                            id: GIVE ID FROM ADDING HERE
+                            role: 2
+            responses:
+                '200':
+                    description: User permissions updated.
+                '400':
+                    description: Validation errors or bad request. (varying responses using express-validator)
+                '500':
+                    description: User permissions update failed.
+
+    /users/deleteuser:
+        post:
+            summary: Delete a user.
+            description: Deletes a user from the system. Requires a valid user token and management token.
+            tags:
+                - Users
+            parameters:
+                - name: Authorization
+                  in: header
+                  required: true
+                  description: Bearer token for authenticating the user.
+                  schema:
+                      type: string
+            requestBody:
+                description: Information about the user to delete.
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserDeleteRequest'
+                        example:
+                            id: GIVE ID FROM ADDING HERE
+            responses:
+                '200':
+                    description: User deleted.
+                '400':
+                    description: Validation errors or bad request. (varying responses using express-validator)
+                '500':
+                    description: Failed to delete user.
+
+    /users/allusers:
+        get:
+            summary: Retrieve all users.
+            description: Fetches a list of all users. Requires a valid user token and management token.
+            tags:
+                - Users
+            parameters:
+                - name: Authorization
+                  in: header
+                  required: true
+                  description: Bearer token for authenticating the user.
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: A list of users.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/UserResponse'
+                '500':
+                    description: Error getting all users.
+
+components:
+    schemas:
+        UserAddRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                email:
+                    type: string
+                password:
+                    type: string
+                permission:
+                    type: number
+                    enum: [1, 2, 3, 4, 5, 6, 7]
+                role:
+                    type: number
+                    enum: [1, 2, 3]
+            required:
+                - name
+                - email
+                - password
+                - permission
+                - role
+                - username
+
+        UserUpdateRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                username:
+                    type: string
+                email:
+                    type: string
+                password:
+                    type: string
+                permission:
+                    type: number
+                    enum: [1, 2, 3, 4, 5, 6, 7]
+                role:
+                    type: number
+                    enum: [1, 2, 3]
+            required:
+                - id
+
+        UserDeleteRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+            required:
+                - id
+
+        UserResponse:
+            type: object
+            properties:
+                user_id:
+                    type: string
+                username:
+                    type: string
+                user_metadata:
+                    type: object
+                    properties:
+                        permission:
+                            type: number
+                        role:
+                            type: number
+                password:
+                    type: string
+        AuthenticateRequest:
+            type: object
+            properties:
+                User:
+                    type: object
+                    properties:
+                        name:
+                            type: string
+                        isAdmin:
+                            type: boolean
+                    required:
+                        - name
+                        - isAdmin
+                Secret:
+                    type: object
+                    properties:
+                        password:
+                            type: string
+                    required:
+                        - password
+            required:
+                - User
+                - Secret
+        AuthenticateResponse:
+            type: object
+            properties:
+                token:
+                    type: string
+                    description: JWT token for authenticated user.
