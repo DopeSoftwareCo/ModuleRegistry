@@ -1,9 +1,6 @@
 name: Auto Merge Dev to Deployment
 
 on:
-  schedule:
-    - cron: "0 9 * * 3" # Every Wednesday at 4:00 am ET
-    - cron: "0 9 * * 6" # Every Saturday at 4:00 am ET
   workflow_dispatch: # Allow manual triggering as well
 
 jobs:
